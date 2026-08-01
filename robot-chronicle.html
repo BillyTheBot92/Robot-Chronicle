@@ -53,7 +53,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #splash{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;z-index:1000;background:var(--bg);min-height:100vh;min-height:100dvh}
 #splash.active{display:flex}
 #splash .splash-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;opacity:0;animation:splashArtIn 1.1s ease-out .15s forwards;z-index:0}
-#splash .splash-fade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,14,39,.55) 0%,rgba(10,14,39,0) 22%,rgba(10,14,39,0) 55%,rgba(10,14,39,.75) 82%,rgba(10,14,39,.97) 100%)}
+#splash .splash-fade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,14,39,.45) 0%,rgba(10,14,39,0) 18%,rgba(10,14,39,0) 88%,rgba(10,14,39,.35) 100%)}
 #splash .splash-inner{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding-bottom:14vh;width:100%}
 @keyframes splashArtIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
 @keyframes splashRobotIn{to{opacity:1;transform:scale(1)}}
@@ -715,6 +715,68 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .shop-item.result-loss .shop-name{color:var(--pink)}
 .shop-result{font-family:var(--font-title);font-size:11px;font-weight:700;white-space:nowrap;margin-left:10px;text-align:right}
 .shop-result-sub{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);margin-top:2px}
+
+/* ================================================================
+   v0.8.0 — BARRE SUPÉRIEURE DE CARRIÈRE + CLASSEMENT
+   ================================================================ */
+.career-topbar{display:flex;align-items:center;gap:8px;margin-bottom:15px}
+.btn-standings{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;
+  background:rgba(0,240,255,.07);border:1px solid rgba(0,240,255,.28);border-radius:8px;
+  color:var(--cyan);font-family:var(--font-title);font-size:10px;font-weight:700;
+  letter-spacing:1px;cursor:pointer;transition:all .2s}
+.btn-standings:active{background:rgba(0,240,255,.16);border-color:var(--cyan)}
+
+.zone-legend{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+.zone-chip{padding:4px 10px;border-radius:20px;font-family:var(--font-mono);font-size:8px;
+  text-transform:uppercase;letter-spacing:1px}
+.zone-chip.z-promo{background:rgba(76,175,80,.12);color:var(--green);border:1px solid rgba(76,175,80,.3)}
+.zone-chip.z-stay{background:rgba(255,255,255,.04);color:var(--text-dim);border:1px solid rgba(255,255,255,.12)}
+.zone-chip.z-releg{background:rgba(255,45,107,.12);color:var(--pink);border:1px solid rgba(255,45,107,.3)}
+
+.stand-table{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden}
+.stand-head{display:flex;align-items:center;padding:9px 11px;
+  background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07);
+  font-family:var(--font-mono);font-size:9px;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:1px}
+.stand-row{display:flex;align-items:center;padding:9px 11px;
+  border-bottom:1px solid rgba(255,255,255,.03);position:relative}
+.stand-row:last-child{border-bottom:none}
+.stand-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.stand-row.z-promo::before{background:var(--green)}
+.stand-row.z-stay::before{background:rgba(255,255,255,.10)}
+.stand-row.z-releg::before{background:var(--pink)}
+
+.st-rank{width:24px;font-family:var(--font-title);font-size:11px;font-weight:700;color:var(--text-mid)}
+.st-name{flex:1;min-width:0;display:flex;flex-direction:column;padding-right:6px}
+.st-name b{font-family:var(--font-title);font-size:11px;font-weight:700;color:rgba(255,255,255,.88);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-meta{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-num{width:26px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-mid)}
+.st-pts{width:34px;text-align:right;font-family:var(--font-title);font-size:12px;
+  font-weight:900;color:var(--yellow)}
+
+/* Le robot du joueur : effet lumineux pour le repérer d'un coup d'œil */
+.stand-row.is-player{background:linear-gradient(90deg,rgba(0,240,255,.13),rgba(0,240,255,.03));
+  box-shadow:inset 0 0 22px rgba(0,240,255,.16)}
+.stand-row.is-player .st-name b{color:var(--cyan);text-shadow:0 0 10px rgba(0,240,255,.5)}
+.stand-row.is-player .st-rank{color:var(--cyan)}
+/* Le rival : repérable sans être confondu avec le joueur */
+.stand-row.is-rival{background:linear-gradient(90deg,rgba(255,152,0,.10),transparent)}
+.stand-row.is-rival .st-name b{color:var(--orange)}
+
+/* ================================================================
+   v0.8.0 — SPLASH : l'illustration porte le titre, aucun texte dessus
+   ================================================================ */
+#splash .splash-inner{display:none}
+#splash .splash-tap{display:none}
+
+/* ================================================================
+   v0.8.0 — TOASTS : ne doivent plus recouvrir les boutons du bas
+   ================================================================ */
+#toast{bottom:auto!important;top:76px!important;max-width:88%;white-space:normal!important;
+  text-align:center;box-shadow:0 6px 26px rgba(0,0,0,.55),0 0 20px rgba(0,240,255,.18)!important}
 </style>
 </head>
 <body>
@@ -727,10 +789,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <img class="splash-art" id="splash-art" src="./splash.jpg" alt="Robot Chronicle">
   <div class="splash-fade"></div>
   <div class="splash-glitch"></div>
-  <div class="splash-inner">
-    <div class="splash-tagline">De tas de ferraille à légende</div>
-  </div>
-  <div class="splash-tap">Appuyez pour continuer</div>
+  <!-- v0.8.0 — l'illustration porte déjà le titre et la promesse.
+       Tout texte en surimpression se superposait au lettrage. -->
 </div>
 
 <!-- ================================================================
@@ -799,7 +859,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <div class="support-btn" onclick="RC.showMessage('Merci pour votre soutien !')">☕ Me soutenir</div>
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
-    <div class="version" id="version-text">v0.7.1</div>
+    <div class="version" id="version-text">v0.8.0</div>
     <div class="credit">Robot Chronicle — créé par Alexandre</div>
   </div>
 </div>
@@ -876,6 +936,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
 </div>
 
 <!-- ================================================================
+     CLASSEMENT DE LIGUE (v0.8.0)
+     ================================================================ -->
+<div class="screen" id="standings">
+  <div id="standings-content"></div>
+</div>
+
+<!-- ================================================================
      PROFIL DU RIVAL (v0.5.0)
      ================================================================ -->
 <div class="screen" id="rival-profile">
@@ -925,7 +992,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
      CAREER SCREEN
      ================================================================ -->
 <div class="screen" id="career">
-  <div class="btn-back" onclick="RC.confirmQuit()">← Menu</div>
+  <div class="career-topbar">
+    <div class="btn-back" style="margin:0" onclick="RC.confirmQuit()">← Menu</div>
+    <div class="btn-standings" onclick="RC.showStandings()">📊 Classement</div>
+  </div>
   <div id="career-header"></div>
   <div id="career-season"></div>
   <div id="career-action"></div>
@@ -1010,13 +1080,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
 <script>
 /* ================================================================
-   ROBOT CHRONICLE v0.7.1 — MODULE 1/4 : DONNÉES
+   ROBOT CHRONICLE v0.8.0 — MODULE 1/4 : DONNÉES
    Réécriture complète. Les pools de textes sont le contenu validé
    des versions précédentes ; toute la logique est neuve.
    ================================================================ */
 
 const RC = {
-  VERSION: '0.7.1',
+  VERSION: '0.8.0',
 
   // ============================================================
   // CHÂSSIS
@@ -1242,7 +1312,7 @@ const RC = {
     ],
     // Égalité
     even: [
-      {intro:"Round nul. Les deux machines se sont rendu coup pour coup et se réévaluent. Le combat va se jouer sur les détails.",
+      {intro:"Échange équilibré. Les deux machines se sont rendu coup pour coup et se réévaluent. Le combat va se jouer sur les détails.",
        choices:[{t:"Faire la différence par la puissance",p:'force'},{t:"Faire la différence par la précision",p:'tech'}]},
       {intro:"Aucun des deux n'a cédé. Le sol est jonché d'éclats de blindage. Les capteurs des deux robots se croisent une seconde de trop.",
        choices:[{t:"Rompre l'équilibre par un coup lourd",p:'force'},{t:"Rompre l'équilibre par une feinte",p:'tech'}]},
@@ -1739,7 +1809,7 @@ const RC = {
 
   state: {
     firstLaunch: true,
-    version: '0.7.1',
+    version: '0.8.0',
     tokens: 0,
     hallOfFame: [],
     badges: {},
@@ -2445,31 +2515,31 @@ const RC = {
 
   rivalTaunt() { return this.pick(this.rivalArch().taunts); },
 
-  advanceRivalFights(n) {
-    const r = this.state.career.rival;
-    for (let i = 0; i < n; i++) {
-      if (r.seasonWins + r.seasonLosses >= this.SEASON_FIGHTS) break;
-      if (Math.random() < (r.perf || 0.5)) {
-        r.wins++; r.seasonWins++;
-        if (Math.random() < 0.12) r.ko++;
-      } else { r.losses++; r.seasonLosses++; }
-    }
-    r.gen = this.computeGen(r.stats, r.state || 92, r.wins, r.losses, r.leagueIdx, 0, 0, false);
-  },
-
   advanceRival() {
-    const r = this.state.career.rival;
-    const remaining = this.SEASON_FIGHTS - (r.seasonWins + r.seasonLosses);
-    if (remaining > 0) this.advanceRivalFights(remaining);
+    const c = this.state.career;
+    const r = c.rival;
 
-    const perf = r.seasonWins / this.SEASON_FIGHTS;
+    const perf = r.seasonWins / Math.max(1, r.seasonWins + r.seasonLosses);
     r.history.push({ season:r.season, league:this.LEAGUES[r.leagueIdx], w:r.seasonWins, l:r.seasonLosses, gen:r.gen });
     if (r.history.length > 12) r.history.shift();
 
     Object.keys(r.stats).forEach(k => { r.stats[k] = Math.min(99, r.stats[k] + 2); });
     r.state = 86 + Math.floor(Math.random()*12);
-    if (perf >= 0.45 && r.leagueIdx < 5) r.leagueIdx++;
-    else if (perf < 0.30 && r.leagueIdx > 0) r.leagueIdx--;
+
+    // Trajectoire naturelle
+    let next = r.leagueIdx;
+    if (perf >= 0.45 && next < 5) next++;
+    else if (perf < 0.30 && next > 0) next--;
+
+    // Recalage : le joueur vient de changer de ligue dans nextSeason(),
+    // c.leagueIdx est donc déjà sa ligue de la saison à venir.
+    const pl = c.leagueIdx;
+    if (next > pl + 1) { next = pl + 1; r.waited = (r.waited || 0) + 1; }
+    if (next < pl - 1) { next = pl - 1; r.pushed = (r.pushed || 0) + 1; }
+    // Les deux doivent atteindre la Légendaire ensemble
+    if (pl === 5 && next < 4) next = 4;
+
+    r.leagueIdx = next;
     r.season++;
     r.seasonWins = 0; r.seasonLosses = 0;
     r.perf = 0.46 + Math.random()*0.14 + (r.boosted ? 0.05 : 0) + (r.angry ? 0.04 : 0);
@@ -2590,11 +2660,13 @@ const RC = {
     return c.leagueIdx === 5 && c.narrativeCombat === this.NARRATIVE_PER_SEASON - 1 && this.nextIsNarrative();
   },
 
+  // v0.8.0 — le duel contre le rival est fixé par le calendrier de la ligue
   isRivalFight() {
     const c = this.state.career;
     if (this.isBossFight()) return false;
     if (c.rival.leagueIdx !== c.leagueIdx) return false;
-    return c.narrativeCombat === 2;
+    const st = this.currentScheduled();
+    return !!(st && st.isRival);
   },
 
   showCareer() {
@@ -2683,7 +2755,8 @@ const RC = {
     const r = c.rival, ra = this.rivalArch();
     s += '<div class="sponsor-strip" onclick="RC.showRivalProfile()"><span class="sponsor-logo">' + ra.icon + '</span>';
     s += '<div class="sponsor-mid"><div class="sponsor-name" style="color:var(--orange)">Rival · ' + r.name + '</div>';
-    s += '<div class="shop-desc">' + this.LEAGUES[r.leagueIdx] + ' · SPEC ' + r.gen + ' · Saison : ' + r.seasonWins + 'V-' + r.seasonLosses + 'D · Carrière : ' + r.wins + 'V-' + r.losses + 'D</div></div>';
+    s += '<div class="shop-desc">' + this.LEAGUES[r.leagueIdx] + ' · SPEC ' + r.gen + ' · Saison : ' + r.seasonWins + 'V-' + r.seasonLosses + 'D · Carrière : ' + r.wins + 'V-' + r.losses + 'D';
+    s += (r.leagueIdx === c.leagueIdx ? ' · <b style="color:var(--orange)">dans votre ligue</b>' : '') + '</div></div>';
     if (r.h2hWins + r.h2hLosses > 0) {
       s += '<div style="text-align:right;margin-left:8px"><div class="satis-val" style="color:var(--orange);width:auto">' + r.h2hWins + '-' + r.h2hLosses + '</div>';
       s += '<div class="inter-bar-label" style="margin-top:1px">Vos duels</div></div>';
@@ -2750,9 +2823,15 @@ const RC = {
     this._isBoss = this.isBossFight();
     this._isRival = this.isRivalFight();
 
-    if (this._isBoss || this._isRival) {
+    // v0.8.0 — l'adversaire vient du calendrier de la ligue
+    const st = this.currentScheduled();
+    this._scheduledId = st ? st.id : null;
+    if (this._isBoss) {
       const r = c.rival;
       this._currentOpponent = { name:r.name, chassis:r.chassis, ia:r.ia, stats:{...r.stats}, gen:r.gen, hidden:false, isRival:true };
+    } else if (st) {
+      this._currentOpponent = this.opponentFromStanding(st);
+      this._isRival = !!st.isRival;
     } else {
       this._currentOpponent = this.generateOpponent(c.league);
     }
@@ -2950,7 +3029,8 @@ const RC = {
         ? o.opName + ' lance ' + this.techniqueFor(o.enemyProfile, o.opChassis) + '. ' + this.pick(this.COUNTER_YOU)
         : 'Votre robot lance ' + this.techniqueFor(o.profile, o.myChassis) + '. ' + this.pick(this.COUNTER_ENEMY);
     }
-    const tier = o.gap > 22 ? 'BIG' : (o.gap > 10 ? 'MID' : 'LOW');
+    // Le registre du texte suit l'ampleur réelle des dégâts affichés
+    const tier = o.impact >= 26 ? 'BIG' : (o.impact >= 16 ? 'MID' : 'LOW');
     return o.won
       ? 'Votre robot place ' + this.techniqueFor(o.profile, o.myChassis) + '. ' + this.pick(this['IMPACT_' + tier])
       : o.opName + ' place ' + this.techniqueFor(o.enemyProfile, o.opChassis) + '. ' + this.pick(this['TAKEN_' + tier]);
@@ -2962,6 +3042,10 @@ const RC = {
   // Résistance sur les dégâts subis, Vitesse sur l'esquive (qui contre),
   // Intelligence sur le momentum et la résistance aux bugs.
   // ============================================================
+
+  // Sous ce seuil de structure, le combat est arrêté : la machine
+  // ne peut plus se défendre. C'est ce qui rend les KO atteignables.
+  KO_THRESHOLD: 15,
 
   makeChoice(choice) {
     const c = this.state.career, op = this._currentOpponent;
@@ -2993,7 +3077,7 @@ const RC = {
         c.atoutsSuccess = (c.atoutsSuccess || 0) + 1;
         dealt = Math.round((34 + Math.random()*20) * cm.dmgDealt * myPower * opArmor);
         this._enemyHP = Math.max(0, this._enemyHP - dealt);
-        if (this._enemyHP <= 0) ko = true;
+        if (this._enemyHP <= this.KO_THRESHOLD) { ko = true; this._enemyHP = 0; }
         title = ko ? 'KO !' : 'Atout réussi';
         sub = ko ? 'L\'atout spécial met fin au combat' : 'La manœuvre passe parfaitement';
         action = "L'atout part au bon moment. " + this.pick(this.IMPACT_BIG);
@@ -3001,7 +3085,7 @@ const RC = {
         this._atoutFailed = true;
         taken = Math.round((26 + Math.random()*16) * cm.dmgTaken * myArmor * opPower);
         this._playerHP = Math.max(0, this._playerHP - taken);
-        if (this._playerHP <= 0) ko = true;
+        if (this._playerHP <= this.KO_THRESHOLD) { ko = true; this._playerHP = 0; }
         title = 'Atout raté';
         sub = 'Le retour de flamme est violent';
         action = "La manœuvre part trop tôt : votre robot se découvre complètement. " + this.pick(this.TAKEN_BIG);
@@ -3031,7 +3115,7 @@ const RC = {
 
       won = pScore > eFinal;
       const gap = Math.abs(pScore - eFinal);
-      const raw = Math.round(16 + Math.min(30, gap * 1.15));
+      const raw = Math.round(15 + Math.min(26, gap * 1.05));
 
       if (won) {
         if (Math.random() < opDodge) {
@@ -3039,12 +3123,12 @@ const RC = {
           counter = true; won = false;
           taken = Math.max(1, Math.round(raw * 0.5 * cm.dmgTaken * myArmor * opPower));
           this._playerHP = Math.max(0, this._playerHP - taken);
-          if (this._playerHP <= 0) { ko = true; title = 'KO subi'; sub = 'Contré au pire moment'; }
+          if (this._playerHP <= this.KO_THRESHOLD) { ko = true; this._playerHP = 0; title = 'KO subi'; sub = 'Contré au pire moment, le combat est arrêté'; }
           else { title = 'Contré'; sub = op.name + ' esquive et vous punit sur la riposte'; }
         } else {
           dealt = Math.round(raw * cm.dmgDealt * myPower * opArmor);
           this._enemyHP = Math.max(0, this._enemyHP - dealt);
-          if (this._enemyHP <= 0) { ko = true; title = 'KO !'; sub = op.name + ' ne se relève pas'; }
+          if (this._enemyHP <= this.KO_THRESHOLD) { ko = true; this._enemyHP = 0; title = 'KO !'; sub = op.name + ' ne peut plus se défendre — combat arrêté'; }
           else { title = 'Round remporté'; sub = genius ? 'Coup de génie de votre IA' : (gap > 22 ? 'Échange à sens unique' : 'Votre choix a payé'); }
         }
       } else {
@@ -3053,17 +3137,17 @@ const RC = {
           counter = true; won = true;
           dealt = Math.max(1, Math.round(raw * 0.5 * cm.dmgDealt * myPower * opArmor));
           this._enemyHP = Math.max(0, this._enemyHP - dealt);
-          if (this._enemyHP <= 0) { ko = true; title = 'KO !'; sub = 'Le contre met fin au combat'; }
+          if (this._enemyHP <= this.KO_THRESHOLD) { ko = true; this._enemyHP = 0; title = 'KO !'; sub = 'Le contre met fin au combat'; }
           else { title = 'Contre gagnant'; sub = 'Votre robot esquive et punit sur la riposte'; }
         } else {
           taken = Math.round(raw * cm.dmgTaken * myArmor * opPower);
           this._playerHP = Math.max(0, this._playerHP - taken);
-          if (this._playerHP <= 0) { ko = true; title = 'KO subi'; sub = 'Votre robot s\'écroule'; }
+          if (this._playerHP <= this.KO_THRESHOLD) { ko = true; this._playerHP = 0; title = 'KO subi'; sub = 'Votre robot ne peut plus se défendre — combat arrêté'; }
           else { title = 'Round perdu'; sub = bug ? 'Bug système au pire moment' : (bossAtout ? op.name + ' a utilisé un atout' : (gap > 22 ? 'Vous avez été dominé' : 'L\'adversaire a pris le dessus')); }
         }
       }
-      action = this.roundNarration({ won, counter, profile, enemyProfile, gap,
-        myChassis:c.chassis.id, opChassis:op.chassis.id, opName:op.name });
+      action = this.roundNarration({ won, counter, profile, enemyProfile,
+        impact: (dealt || taken), myChassis:c.chassis.id, opChassis:op.chassis.id, opName:op.name });
     }
 
     // Momentum : l'Intelligence détermine la vitesse d'adaptation
@@ -3175,7 +3259,7 @@ const RC = {
     c.narrativeCombat++;
     c.fightIndex++;
     c.combatsFought = (c.combatsFought || 0) + 1;
-    if (!this._isRival && !this._isBoss) this.advanceRivalFights(1);
+    if (!this._isBoss) this.playMatchday(this._scheduledId, victory);
     if (victory) { c.seasonWins++; c.totalWins++; } else { c.seasonLosses++; c.totalLosses++; }
     if (koDealt) { c.seasonKO++; c.totalKO++; }
     this.addSatis(victory ? 3 * (c.sponsor.fx.demand || 1) : -4 * (c.sponsor.fx.demand || 1));
@@ -3244,6 +3328,296 @@ const RC = {
   },
 
   // ============================================================
+  // MODULE 5/5 — CLASSEMENT DE LIGUE (v0.8.0)
+  //
+  // 15 robots par ligue, joueur inclus. Victoire = 3 points,
+  // défaite = 0, pas de nuls. Les 20 combats de la saison se
+  // disputent contre ces robots, et les autres jouent leurs
+  // propres matchs en parallèle à chaque journée.
+  //
+  // Remplace l'ancien rang calculé après coup, qui pouvait
+  // classer 1er un bilan de 7 victoires pour 13 défaites.
+  // ============================================================
+
+  LEAGUE_SIZE: 15,
+  PROMO_SLOTS: 3,      // places 1 à 3   → montée
+  RELEG_FROM: 12,      // places 12 à 15 → descente
+
+  // Niveau attendu d'un robot de la ligue, aligné sur la
+  // progression du joueur (même référence que les combats simulés).
+  leagueBaseSpec(leagueIdx) { return 61 + leagueIdx * 7; },
+
+  // Plateau contrasté : quelques robots au-dessus, quelques-uns en
+  // dessous. Le joueur sent son avantage sur le bas de tableau tout
+  // en ayant de vrais matchs référence en haut.
+  STANDING_TIERS: [
+    { n:4, delta:  6 },   // au-dessus
+    { n:6, delta:  0 },   // à son niveau
+    { n:4, delta: -7 }    // en dessous
+  ],
+
+  buildStandings() {
+    const c = this.state.career;
+    const li = c.leagueIdx || 0;
+    const base = this.leagueBaseSpec(li);
+    const used = {};
+    const bots = [];
+    let id = 0;
+
+    this.STANDING_TIERS.forEach(tier => {
+      for (let i = 0; i < tier.n; i++) {
+        let name;
+        do {
+          name = this.pick(this.ROBOT_NAMES_POOL) + '-' + Math.floor(10 + Math.random()*90);
+        } while (used[name]);
+        used[name] = true;
+        const chassis = this.pick(this.CHASSIS);
+        const ia = this.pick(this.IA_TYPES);
+        const spec = Math.max(25, Math.min(99, base + tier.delta + Math.floor(Math.random()*7) - 3));
+        bots.push({
+          id: 'b' + (id++), name, chassisId: chassis.id, iaId: ia.id,
+          spec, w: 0, l: 0, j: 0, isRival: false
+        });
+      }
+    });
+
+    // Le rival prend une place du plateau quand il est dans la ligue
+    const r = c.rival;
+    if (r.leagueIdx === li) {
+      const slot = bots.findIndex(b => !b.isRival);
+      bots[slot] = {
+        id: 'rival', name: r.name, chassisId: r.chassis.id, iaId: r.ia.id,
+        spec: r.gen, w: r.seasonWins || 0, l: r.seasonLosses || 0,
+        j: (r.seasonWins || 0) + (r.seasonLosses || 0), isRival: true
+      };
+    }
+
+    c.standings = bots;
+    this.buildSchedule();
+  },
+
+  // Calendrier : les 14 adversaires affrontés une fois, puis 6 revanches
+  buildSchedule() {
+    const c = this.state.career;
+    const ids = c.standings.map(b => b.id);
+    const shuffle = (a) => {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    };
+    let sched = shuffle(ids.slice());
+    const extra = shuffle(ids.slice()).slice(0, this.SEASON_FIGHTS - ids.length);
+    sched = sched.concat(extra);
+
+    // Le duel contre le rival tombe sur un combat narratif (positions 1,5,9,13,17)
+    const rivalIdx = sched.indexOf('rival');
+    if (rivalIdx !== -1) {
+      const narrativeSlots = [];
+      for (let i = 0; i < this.SEASON_FIGHTS; i++) if (i % 4 === 0) narrativeSlots.push(i);
+      const target = this.pick(narrativeSlots);
+      const tmp = sched[target]; sched[target] = 'rival'; sched[rivalIdx] = tmp;
+    }
+    c.schedule = sched;
+  },
+
+  ensureStandings() {
+    const c = this.state.career;
+    if (!c.standings || !c.standings.length || !c.schedule || c.schedule.length !== this.SEASON_FIGHTS) {
+      this.buildStandings();
+    }
+  },
+
+  standingById(id) {
+    const c = this.state.career;
+    return (c.standings || []).find(b => b.id === id) || null;
+  },
+
+  // Adversaire du combat en cours, tiré du calendrier
+  currentScheduled() {
+    const c = this.state.career;
+    this.ensureStandings();
+    return this.standingById(c.schedule[Math.min(c.fightIndex, this.SEASON_FIGHTS - 1)]);
+  },
+
+  // Convertit une ligne de classement en adversaire de combat.
+  // Les stats sont reconstruites depuis le châssis et la note SPEC,
+  // pour que la fiche VS reste cohérente avec le classement.
+  opponentFromStanding(st) {
+    const chassis = this.CHASSIS.find(x => x.id === st.chassisId) || this.CHASSIS[0];
+    const ia = this.IA_TYPES.find(x => x.id === st.iaId) || this.IA_TYPES[0];
+    const baseSum = chassis.stats.pui + chassis.stats.vit + chassis.stats.res + chassis.stats.int;
+    // SPEC ≈ somme × 0,28 + bonus de ligue → on retrouve la somme cible
+    const targetSum = Math.max(140, (st.spec - (this.state.career.leagueIdx || 0) * 2) / 0.28);
+    const k = targetSum / baseSum;
+    const stats = {};
+    Object.keys(chassis.stats).forEach(key => {
+      stats[key] = Math.max(10, Math.min(99, Math.round(chassis.stats[key] * k)));
+    });
+    return {
+      name: st.name, chassis, ia, stats, gen: st.spec,
+      hidden: !st.isRival && Math.random() > 0.4,
+      isRival: st.isRival, standingId: st.id
+    };
+  },
+
+  // Probabilité de victoire de a contre b, d'après leur note SPEC
+  matchOdds(a, b) {
+    return Math.max(0.15, Math.min(0.85, 0.5 + (a.spec - b.spec) / 100));
+  },
+
+  // Une journée de championnat : le joueur a déjà joué son match,
+  // les autres robots s'affrontent entre eux (6 matchs, 1 au repos).
+  playMatchday(playerOpponentId, playerWon) {
+    const c = this.state.career;
+    this.ensureStandings();
+
+    const opp = this.standingById(playerOpponentId);
+    if (opp) {
+      opp.j++;
+      if (playerWon) opp.l++; else opp.w++;
+      if (opp.isRival) {
+        if (playerWon) c.rival.seasonLosses++; else c.rival.seasonWins++;
+        if (playerWon) c.rival.losses++; else c.rival.wins++;
+      }
+    }
+
+    const others = c.standings.filter(b => b.id !== playerOpponentId);
+    for (let i = others.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = others[i]; others[i] = others[j]; others[j] = t;
+    }
+    for (let i = 0; i + 1 < others.length; i += 2) {
+      const a = others[i], b = others[i+1];
+      const aWins = Math.random() < this.matchOdds(a, b);
+      a.j++; b.j++;
+      if (aWins) { a.w++; b.l++; } else { b.w++; a.l++; }
+      if (a.isRival || b.isRival) {
+        const rivalWon = (a.isRival && aWins) || (b.isRival && !aWins);
+        if (rivalWon) { c.rival.seasonWins++; c.rival.wins++; }
+        else { c.rival.seasonLosses++; c.rival.losses++; }
+        if (rivalWon && Math.random() < 0.12) c.rival.ko++;
+      }
+    }
+    c.rival.gen = this.computeGen(c.rival.stats, c.rival.state || 92,
+                                  c.rival.wins, c.rival.losses, c.rival.leagueIdx, 0, 0, false);
+    const rs = c.standings.find(b => b.isRival);
+    if (rs) rs.spec = c.rival.gen;
+  },
+
+  // Table complète, joueur inclus, triée
+  sortedStandings() {
+    const c = this.state.career;
+    this.ensureStandings();
+    const rows = c.standings.map(b => ({
+      id: b.id, name: b.name, chassisId: b.chassisId, iaId: b.iaId,
+      spec: b.spec, w: b.w, l: b.l, j: b.j, pts: b.w * 3,
+      isRival: b.isRival, isPlayer: false
+    }));
+    rows.push({
+      id: 'player', name: c.name, chassisId: c.chassis.id, iaId: c.ia.id,
+      spec: c.gen, w: c.seasonWins, l: c.seasonLosses,
+      j: c.seasonWins + c.seasonLosses, pts: c.seasonWins * 3,
+      isRival: false, isPlayer: true
+    });
+    rows.sort((a, b) => (b.pts - a.pts) || (b.w - a.w) || (a.l - b.l) || (b.spec - a.spec));
+    rows.forEach((r, i) => { r.rank = i + 1; });
+    return rows;
+  },
+
+  playerRank() {
+    const row = this.sortedStandings().find(r => r.isPlayer);
+    return row ? row.rank : this.LEAGUE_SIZE;
+  },
+
+  zoneOf(rank) {
+    const li = this.state.career.leagueIdx || 0;
+    if (li === 5) return rank <= 4 ? 'promo' : 'stay';        // Légendaire : top 4 qualifié
+    if (rank <= this.PROMO_SLOTS) return 'promo';
+    if (rank >= this.RELEG_FROM) return li === 0 ? 'stay' : 'releg';
+    return 'stay';
+  },
+
+  // Termine la saison des autres robots pour que la table finale soit complète
+  completeSeason() {
+    const c = this.state.career;
+    this.ensureStandings();
+    c.standings.forEach(b => {
+      while (b.j < this.SEASON_FIGHTS) {
+        const won = Math.random() < 0.5 + (b.spec - this.leagueBaseSpec(c.leagueIdx || 0)) / 120;
+        b.j++;
+        if (won) b.w++; else b.l++;
+        if (b.isRival) {
+          if (won) { c.rival.seasonWins++; c.rival.wins++; }
+          else { c.rival.seasonLosses++; c.rival.losses++; }
+        }
+      }
+    });
+  },
+
+  // ============================================================
+  // ÉCRAN DE CLASSEMENT
+  // ============================================================
+
+  showStandings() {
+    const c = this.state.career;
+    if (!c) { this.goTo('home'); return; }
+    const rows = this.sortedStandings();
+    const li = c.leagueIdx || 0;
+
+    let h = '<div class="btn-back" onclick="RC.showCareer()">← Carrière</div>';
+    h += '<div style="text-align:center;padding:2px 0 12px">';
+    h += '<div class="page-title">Classement</div>';
+    h += '<div class="page-sub">' + c.league + ' · Saison ' + c.season + ' · Journée ' + c.fightIndex + '/' + this.SEASON_FIGHTS + '</div></div>';
+
+    // Légende des zones
+    h += '<div class="zone-legend">';
+    h += '<span class="zone-chip z-promo">' + (li === 5 ? '1-4 · Tournoi final' : '1-3 · Promotion') + '</span>';
+    h += '<span class="zone-chip z-stay">Maintien</span>';
+    if (li > 0 && li < 5) h += '<span class="zone-chip z-releg">12-15 · Relégation</span>';
+    h += '</div>';
+
+    h += '<div class="stand-table">';
+    h += '<div class="stand-head"><span class="st-rank">#</span><span class="st-name">Robot</span>';
+    h += '<span class="st-num">J</span><span class="st-num">V</span><span class="st-num">D</span><span class="st-pts">Pts</span></div>';
+
+    rows.forEach(r => {
+      const zone = this.zoneOf(r.rank);
+      let cls = 'stand-row z-' + zone;
+      if (r.isPlayer) cls += ' is-player';
+      if (r.isRival) cls += ' is-rival';
+      const chassis = this.CHASSIS.find(x => x.id === r.chassisId);
+      const ia = this.IA_TYPES.find(x => x.id === r.iaId);
+      h += '<div class="' + cls + '">';
+      h += '<span class="st-rank">' + r.rank + '</span>';
+      h += '<span class="st-name"><b>' + r.name + '</b>';
+      h += '<span class="st-meta">' + (chassis ? chassis.icon + ' ' + chassis.name : '') + ' · ' + (ia ? ia.name : '') + ' · SPEC ' + r.spec + '</span></span>';
+      h += '<span class="st-num">' + r.j + '</span>';
+      h += '<span class="st-num" style="color:var(--green)">' + r.w + '</span>';
+      h += '<span class="st-num" style="color:var(--pink)">' + r.l + '</span>';
+      h += '<span class="st-pts">' + r.pts + '</span>';
+      h += '</div>';
+    });
+    h += '</div>';
+
+    const me = rows.find(r => r.isPlayer);
+    const zone = this.zoneOf(me.rank);
+    const msg = zone === 'promo'
+      ? (li === 5 ? 'Vous êtes qualifié pour le tournoi final.' : 'Vous êtes en position de monter en ' + this.LEAGUES[li+1] + '.')
+      : zone === 'releg'
+        ? 'Vous êtes en position de descendre en ' + this.LEAGUES[li-1] + '.'
+        : 'Vous êtes en position de vous maintenir en ' + c.league + '.';
+    h += '<div class="next-hint" style="margin-top:12px"><span class="next-hint-icon">📊</span>';
+    h += '<span class="next-hint-text">' + me.rank + 'ᵉ sur ' + this.LEAGUE_SIZE + ' · ' + me.pts + ' points<br>' + msg + '</span></div>';
+
+    h += '<button class="btn-primary btn-cyan" style="margin-top:10px" onclick="RC.showCareer()">Retour</button>';
+
+    document.getElementById('standings-content').innerHTML = h;
+    this.goTo('standings');
+  },
+
+  // ============================================================
   // MODULE 4/4 — SIMULÉS, ÉVÉNEMENTS, SAISON, INTER-SAISON, FINAL
   // ============================================================
 
@@ -3275,7 +3649,7 @@ const RC = {
     const batch = Math.min(3, this.SEASON_FIGHTS - c.fightIndex);
     if (batch <= 0) { this.showSeasonSummary(); return; }
 
-    const chance = this.simulatedWinChance();
+    const baseChance = this.simulatedWinChance();
     const koChance = this.simulatedKOChance();
     const li = c.leagueIdx || 0;
     const cm = this.CHASSIS_MOD[c.chassis.id] || this.CHASSIS_MOD.tactical;
@@ -3283,14 +3657,21 @@ const RC = {
     let folDelta = 0;
 
     for (let i = 0; i < batch; i++) {
+      // L'écart de niveau avec l'adversaire du jour module la probabilité
+      const stI = this.standingById(c.schedule[c.fightIndex + i]);
+      const chance = stI
+        ? Math.max(0.15, Math.min(0.88, baseChance + (c.gen - stI.spec) / 120))
+        : baseChance;
       const won = Math.random() < chance;
       const ko = won && Math.random() < koChance;
       let dmg = 0;
       if (Math.random() < 0.2) {
         dmg = Math.max(1, Math.round((won ? 2 + Math.random()*3 : 3 + Math.random()*4) * this.wearMod(cm)));
       }
-      const opName = this.pick(this.ROBOT_NAMES_POOL) + '-' + Math.floor(10 + Math.random()*90);
-      results.push({ num: c.fightIndex + i + 1, opponent: opName, won, ko, dmg });
+      // v0.8.0 — l'adversaire vient du calendrier de la ligue
+      const st = this.standingById(c.schedule[c.fightIndex + i]);
+      const opName = st ? st.name : (this.pick(this.ROBOT_NAMES_POOL) + '-' + Math.floor(10 + Math.random()*90));
+      results.push({ num: c.fightIndex + i + 1, opponent: opName, won, ko, dmg, standingId: st ? st.id : null });
 
       if (won) {
         c.seasonWins++; c.totalWins++;
@@ -3310,7 +3691,7 @@ const RC = {
     }
 
     const wonCount = results.filter(r => r.won).length;
-    this.advanceRivalFights(batch);
+    results.forEach(r => this.playMatchday(r.standingId, r.won));
     c.fightIndex += batch;
     c.simulatedResults = c.simulatedResults.concat(results);
     this.addFollowers(folDelta, 'Combats de ligue');
@@ -3509,17 +3890,23 @@ const RC = {
     const li = c.leagueIdx || 0;
     const winRate = c.seasonWins / Math.max(1, c.seasonWins + c.seasonLosses);
 
-    let result;
-    if (winRate >= 0.45) result = 'promo';
-    else if (winRate >= 0.30) result = 'stay';
-    else result = 'releg';
-    if (li === 0 && result === 'releg') result = 'stay';
-    if (li === 5) result = c.bossDone ? 'champion' : 'stay';
-
-    // v0.7.0 — le rang découle du taux de victoire au lieu d'être tiré au sort.
-    // Auparavant 7V-13D pouvait donner la 1re place et 13V-7D la 3e.
-    const rank = Math.max(1, Math.min(15, Math.round(15 - winRate * 14 + (Math.random()*2 - 1))));
+    // v0.8.0 — le classement décide seul de la promotion et de la relégation.
+    // Auparavant le rang affiché et la décision venaient de deux calculs
+    // distincts : on pouvait être 8e sur 15 et promu quand même.
+    this.completeSeason();
+    const table = this.sortedStandings();
+    const me = table.find(r => r.isPlayer);
+    const rank = me.rank;
+    const zone = this.zoneOf(rank);
     c.lastRank = rank;
+    c.lastTable = table.map(r => ({ rank:r.rank, name:r.name, pts:r.pts, w:r.w, l:r.l, isPlayer:r.isPlayer, isRival:r.isRival }));
+
+    let result;
+    if (li === 5) result = c.bossDone ? 'champion' : 'stay';
+    else if (zone === 'promo') result = 'promo';
+    else if (zone === 'releg') result = 'releg';
+    else result = 'stay';
+
     if (rank === 1) c.leaguesWon = (c.leaguesWon || 0) + 1;
     this.pushTimeline(rank);
 
@@ -3537,7 +3924,7 @@ const RC = {
     h += '<div class="stat-box"><div class="stat-value val-cyan">' + c.gen + '</div><div class="stat-label">SPEC</div></div></div>';
 
     h += '<div class="post-stats">';
-    h += '<div class="post-row"><span class="post-row-label">Classement</span><span class="post-row-val" style="color:var(--yellow)">' + rank + 'ᵉ / 15 · ' + (c.seasonWins*3) + ' pts</span></div>';
+    h += '<div class="post-row"><span class="post-row-label">Classement</span><span class="post-row-val" style="color:var(--yellow)">' + rank + 'ᵉ / ' + this.LEAGUE_SIZE + ' · ' + (c.seasonWins*3) + ' pts</span></div>';
     h += '<div class="post-row"><span class="post-row-label">État du robot</span><span class="post-row-val" style="color:' + this.stateColor(c.state) + '">' + c.state + '% · ' + this.stateLabel(c.state) + '</span></div>';
     h += '<div class="post-row"><span class="post-row-label">Cores</span><span class="post-row-val" style="color:var(--yellow)">' + c.cores.toLocaleString('fr') + ' ⚡</span></div>';
     h += '<div class="post-row"><span class="post-row-label">Followers</span><span class="post-row-val" style="color:var(--cyan)">' + this.fmtFollowers(c.followers) + ' · ' + this.folTier(c.followers).cur.name + '</span></div>';
@@ -3547,11 +3934,13 @@ const RC = {
     h += '<div class="post-row"><span class="post-row-label">Lien avec l\'IA</span><span class="post-row-val" style="color:var(--purple)">' + c.affection + '%</span></div>';
     h += '</div></div>';
 
-    // Rival : état avant progression, puis annonce de sa progression
+    // Rival : état avant progression, puis annonce de sa progression.
+    // Le recalage sur la ligue du joueur se fait dans nextSeason(),
+    // une fois que la promotion ou la relégation du joueur est appliquée.
     const rBefore = { gen:c.rival.gen, league:this.LEAGUES[c.rival.leagueIdx], w:c.rival.seasonWins, l:c.rival.seasonLosses };
-    this.advanceRival();
+    c.rivalPending = true;
     const r = c.rival;
-    const genDelta = r.gen - rBefore.gen;
+    const genDelta = 0;
 
     h += '<div class="rival-card"><div class="rival-head">';
     h += '<div class="rival-avatar">' + r.chassis.icon + '</div>';
@@ -3563,7 +3952,7 @@ const RC = {
     h += '<div class="h2h-box"><div class="h2h-val" style="color:' + (c.gen>=rBefore.gen?'var(--green)':'var(--pink)') + '">' + c.gen + '</div><div class="h2h-lab">Votre SPEC</div></div>';
     h += '<div class="h2h-box"><div class="h2h-val" style="color:var(--orange)">' + rBefore.gen + '</div><div class="h2h-lab">Le sien</div></div>';
     h += '<div class="h2h-box"><div class="h2h-val" style="color:' + (c.gen>=rBefore.gen?'var(--green)':'var(--pink)') + '">' + (c.gen-rBefore.gen>0?'+':'') + (c.gen-rBefore.gen) + '</div><div class="h2h-lab">Écart</div></div></div>';
-    h += '<div class="empty-note" style="text-align:left">Intersaison : il passe en ' + this.LEAGUES[r.leagueIdx] + ' et sa note atteint ' + r.gen + ' (' + (genDelta>=0?'+':'') + genDelta + ').</div>';
+    h += '<div class="empty-note" style="text-align:left">Sa saison est terminée. Sa trajectoire pour la suite sera connue à l\'intersaison.</div>';
     if (r.lastUpdate) h += '<div class="rival-quote"><p>' + r.name + ' ' + r.lastUpdate + '</p></div>';
     h += '</div>';
 
@@ -3600,6 +3989,7 @@ const RC = {
     else if (result === 'releg') { c.leagueIdx = Math.max(0, li - 1); c.league = this.LEAGUES[c.leagueIdx]; }
     c.state = Math.max(1, c.state - (2 + Math.floor(Math.random()*3)));
     c.interOffers = null;
+    if (c.rivalPending) { this.advanceRival(); c.rivalPending = false; }
     this.recalcGen();
     this.saveState();
     this.resolveSponsor();
@@ -3972,6 +4362,7 @@ const RC = {
     c.seasonWins = 0; c.seasonLosses = 0; c.seasonKO = 0;
     c.narrativeCombat = 0; c.simulatedResults = [];
     c.fightIndex = 0; c.atoutsLeft = 3; c.interOffers = null; c.midRepairUsed = false;
+    c.standings = null; c.schedule = null;   // plateau renouvelé chaque saison
 
     const fx = c.ia.fx || {};
     if (fx.seasonStat) {
