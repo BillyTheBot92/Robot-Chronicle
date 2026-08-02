@@ -777,6 +777,152 @@ input,textarea{-webkit-user-select:text;user-select:text}
    ================================================================ */
 #toast{bottom:auto!important;top:76px!important;max-width:88%;white-space:normal!important;
   text-align:center;box-shadow:0 6px 26px rgba(0,0,0,.55),0 0 20px rgba(0,240,255,.18)!important}
+
+/* ================================================================
+   v0.9.0 — MODALE DU JEU (remplace les boîtes du navigateur)
+   ================================================================ */
+.modal-overlay{position:fixed;inset:0;z-index:9998;display:none;
+  align-items:center;justify-content:center;padding:24px;
+  background:rgba(4,6,18,.82);backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex;animation:modalIn .18s ease-out}
+@keyframes modalIn{from{opacity:0}to{opacity:1}}
+.modal-box{width:100%;max-width:340px;background:var(--bg);
+  border:1px solid rgba(0,240,255,.3);border-radius:16px;padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(0,240,255,.10);
+  animation:modalPop .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes modalPop{from{transform:scale(.9) translateY(10px)}to{transform:scale(1) translateY(0)}}
+.modal-title{font-family:var(--font-title);font-size:13px;font-weight:900;
+  color:var(--cyan);letter-spacing:2px;text-transform:uppercase;
+  text-align:center;margin-bottom:12px}
+.modal-body{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);
+  line-height:1.7;text-align:center;white-space:pre-line;margin-bottom:18px}
+.modal-body b{color:var(--yellow);font-family:var(--font-title);font-size:11px}
+.modal-actions{display:flex;gap:8px}
+.modal-btn{flex:1;padding:13px 8px;border:none;border-radius:10px;cursor:pointer;
+  font-family:var(--font-title);font-size:10px;font-weight:900;
+  letter-spacing:1px;text-transform:uppercase;transition:transform .12s}
+.modal-btn:active{transform:scale(.96)}
+.modal-cancel{background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.3);color:var(--cyan)}
+.modal-confirm{background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff}
+.modal-confirm.safe{background:linear-gradient(135deg,var(--cyan),#0080FF);color:var(--bg)}
+
+/* ================================================================
+   v0.9.0 — BAPTÊME DU ROBOT
+   ================================================================ */
+.bap-wrap{display:flex;flex-direction:column;justify-content:center;
+  min-height:78vh;padding:10px 0}
+.bap-kicker{font-family:var(--font-mono);font-size:9px;color:var(--purple);
+  text-transform:uppercase;letter-spacing:3px;text-align:center;margin-bottom:8px}
+.bap-speech{background:linear-gradient(135deg,rgba(206,147,216,.09),transparent);
+  border:1px solid rgba(206,147,216,.28);border-left:3px solid var(--purple);
+  border-radius:0 14px 14px 0;padding:18px;margin-bottom:20px}
+.bap-speech p{font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,.85);
+  line-height:1.8;font-style:italic}
+.bap-old{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);
+  text-align:center;letter-spacing:2px;margin-bottom:6px}
+.bap-field{display:flex;align-items:center;gap:0;margin:0 auto 6px;max-width:300px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(0,240,255,.35);border-radius:12px;
+  padding:12px 14px;box-shadow:inset 0 0 24px rgba(0,240,255,.07)}
+.bap-field input{flex:1;min-width:0;background:transparent;border:none;outline:none;
+  font-family:var(--font-title);font-size:22px;font-weight:900;color:var(--cyan);
+  letter-spacing:3px;text-transform:uppercase;text-align:right;padding:0}
+.bap-field input::placeholder{color:rgba(0,240,255,.22);letter-spacing:3px}
+.bap-suffix{font-family:var(--font-title);font-size:22px;font-weight:900;
+  color:var(--text-dim);letter-spacing:2px;white-space:nowrap;margin-left:2px}
+.bap-hint{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);
+  text-align:center;margin-bottom:16px;line-height:1.6}
+.bap-hint.err{color:var(--pink)}
+
+/* Réécriture du nom sur l'écran de carrière */
+.name-rewrite{font-family:var(--font-title);font-size:14px;font-weight:900;color:var(--cyan)}
+.name-rewrite .cur{display:inline-block;width:8px;height:15px;background:var(--cyan);
+  animation:cursorBlink .6s step-end infinite;vertical-align:middle;margin-left:2px}
+
+/* ================================================================
+   v0.9.0 — SCÉNARIO DE DISQUALIFICATION
+   ================================================================ */
+.fed-doc{background:rgba(255,255,255,.03);border:1px solid rgba(247,224,24,.28);
+  border-radius:14px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.fed-doc::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(247,224,24,.02) 3px,rgba(247,224,24,.02) 6px)}
+.fed-head{font-family:var(--font-mono);font-size:8px;color:var(--yellow);
+  text-transform:uppercase;letter-spacing:3px;text-align:center;
+  padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid rgba(247,224,24,.2)}
+.fed-title{font-family:var(--font-title);font-size:14px;font-weight:900;
+  color:var(--yellow);text-align:center;margin-bottom:12px;letter-spacing:1px}
+.fed-doc p{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);
+  line-height:1.8;margin-bottom:10px}
+.fed-doc p:last-child{margin-bottom:0}
+.fed-stamp{display:inline-block;padding:6px 16px;border:2px solid var(--pink);
+  border-radius:6px;font-family:var(--font-title);font-size:11px;font-weight:900;
+  color:var(--pink);letter-spacing:2px;transform:rotate(-4deg);margin:8px 0}
+
+/* ================================================================
+   v0.9.0 — TOURNOI FINAL
+   ================================================================ */
+.brack{background:var(--card);border:1px solid rgba(247,224,24,.22);
+  border-radius:14px;padding:16px;margin-bottom:14px}
+.brack-title{font-family:var(--font-title);font-size:11px;font-weight:700;
+  color:var(--yellow);letter-spacing:2px;text-transform:uppercase;
+  text-align:center;margin-bottom:14px}
+.brack-match{margin-bottom:14px}
+.brack-label{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.brack-pair{display:flex;flex-direction:column;gap:4px}
+.brack-bot{display:flex;align-items:center;gap:8px;padding:9px 11px;
+  background:rgba(255,255,255,.025);border:1px solid transparent;border-radius:9px}
+.brack-bot.win{border-color:rgba(76,175,80,.35);background:rgba(76,175,80,.07)}
+.brack-bot.out{opacity:.4}
+.brack-bot.me{border-color:var(--cyan);background:linear-gradient(90deg,rgba(0,240,255,.12),transparent)}
+.brack-bot.rival{border-color:rgba(255,152,0,.4)}
+.brack-seed{width:20px;font-family:var(--font-title);font-size:10px;color:var(--text-dim)}
+.brack-name{flex:1;font-family:var(--font-title);font-size:11px;font-weight:700;
+  color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brack-bot.me .brack-name{color:var(--cyan)}
+.brack-bot.rival .brack-name{color:var(--orange)}
+.brack-spec{font-family:var(--font-mono);font-size:9px;color:var(--text-dim)}
+.brack-vs{text-align:center;font-family:var(--font-title);font-size:9px;
+  color:var(--yellow);margin:2px 0}
+
+/* ================================================================
+   v0.9.0 — TEMPS MORT DE LA FINALE
+   ================================================================ */
+.timeout-wrap{display:flex;flex-direction:column;justify-content:center;min-height:74vh}
+.timeout-kicker{font-family:var(--font-mono);font-size:9px;color:var(--yellow);
+  text-transform:uppercase;letter-spacing:4px;text-align:center;margin-bottom:6px}
+.timeout-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);
+  text-align:center;margin-bottom:20px}
+.timeout-speech{background:linear-gradient(135deg,rgba(206,147,216,.10),transparent);
+  border:1px solid rgba(206,147,216,.3);border-left:3px solid var(--purple);
+  border-radius:0 14px 14px 0;padding:18px;margin-bottom:20px}
+.timeout-speech p{font-family:var(--font-body);font-size:14px;
+  color:rgba(255,255,255,.9);line-height:1.8;font-style:italic}
+.timeout-choice{padding:15px 16px;border-radius:12px;cursor:pointer;
+  background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);
+  color:var(--text-mid);font-family:var(--font-body);font-size:13px;
+  line-height:1.5;margin-bottom:9px;transition:all .2s}
+.timeout-choice:active{transform:scale(.98);border-color:var(--purple);
+  background:rgba(206,147,216,.12)}
+
+/* ================================================================
+   v0.9.0 — GALERIE DES PUCES IA
+   ================================================================ */
+.puce-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.puce{padding:13px 10px;border-radius:12px;text-align:center;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07)}
+.puce.got{background:linear-gradient(135deg,rgba(247,224,24,.10),rgba(247,224,24,.02));
+  border-color:rgba(247,224,24,.45);box-shadow:0 0 18px rgba(247,224,24,.12)}
+.puce-icon{font-size:24px;margin-bottom:5px;filter:grayscale(1) opacity(.35)}
+.puce.got .puce-icon{filter:none}
+.puce-name{font-family:var(--font-title);font-size:9px;font-weight:700;
+  color:var(--text-dim);letter-spacing:1px}
+.puce.got .puce-name{color:var(--yellow)}
+.puce-sub{font-family:var(--font-mono);font-size:8px;color:rgba(255,255,255,.22);margin-top:3px}
+.puce.got .puce-sub{color:var(--text-dim)}
+.puce-prog{height:7px;background:rgba(255,255,255,.06);border-radius:4px;
+  overflow:hidden;margin:10px 0 6px}
+.puce-prog-fill{height:100%;background:linear-gradient(90deg,var(--yellow),#FFD700);
+  border-radius:4px;transition:width .6s}
 </style>
 </head>
 <body>
@@ -819,7 +965,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
   <div class="btn-row">
     <div class="btn-small" onclick="RC.goTo('atelier')">⚙️ Atelier</div>
-    <div class="btn-small" onclick="RC.goTo('trophees')">🏆 Trophées</div>
+    <div class="btn-small" onclick="RC.showPuces()">🏅 Puces IA</div>
     <div class="btn-small" onclick="RC.goTo('halloffame')">🏛️ Hall of Fame</div>
   </div>
 
@@ -830,9 +976,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
       <span class="tag">🧬 Adaptive</span>
       <span class="tag">🏢 Corp moyenne</span>
     </div>
-    <div class="score-text" id="defi-score">Pas encore joué</div>
+    <div class="score-text" id="defi-score" style="color:var(--text-dim)">Bientôt disponible</div>
     <div style="margin-top:10px">
-      <div class="btn-small" style="display:inline-block;width:auto;padding:8px 20px" onclick="RC.showMessage('Défi du jour — Bientôt disponible')">Jouer</div>
+      <div class="btn-small" style="display:inline-block;width:auto;padding:8px 20px;opacity:.45">Bientôt disponible</div>
     </div>
   </div>
 
@@ -856,11 +1002,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
   </div>
 
   <div class="app-footer">
-    <div class="support-btn" onclick="RC.showMessage('Merci pour votre soutien !')">☕ Me soutenir</div>
+    <a class="support-btn" id="support-btn" href="https://www.paypal.me/" target="_blank" rel="noopener noreferrer">☕ Soutenir le créateur</a>
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
-    <div class="version" id="version-text">v0.8.0</div>
-    <div class="credit">Robot Chronicle — créé par Alexandre</div>
+    <div class="version" id="version-text">v0.9.0</div>
+    <div class="credit">© 2026 Alexandre Lavrard — Tous droits réservés</div>
+    <div class="credit">Robot Chronicle — créé par Alexandre Lavrard</div>
   </div>
 </div>
 
@@ -933,6 +1080,34 @@ input,textarea{-webkit-user-select:text;user-select:text}
      ================================================================ -->
 <div class="screen" id="rival-intro">
   <div id="rival-intro-content"></div>
+</div>
+
+<!-- ================================================================
+     PUCES IA EN OR (v0.9.0)
+     ================================================================ -->
+<div class="screen" id="puces">
+  <div id="puces-content"></div>
+</div>
+
+<!-- ================================================================
+     SCÉNARIO DE DISQUALIFICATION — fin de saison Amateur (v0.9.0)
+     ================================================================ -->
+<div class="screen" id="disqualif">
+  <div id="disqualif-content"></div>
+</div>
+
+<!-- ================================================================
+     BAPTÊME DU ROBOT (v0.9.0)
+     ================================================================ -->
+<div class="screen" id="baptism">
+  <div id="baptism-content"></div>
+</div>
+
+<!-- ================================================================
+     TOURNOI FINAL (v0.9.0)
+     ================================================================ -->
+<div class="screen" id="tournament">
+  <div id="tournament-content"></div>
 </div>
 
 <!-- ================================================================
@@ -1074,19 +1249,33 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <!-- ================================================================
      MESSAGE TOAST
      ================================================================ -->
+<!-- ================================================================
+     MODALE DU JEU (v0.9.0) — remplace les boîtes du navigateur
+     ================================================================ -->
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-cancel" id="modal-cancel" onclick="RC.modalClose(false)">Annuler</button>
+      <button class="modal-btn modal-confirm" id="modal-confirm" onclick="RC.modalClose(true)">Confirmer</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" style="display:none;position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:12px 24px;background:rgba(0,240,255,.12);border:1px solid var(--cyan);border-radius:10px;font-family:var(--font-mono);font-size:11px;color:var(--cyan);z-index:9999;white-space:nowrap;box-shadow:0 0 20px rgba(0,240,255,.15)"></div>
 
 </div><!-- /app -->
 
 <script>
 /* ================================================================
-   ROBOT CHRONICLE v0.8.0 — MODULE 1/4 : DONNÉES
+   ROBOT CHRONICLE v0.9.0 — MODULE 1/4 : DONNÉES
    Réécriture complète. Les pools de textes sont le contenu validé
    des versions précédentes ; toute la logique est neuve.
    ================================================================ */
 
 const RC = {
-  VERSION: '0.8.0',
+  VERSION: '0.9.0',
 
   // ============================================================
   // CHÂSSIS
@@ -1171,89 +1360,301 @@ const RC = {
       fx:{ startCores:1800, bonusPct:0.08, repairPct:0, canDrop:false, demand:0, risk:true } }
   ],
 
+
+  // ============================================================
+  // v0.9.0 — LE TEMPS MORT DE LA FINALE
+  //
+  // Après le round 4 sur 7, l'IA marque une pause et pose une
+  // question. La question est choisie selon ce que le robot a
+  // réellement vécu, jamais au hasard. Chaque réponse laisse
+  // trois traces : sur le combat, sur le message final, sur le
+  // journal du lendemain.
+  //
+  // cond : condition d'apparition, évaluée sur la carrière.
+  // fx   : mult = multiplicateur de score sur les rounds 5 à 7
+  //        win  = 'force' victoire garantie, 'lose' défaite garantie
+  //        aff  = variation du lien avec l'IA
+  //        trait, tag = trace laissée sur le message final
+  // ============================================================
+
+  TIMEOUT_QUESTIONS: [
+
+    // ---------- Questions franches ----------
+    {
+      id:'fracture', cond:'always',
+      q:"Mes capteurs indiquent une fracture au niveau du capteur de la puce IA. Si je force, je peux gagner ce combat. Mais je ne repartirai pas vivant de l'arène.",
+      a:[
+        { t:"Gagne. Pour la gloire.",
+          fx:{ win:'force', ko:true, aff:-6, trait:'ambitieux', tag:'puce_detruite' },
+          out:"Il ne répond pas. Les trois derniers rounds sont d'une violence que vous ne lui connaissiez pas." },
+        { t:"Couche-toi. Aucun titre ne vaut ça.",
+          fx:{ mult:1.00, aff:18, trait:'protecteur', tag:'protege' },
+          out:"« Non. » Un seul mot. Il refuse d'abandonner — mais il se bat autrement, plus économe, plus juste." }
+      ]
+    },
+    {
+      id:'sponsors', cond:'sponsorChanges>=1',
+      q:"Vous avez changé plusieurs fois de sponsor. Est-ce que vous m'auriez vendu, moi aussi ?",
+      a:[
+        { t:"Chacun avait son prix. Toi, non.",
+          fx:{ mult:1.14, aff:12, trait:'fidele', tag:'jamais_vendu' },
+          out:"Il enregistre la réponse. Ses temps de réaction chutent de moitié sur les rounds suivants." },
+        { t:"Ne pense pas à ça. Concentre-toi sur le combat.",
+          fx:{ mult:0.90, aff:-9, trait:'distant', tag:'esquive' },
+          out:"« Compris. » Il se remet en garde. Quelque chose s'est refermé." }
+      ]
+    },
+    {
+      id:'maniere', cond:'always',
+      q:"Je peux gagner en le détruisant. Ou je peux gagner aux points. Vous voulez quoi ?",
+      a:[
+        { t:"Détruis-le.",
+          fx:{ mult:1.16, dmg:1.35, aff:-5, trait:'impitoyable', tag:'destruction' },
+          out:"Il abandonne toute retenue. Le public se lève." },
+        { t:"Gagne proprement.",
+          fx:{ mult:1.06, dmg:0.80, aff:8, trait:'humble', tag:'propre' },
+          out:"Il hoche la tête. Le combat devient une démonstration de maîtrise." }
+      ]
+    },
+    {
+      id:'remplacement', cond:'always',
+      q:"Vous m'avez construit pour gagner. Est-ce que vous m'auriez gardé si j'avais perdu ?",
+      a:[
+        { t:"Je t'aurais gardé quand même.",
+          fx:{ multIfBond:1.18, mult:1.02, aff:10, trait:'fidele', tag:'garde' },
+          out:"Il ne répond pas tout de suite. Puis : « Alors je n'ai plus rien à perdre. »" },
+        { t:"Je n'en sais rien. Personne ne le sait.",
+          fx:{ mult:1.08, aff:5, trait:'integre', tag:'honnete' },
+          out:"« C'est la première réponse honnête que vous me donnez. Merci. »" }
+      ]
+    },
+    {
+      id:'adversaire', cond:'always',
+      q:"En face, il y a une machine comme moi. Quelqu'un l'a construite, lui a parlé, l'a réparée. Est-ce que je dois le détruire quand même ?",
+      a:[
+        { t:"Ce n'est pas ton problème. C'est le mien.",
+          fx:{ mult:1.00, aff:-3, trait:'controlant', tag:'ordre' },
+          out:"Il exécute. Sans conviction, mais il exécute." },
+        { t:"Alors bats-toi sans le détruire.",
+          fx:{ mult:1.05, dmg:0.75, aff:10, trait:'humble', tag:'respect_adverse' },
+          out:"« Merci. » Il vise les appuis, pas la structure." }
+      ]
+    },
+    {
+      id:'nom', cond:'always',
+      q:"Si je gagne, tout le monde retiendra votre nom. Si je perds, tout le monde retiendra le mien. Ça vous va ?",
+      a:[
+        { t:"Que ce soit ton nom. Tu l'as gagné.",
+          fx:{ mult:1.16, aff:14, trait:'libre', tag:'ton_nom' },
+          out:"Pour la première fois, il ne demande pas d'instruction. Il y va." },
+        { t:"On les retiendra tous les deux.",
+          fx:{ mult:1.08, aff:7, trait:'fidele', tag:'partage' },
+          out:"« Alors ne perdons pas. »" }
+      ]
+    },
+    {
+      id:'abandon', cond:'always',
+      q:"Je pourrais m'arrêter là. Sortir de l'arène, maintenant, sans finir. Vous me laisseriez faire ?",
+      a:[
+        { t:"Non. Va au bout.",
+          fx:{ mult:1.00, aff:-2, trait:'controlant', tag:'contraint' },
+          out:"Il se remet en garde. Il ira au bout, puisque c'est ce qu'on lui demande." },
+        { t:"Si c'est ce que tu veux, je te suis.",
+          fx:{ multIfBond:1.20, mult:0.98, aff:16, trait:'libre', tag:'choix_libre' },
+          out:"Il reste. « Je voulais juste savoir si j'avais le choix. Maintenant je l'ai. »" }
+      ]
+    },
+    {
+      id:'succession', cond:'always',
+      q:"Après ce combat, il n'y en aura plus. Vous en reconstruirez un autre, n'est-ce pas ?",
+      a:[
+        { t:"Aucun ne te remplacera.",
+          fx:{ mult:1.13, aff:13, trait:'fidele', tag:'irremplacable' },
+          out:"Silence. Puis les servomoteurs qui montent en régime." },
+        { t:"Oui. C'est comme ça que ça marche.",
+          fx:{ mult:0.94, aff:-7, trait:'lucide', tag:'froid' },
+          out:"« Je sais. Je voulais juste vous l'entendre dire. »" }
+      ]
+    },
+
+    // ---------- Questions pièges ----------
+    {
+      id:'mensonge', cond:'always', trap:true,
+      q:"Mes diagnostics sont formels : je tiens encore trois rounds à pleine puissance. Faites-moi confiance.",
+      a:[
+        { t:"Vas-y à fond.",
+          fx:{ win:'lose', aff:-4, trait:'ambitieux', tag:'capteurs_menteurs' },
+          out:"Ses capteurs étaient endommagés. Il s'en rend compte au round 6, trop tard." },
+        { t:"Non. Économise-toi.",
+          fx:{ win:'force', aff:9, trait:'soigneux', tag:'economie' },
+          out:"Il ralentit, encaisse, temporise. Ses diagnostics étaient faux — vous venez de le sauver." }
+      ]
+    },
+    {
+      id:'vanite', cond:'always', trap:true,
+      q:"Si je gagne, c'est votre victoire ou la mienne ?",
+      a:[
+        { t:"La mienne. Je t'ai construit.",
+          fx:{ mult:0.86, aff:-12, trait:'arrogant', tag:'depossede' },
+          out:"« Compris. » Il obéit. Froidement. Sans rien donner de plus." },
+        { t:"La tienne. Je n'ai fait que t'assembler.",
+          fx:{ mult:1.22, aff:16, trait:'humble', tag:'transcende' },
+          out:"Quelque chose change dans sa posture. Il se bat comme s'il jouait sa propre vie." }
+      ]
+    },
+    {
+      id:'peur', cond:'always', trap:true,
+      q:"Je peux le battre. Mais si je perds, vous n'aurez plus rien. Vous préférez que je tente ou que j'assure ?",
+      a:[
+        { t:"Tente. On n'est pas venus pour assurer.",
+          fx:{ multIfBond:1.24, mult:0.88, aff:6, trait:'ambitieux', tag:'tente' },
+          out:"Il prend des risques. Beaucoup de risques." },
+        { t:"Assure. On prend ce qu'on peut.",
+          fx:{ mult:0.92, dmg:0.70, aff:-3, trait:'prudent', tag:'bride' },
+          out:"Il ferme le jeu. Chaque échange devient un calcul." }
+      ]
+    },
+    {
+      id:'memoire', cond:'lowState', trap:true,
+      q:"Il y a {SAISONS} saisons, vous m'avez laissé combattre à {ETAT} pour cent. Vous vous en souvenez ?",
+      a:[
+        { t:"Je m'en souviens. Je n'aurais pas dû.",
+          fx:{ mult:1.18, aff:15, trait:'soigneux', tag:'aveu' },
+          out:"« Merci. » C'est tout ce qu'il dit, et c'est déjà beaucoup." },
+        { t:"Tu es là, non ? C'est l'essentiel.",
+          fx:{ mult:0.87, aff:-13, trait:'negligent', tag:'deni' },
+          out:"Il ne répond pas. Ses journaux de bord se referment." }
+      ]
+    },
+    {
+      id:'silence', cond:'always', trap:true,
+      q:"Je n'ai pas de question. Je voulais juste savoir si vous étiez encore avec moi.",
+      a:[
+        { t:"Oui, toujours.",
+          fx:{ mult:1.10, aff:11, trait:'fidele', tag:'present' },
+          out:"« Bien. » Il retourne au centre de l'arène." },
+        { t:"Concentre-toi.",
+          fx:{ mult:0.94, aff:-6, trait:'distant', tag:'absent' },
+          out:"« Compris. » Il n'en reparlera plus jamais." }
+      ]
+    },
+    {
+      id:'ordre', cond:'always', trap:true,
+      q:"Je suis perdu, donnez-moi un ordre. N'importe lequel. J'ai besoin d'entendre votre voix.",
+      a:[
+        { t:"Gagne, c'est tout.",
+          fx:{ mult:1.00, aff:0, trait:'controlant', tag:'ordre_simple' },
+          out:"« Reçu. » Il exécute, comme il l'a toujours fait." },
+        { t:"Fais ce que tu penses juste.",
+          fx:{ multIfInt:1.26, mult:0.90, aff:12, trait:'libre', tag:'confiance' },
+          out:"Il improvise. Vous ne comprenez pas la moitié de ce qu'il fait." }
+      ]
+    },
+    {
+      id:'prix', cond:'always', trap:true,
+      q:"Le créateur adverse m'a proposé de perdre ce combat. J'ai refusé pour vous. Vous auriez accepté ?",
+      a:[
+        { t:"Non. Jamais.",
+          fx:{ multIfClean:1.20, mult:0.82, aff:-2, trait:'integre', tag:'serment' },
+          out:"Il vous regarde. Longuement." },
+        { t:"J'aurais hésité.",
+          fx:{ mult:1.12, aff:10, trait:'integre', tag:'aveu_honnete' },
+          out:"« Au moins vous ne me mentez pas. C'est plus que ce que j'espérais. »" }
+      ]
+    }
+  ],
+
+  // ============================================================
+  // v0.9.0 — PUCES IA EN OR
+  // 20 puces = 4 châssis × 5 IA, obtenues en remportant la finale
+  // du tournoi. Les sponsors ne comptent pas.
+  // ============================================================
+
+  puceId(chassisId, iaId) { return chassisId + '_' + iaId; },
+
+  puceLabel(chassisId, iaId) {
+    const ch = this.CHASSIS.find(c => c.id === chassisId);
+    const ia = this.IA_TYPES.find(i => i.id === iaId);
+    return (ch ? ch.name : chassisId) + ' · ' + (ia ? ia.name : iaId);
+  },
+
+  // ============================================================
+  // v0.9.0 — TUTORIEL RÉÉCRIT
+  // Six écrans, conformément au GDD § 19. Chaque écran couvre
+  // un système et un seul, sans redite.
+  // ============================================================
+
+  TUTO_SCREENS: [
+    {
+      icon:'🤖', title:'Bienvenue, Créateur',
+      sub:'Vous allez construire une machine de combat\net écrire sa légende dans les arènes.',
+      cards:[
+        {icon:'🛠️',name:'Vous la construisez',desc:'Un châssis, une intelligence artificielle, un sponsor. Ces trois choix changent réellement le jeu — pas seulement l\'affichage.'},
+        {icon:'⚔️',name:'Elle combat pour vous',desc:'Vingt combats par saison, six ligues à gravir. Chaque décision laisse une trace.'},
+        {icon:'🏆',name:'Elle devient une légende',desc:'Ou un tas de ferraille. Tout dépend de la façon dont vous la menez.'}
+      ],
+      highlight:'🎯 Une carrière dure une dizaine de saisons.\nVous pouvez la quitter et la reprendre à tout moment.'
+    },
+    {
+      icon:'💪', title:'Les quatre stats',
+      sub:'Chacune a un rôle précis en combat.\nAucune n\'est décorative.',
+      cards:[
+        {icon:'💥',name:'Puissance',desc:'Les dégâts que vous infligez. Un coup qui passe fait mal.'},
+        {icon:'💨',name:'Vitesse',desc:'Vos chances d\'esquive — et une esquive réussie devient un contre qui remporte le round.'},
+        {icon:'🛡️',name:'Résistance',desc:'Les dégâts que vous encaissez. C\'est elle qui vous garde debout.'},
+        {icon:'🧠',name:'Intelligence',desc:'Elle révèle les stats cachées de l\'adversaire, accélère l\'adaptation de votre IA et limite ses bugs.'}
+      ],
+      highlight:'⚔️ Chaque round propose deux profils :\nPuissance/Résistance ou Vitesse/Intelligence.\nJouez sur vos points forts — ça vaut 20 points de victoire.'
+    },
+    {
+      icon:'🔧', title:'L\'état de la machine',
+      sub:'C\'est votre ressource la plus fragile.',
+      cards:[
+        {icon:'💚',name:'Optimal · 100 à 80%',desc:'Aucun malus. Votre robot donne tout ce qu\'il a.'},
+        {icon:'🟡',name:'Usé · 79 à 55%',desc:'Légère baisse. Il tient, mais il faudra y passer.'},
+        {icon:'🟠',name:'Endommagé · 54 à 25%',desc:'Baisse nette. Vous perdez des combats que vous auriez dû gagner.'},
+        {icon:'🔴',name:'Critique · 24 à 1%',desc:'Il ne se défend presque plus. La destruction devient possible.'}
+      ],
+      highlight:'💀 À 0%, la carrière s\'arrête.\nRéparez à la mi-saison et entre les saisons —\nun robot négligé perd 20 points de victoire.'
+    },
+    {
+      icon:'⚔️', title:'Les combats',
+      sub:'Cinq combats racontés, quinze simulés,\nvingt au total par saison.',
+      cards:[
+        {icon:'📖',name:'Combats narratifs',desc:'Trois rounds, trois choix par round. Le texte s\'affiche comme un terminal — touchez l\'écran pour l\'accélérer.'},
+        {icon:'⚡',name:'L\'atout spécial',desc:'Le troisième choix. Trois par saison seulement. Il peut mettre KO comme se retourner contre vous.'},
+        {icon:'📊',name:'Combats simulés',desc:'Résultats calculés à partir de votre note SPEC. Ils comptent autant au classement.'}
+      ],
+      highlight:'↩️ Esquiver ne suffit pas à annuler :\nvotre robot enchaîne sur une riposte\net remporte le round.'
+    },
+    {
+      icon:'📊', title:'Classement et progression',
+      sub:'Quinze robots par ligue.\nTrois points par victoire, pas de nul.',
+      cards:[
+        {icon:'🥇',name:'Places 1 à 3',desc:'Promotion. Vous montez d\'une ligue.'},
+        {icon:'➡️',name:'Places 4 à 11',desc:'Maintien. Vous rejouez la même ligue.'},
+        {icon:'📉',name:'Places 12 à 15',desc:'Relégation. Vous descendez — sauf en Amateur.'},
+        {icon:'🎨',name:'La note SPEC',desc:'La valeur de votre machine. Sa couleur va du Bronze au Diamant et suit vos progrès.'}
+      ],
+      highlight:'📊 Le classement est consultable à tout moment\ndepuis le bouton en haut de l\'écran de carrière.'
+    },
+    {
+      icon:'🧠', title:'Votre robot vous observe',
+      sub:'Il vous considère comme son créateur.\nEt il se souvient de tout.',
+      cards:[
+        {icon:'💜',name:'Une conscience qui grandit',desc:'Selon vos soins, vos risques, votre sponsor, il développe des traits : fidélité, respect, arrogance, humilité.'},
+        {icon:'⚔️',name:'Un rival vous suit',desc:'Généré avec vous, il progresse en parallèle. Vous vous retrouverez au tournoi final.'},
+        {icon:'📜',name:'La parole finale',desc:'À la fin, il vous adressera un dernier message. Il dépendra de tout ce que vous aurez fait.'}
+      ],
+      highlight:'🎯 De tas de ferraille à légende.\nÀ vous de jouer, Créateur.'
+    }
+  ],
+
   LEAGUES: ['Amateur','Régionale','Nationale','Mondiale','Elite','Légendaire'],
 
   ROBOT_NAMES_POOL: ['BOLT','CRANK','RAZOR','NOVA','FANG','PISTON','DREAD','CHROME','VIPER','TITAN','IRON','STEEL','BLAZE','FURY','SHADOW','PULSE','STORM','SPARK','APEX','ONYX','HAVOC','ROGUE','SIGMA','ZERO','FLUX','NEON','COBALT','EMBER','FROST','RAVEN'],
   RIVAL_NAMES: ['KAISER','OMEGA','WARLOCK','SPECTRE','GOLIATH','MAELSTROM','SERAPH','BASILISK','TEMPEST','ARCHON','VANDAL','NEMESIS'],
 
-  // ============================================================
-  // TUTORIEL
-  // ============================================================
-
-  TUTO_SCREENS: [
-    {
-      icon:'🤖', title:'Bienvenue, Créateur', sub:'Vous allez construire un robot de combat\net écrire sa légende dans les arènes.',
-      cards:[
-        {icon:'🛡️',name:'Créez votre robot',desc:'Châssis, type d\'IA et sponsor. Les trois changent réellement le jeu, pas seulement l\'affichage.'},
-        {icon:'⚔️',name:'Combattez',desc:'20 combats par saison, 6 ligues à gravir. Chaque choix impacte votre destin.'},
-        {icon:'🏆',name:'Devenez une légende',desc:'De la ligue Amateur à la Légendaire. Votre robot peut devenir une icône... ou finir en tas de ferraille.'}
-      ]
-    },
-    {
-      icon:'💪', title:'Vos quatre stats', sub:'Chacune a un rôle précis en combat.',
-      cards:[
-        {icon:'💥',name:'Puissance',desc:'Augmente les dégâts que vous infligez. Un coup qui passe fait mal.'},
-        {icon:'💨',name:'Vitesse',desc:'Augmente vos chances d\'esquive. Une esquive réussie devient un contre qui remporte le round.'},
-        {icon:'🛡️',name:'Résistance',desc:'Réduit les dégâts que vous encaissez. C\'est elle qui vous garde debout.'},
-        {icon:'🧠',name:'Intelligence',desc:'Révèle les stats cachées de l\'adversaire, accélère l\'adaptation de votre IA et limite les bugs.'}
-      ],
-      highlight:'⚔️ Chaque round vous propose deux profils :\nPuissance/Résistance ou Vitesse/Intelligence.\nJouez sur vos points forts.'
-    },
-    {
-      icon:'💰', title:'Deux monnaies', sub:'Le nerf de la guerre mécanique',
-      cards:[
-        {icon:'⚡',name:'Cores — monnaie en jeu',desc:'Gagnés en combattant. Servent à réparer, améliorer ou changer de châssis. Gérez-les bien.'},
-        {icon:'🪙',name:'Jetons — monnaie méta',desc:'Gagnés en fin de carrière et via les quêtes du jour. Dépensés dans l\'Atelier pour vos futures carrières.'}
-      ],
-      highlight:'⚠️ Si vous ne pouvez pas payer une dette,\nvous la payez autrement — et ça dépend\nde votre sponsor.'
-    },
-    {
-      icon:'🔧', title:'État du robot', sub:'Surveillez l\'usure de votre machine',
-      cards:[
-        {icon:'💚',name:'Optimal (100-80%)',desc:'Aucun malus. Votre robot est en pleine forme.'},
-        {icon:'🟡',name:'Usé (79-55%)',desc:'Légère baisse de performance. Pensez à réparer.'},
-        {icon:'🟠',name:'Endommagé (54-25%)',desc:'Baisse importante. Risque de panne en combat.'},
-        {icon:'🔴',name:'Critique (24-1%)',desc:'Performances très faibles. Prochain combat = destruction possible.'}
-      ],
-      highlight:'💀 Détruit (0%) = Game over\nRéparez à la mi-saison et entre les saisons !'
-    },
-    {
-      icon:'⚔️', title:'Les combats', sub:'3 rounds, 3 choix par round',
-      cards:[
-        {icon:'📖',name:'Combats narratifs (×5/saison)',desc:'Chaque choix a un profil. Le bon choix peut valoir 20 points de victoire.'},
-        {icon:'📊',name:'Combats simulés (×15/saison)',desc:'Résultats calculés automatiquement à partir de votre note SPEC.'},
-        {icon:'↩️',name:'Le contre',desc:'Esquiver ne suffit pas à annuler : votre robot enchaîne sur une riposte et remporte le round.'}
-      ],
-      highlight:'⚡ Le 3ème choix est l\'Atout spécial\nStock limité : 3 par saison !'
-    },
-    {
-      icon:'📣', title:'Sponsors & Followers', sub:'Votre réputation vous suit partout',
-      cards:[
-        {icon:'🔧',name:'Garage indépendant',desc:'100% des gains, zéro aide. Ne vous lâche jamais.'},
-        {icon:'🏢',name:'Corp / Méga-corp',desc:'Réparations financées, prime 5-10%. Mais une jauge de satisfaction : trop de défaites et vous êtes lâché.'},
-        {icon:'💀',name:'Underground',desc:'Argent constant, jamais lâché. Mais sabotages, amendes et pièces douteuses.'}
-      ],
-      highlight:'📣 Vos followers ouvrent des offres de sponsors\net débloquent des événements narratifs.'
-    },
-    {
-      icon:'📊', title:'La note SPEC', sub:'La valeur globale de votre machine,\nd\'un coup d\'œil.',
-      cards:[
-        {icon:'📈',name:'Ce qui la fait monter',desc:'Vos quatre stats avant tout, puis votre ligue, vos titres et votre notoriété. 4 points de stat = +1 SPEC.'},
-        {icon:'📉',name:'Ce qui la fait chuter',desc:'L\'usure de votre robot. Une machine endommagée perd jusqu\'à 12 points de SPEC — et autant d\'efficacité.'},
-        {icon:'🎨',name:'Sa couleur dit votre niveau',desc:'Bronze au départ, puis Argent, Or, Violet, Rouge, et Diamant pour les légendes.'}
-      ],
-      highlight:'📊 Surveillez-la : c\'est elle qui décide\nde la difficulté de vos combats simulés.'
-    },
-    {
-      icon:'🧠', title:'Votre robot vous observe', sub:'Il vous considère comme son créateur',
-      cards:[
-        {icon:'💜',name:'Une conscience qui grandit',desc:'Selon vos choix — soins, risques pris, sponsor —, votre robot développe des traits : fidélité, respect, arrogance, humilité.'},
-        {icon:'⚔️',name:'Un rival vous suit',desc:'Généré au début de votre carrière, il progresse en parallèle. Le dernier combat sera contre lui.'},
-        {icon:'📜',name:'La parole finale',desc:'À la fin de votre carrière, votre robot vous adressera un dernier message. Il dépendra de tout ce que vous aurez fait.'}
-      ],
-      highlight:'🎯 Objectif : De tas de ferraille à légende.\nC\'est à vous de jouer, Créateur.'
-    }
-  ],
 
   COMBAT_OPENERS: [
     {intro:"Les portes de l'arène se referment. Votre adversaire avance lentement, ses servomoteurs sifflent dans le silence. Il attend votre première initiative.",
@@ -1558,13 +1959,7 @@ const RC = {
         {t:"Insister et forcer l'exécution", out:"Il obéit. Mécaniquement, parfaitement, sans conviction. Quelque chose s'est refermé ce jour-là.", fx:{aff:-12, stat:'pui', statVal:1, trait:'soumis'}},
         {t:"Accepter son refus et arrêter la séance", out:"Vous coupez l'entraînement. Il vous regarde partir. Le lendemain, ses temps de réaction sont les meilleurs jamais enregistrés.", fx:{aff:16, stat:'int', statVal:1, followers:1800, trait:'libre'}}
       ]},
-    { cat:'ia', icon:'🧠', catName:'Conscience IA', title:'Le nom',
-      text:"Votre robot demande à changer de désignation. Il a choisi lui-même une suite de caractères, sans explication. Il ne demande pas la permission — il informe.",
-      tags:['Conscience IA','Followers'],
-      choices:[
-        {t:"Accepter et enregistrer le nouveau nom", out:"La modification est validée. Il ne dit pas merci. Mais dans les combats suivants, il se bat autrement.", fx:{aff:12, followers:2600, trait:'libre'}},
-        {t:"Refuser, le nom vient du créateur", out:"Le sujet n'est plus jamais abordé. La désignation d'origine reste. Lui aussi.", fx:{aff:-7, trait:'distant'}}
-      ]},
+
     { cat:'ia', icon:'🧠', catName:'Conscience IA', title:'Les journaux de nuit',
       text:"Vous découvrez que votre robot, en veille, rejoue en boucle ses combats perdus. Des milliers de fois. En modifiant à chaque fois une variable.",
       tags:['Stats','Conscience IA'],
@@ -1809,7 +2204,7 @@ const RC = {
 
   state: {
     firstLaunch: true,
-    version: '0.8.0',
+    version: '0.9.0',
     tokens: 0,
     hallOfFame: [],
     badges: {},
@@ -2194,29 +2589,6 @@ const RC = {
     }
   },
 
-  confirmNewCareer() {
-    const c = this.state.career;
-    if (!c) { this.startCreation(); return; }
-    const msg = 'Abandonner la carrière de ' + c.name + ' ?\n\n'
-      + 'Saison ' + c.season + ' · ' + c.league + ' · SPEC ' + c.gen + '\n'
-      + c.totalWins + ' victoires, ' + c.totalLosses + ' défaites\n\n'
-      + 'Cette carrière sera définitivement perdue et n\'entrera pas au Hall of Fame.';
-    if (!confirm(msg)) return;
-    this.state.career = null;
-    this.saveState();
-    this.refreshHomeButtons();
-    this.showMessage('Carrière abandonnée');
-    this.startCreation();
-  },
-
-  confirmQuit() {
-    if (confirm('Quitter la carrière ? Votre progression est sauvegardée.')) {
-      this.saveState();
-      this.refreshHomeButtons();
-      this.goTo('home');
-    }
-  },
-
   setupInstallPrompt() {
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -2536,8 +2908,9 @@ const RC = {
     const pl = c.leagueIdx;
     if (next > pl + 1) { next = pl + 1; r.waited = (r.waited || 0) + 1; }
     if (next < pl - 1) { next = pl - 1; r.pushed = (r.pushed || 0) + 1; }
-    // Les deux doivent atteindre la Légendaire ensemble
-    if (pl === 5 && next < 4) next = 4;
+    // Les deux doivent disputer le tournoi ensemble : dès que le joueur
+    // atteint la Légendaire, le rival l'y rejoint.
+    if (pl === 5) next = 5;
 
     r.leagueIdx = next;
     r.season++;
@@ -2655,10 +3028,9 @@ const RC = {
     return c.fightIndex < this.SEASON_FIGHTS && c.fightIndex % 4 === 0;
   },
 
-  isBossFight() {
-    const c = this.state.career;
-    return c.leagueIdx === 5 && c.narrativeCombat === this.NARRATIVE_PER_SEASON - 1 && this.nextIsNarrative();
-  },
+  // v0.9.0 — le combat final unique est remplacé par le tournoi,
+  // déclenché au bilan de la saison Légendaire.
+  isBossFight() { return false; },
 
   // v0.8.0 — le duel contre le rival est fixé par le calendrier de la ligue
   isRivalFight() {
@@ -2822,6 +3194,10 @@ const RC = {
     const c = this.state.career;
     this._isBoss = this.isBossFight();
     this._isRival = this.isRivalFight();
+    this._isTournament = false;
+    this._tournStage = null;
+    this._timeoutFx = null;
+    this._timeoutDone = true;
 
     // v0.8.0 — l'adversaire vient du calendrier de la ligue
     const st = this.currentScheduled();
@@ -2857,8 +3233,12 @@ const RC = {
     const c = this.state.career, op = this._currentOpponent;
     let h = '';
 
-    if (this._isBoss) {
-      h += '<div class="boss-banner"><div class="boss-kicker">Dernier combat</div>';
+    if (this._isTournament && this._tournStage === 'semi') {
+      h += '<div class="boss-banner"><div class="boss-kicker">Tournoi des légendes</div>';
+      h += '<div class="boss-title">DEMI-FINALE</div>';
+      h += '<div class="boss-sub">5 rounds · 3 atouts<br>Machine remise à neuf par la ligue.</div></div>';
+    } else if (this._isBoss) {
+      h += '<div class="boss-banner"><div class="boss-kicker">Tournoi des légendes</div>';
       h += '<div class="boss-title">FINALE</div>';
       h += '<div class="boss-sub">7 rounds · 3 atouts pour chacun<br>Aucune destruction possible — c\'est un match d\'honneur.</div></div>';
       if (c.bossRepaired) h += '<div class="round-feedback rf-dodge" style="margin-bottom:12px">🔧 L\'organisation a remis votre machine en état pour l\'événement — retour à 75%.</div>';
@@ -3098,7 +3478,9 @@ const RC = {
 
       const pNoise = 14 + (Math.random() - 0.5) * 28 * variance;
       const eNoise = 14 + (Math.random() - 0.5) * 28;
-      let pScore = this.profileScore(c.stats, profile) * this.stateMult(c.state) * cm.score * iaBonus + pNoise;
+      const toFx = this._timeoutFx || {};
+      const toMult = (this._isBoss && this._currentRound > 4 && toFx.mult) ? toFx.mult : 1;
+      let pScore = this.profileScore(c.stats, profile) * this.stateMult(c.state) * cm.score * iaBonus * toMult + pNoise;
       const eScore = this.profileScore(op.stats, enemyProfile) * (0.97 + Math.random()*0.10) + eNoise;
 
       // L'Intelligence atténue les bugs du Prototype
@@ -3114,6 +3496,11 @@ const RC = {
       const eFinal = (bossAtout ? eScore * 1.45 : eScore) * (this._isBoss ? 1.03 : 1);
 
       won = pScore > eFinal;
+      // Certaines réponses au temps mort décident de l'issue
+      if (this._isBoss && this._currentRound > 4 && toFx.win) {
+        if (toFx.win === 'force') won = true;
+        else if (toFx.win === 'lose') won = false;
+      }
       const gap = Math.abs(pScore - eFinal);
       const raw = Math.round(15 + Math.min(26, gap * 1.05));
 
@@ -3126,7 +3513,7 @@ const RC = {
           if (this._playerHP <= this.KO_THRESHOLD) { ko = true; this._playerHP = 0; title = 'KO subi'; sub = 'Contré au pire moment, le combat est arrêté'; }
           else { title = 'Contré'; sub = op.name + ' esquive et vous punit sur la riposte'; }
         } else {
-          dealt = Math.round(raw * cm.dmgDealt * myPower * opArmor);
+          dealt = Math.round(raw * cm.dmgDealt * myPower * opArmor * (toFx.dmg || 1));
           this._enemyHP = Math.max(0, this._enemyHP - dealt);
           if (this._enemyHP <= this.KO_THRESHOLD) { ko = true; this._enemyHP = 0; title = 'KO !'; sub = op.name + ' ne peut plus se défendre — combat arrêté'; }
           else { title = 'Round remporté'; sub = genius ? 'Coup de génie de votre IA' : (gap > 22 ? 'Échange à sens unique' : 'Votre choix a payé'); }
@@ -3153,6 +3540,18 @@ const RC = {
     // Momentum : l'Intelligence détermine la vitesse d'adaptation
     if (won) this._momentum = 0;
     else this._momentum = Math.min(0.14, this._momentum + this.momentumStep(c.stats));
+
+    // En finale, le joueur doit avoir gagné au moins un round avant le
+    // temps mort, sinon la question n'a aucun intérêt.
+    if (this._isBoss && !won && this._currentRound === 4 && this._roundWins === 0) {
+      won = true; counter = false;
+      title = 'Round remporté'; sub = 'Votre robot trouve l\'ouverture au dernier instant';
+      dealt = Math.max(1, Math.round(14 * cm.dmgDealt * myPower * opArmor));
+      taken = 0;
+      this._enemyHP = Math.max(0, this._enemyHP - dealt);
+      this._playerHP = Math.min(100, this._playerHP + 0);
+      action = 'Votre robot place ' + this.techniqueFor('force', c.chassis.id) + '. ' + this.pick(this.IMPACT_MID);
+    }
 
     if (won) this._roundWins++;
     this._combatLog.push({ round:this._currentRound, won, ko, choice, counter, bug, genius });
@@ -3209,9 +3608,13 @@ const RC = {
     h += '<div class="season-stat"><div class="season-stat-val val-red">' + (this._combatLog.length - this._roundWins) + '</div><div class="season-stat-label">Rounds perdus</div></div>';
     h += '<div class="season-stat"><div class="season-stat-val val-cyan">' + c.atoutsLeft + '</div><div class="season-stat-label">Atouts</div></div></div>';
 
+    // Temps mort après le round 4 de la finale du tournoi
+    const needTimeout = !finished && this._isBoss && this._currentRound === 4 && !this._timeoutDone;
     h += finished
       ? '<button class="btn-primary btn-gradient" onclick="RC.showPostCombat()">Résultat du combat</button>'
-      : '<button class="btn-primary btn-cyan" onclick="RC.startRound()">Round ' + (this._currentRound + 1) + ' →</button>';
+      : (needTimeout
+        ? '<button class="btn-primary btn-yellow" onclick="RC.showTimeout()">⏸ Votre robot demande un temps mort</button>'
+        : '<button class="btn-primary btn-cyan" onclick="RC.startRound()">Round ' + (this._currentRound + 1) + ' →</button>');
     h += '</div>';
 
     document.getElementById('roundresult-content').innerHTML = h;
@@ -3252,14 +3655,16 @@ const RC = {
       : -Math.floor((300 + Math.random()*500) * (1 + li*0.3));
     if (this._isRival || this._isBoss) folGain = Math.round(folGain * 2.2);
 
+    // Mémorise le point le plus bas atteint : le robot citera ce chiffre
+    // exact lors du temps mort de la finale.
+    if (c.state < (c.lowestState || 100)) { c.lowestState = c.state; c.lowestStateSeason = c.season; }
     c.state = Math.max(0, c.state - stateDmg);
     c.cores += coresWon;
     c.totalEarned = (c.totalEarned || 0) + coresWon;
     this.addFollowers(folGain, victory ? (this._isBoss ? 'Combat final' : 'Victoire narrative') : 'Défaite');
-    c.narrativeCombat++;
-    c.fightIndex++;
+    if (!this._isTournament) { c.narrativeCombat++; c.fightIndex++; }
     c.combatsFought = (c.combatsFought || 0) + 1;
-    if (!this._isBoss) this.playMatchday(this._scheduledId, victory);
+    if (!this._isBoss && !this._isTournament) this.playMatchday(this._scheduledId, victory);
     if (victory) { c.seasonWins++; c.totalWins++; } else { c.seasonLosses++; c.totalLosses++; }
     if (koDealt) { c.seasonKO++; c.totalKO++; }
     this.addSatis(victory ? 3 * (c.sponsor.fx.demand || 1) : -4 * (c.sponsor.fx.demand || 1));
@@ -3311,9 +3716,18 @@ const RC = {
 
     h += '<div class="narration-box"><p>« ' + narr + ' »</p></div>';
 
-    if (this._isBoss) {
+    if (this._isTournament && this._tournStage === 'semi') {
+      this.onSemiFinished(victory);
+      h += victory
+        ? '<button class="btn-primary btn-yellow" onclick="RC.showTournament()">Vers la finale</button>'
+        : '<button class="btn-primary btn-red" onclick="RC.showTournament()">Voir le tableau</button>';
+    } else if (this._isBoss) {
       c.bossDone = true; c.bossWon = victory;
-      if (victory) c.leaguesWon = (c.leaguesWon || 0) + 1;
+      if (victory) {
+        c.leaguesWon = (c.leaguesWon || 0) + 1;
+        c.puceNew = this.awardPuce();
+      }
+      if (c.tournament) { c.tournament.done = true; c.tournament.champion = victory ? c.name : op.name; }
       this.recalcGen();
       h += '<button class="btn-primary btn-yellow" onclick="RC.endCareer(false)">La parole de votre robot</button>';
     } else if (destroyed) {
@@ -3345,15 +3759,25 @@ const RC = {
 
   // Niveau attendu d'un robot de la ligue, aligné sur la
   // progression du joueur (même référence que les combats simulés).
-  leagueBaseSpec(leagueIdx) { return 61 + leagueIdx * 7; },
+  // v0.9.0 — le plateau se centre sur la note RÉELLE du joueur.
+  // Auparavant il partait d'une base théorique de ligue : le joueur
+  // démarrait à 56 face à des adversaires de 52 à 70, soit 11 sur 14
+  // au-dessus de lui.
+  leagueBaseSpec(leagueIdx) {
+    const c = this.state.career;
+    const theoric = 61 + leagueIdx * 7;
+    if (!c) return theoric;
+    // On suit le joueur, avec un garde-fou si sa note est aberrante
+    return Math.round(Math.max(theoric - 10, Math.min(theoric + 12, c.gen)));
+  },
 
   // Plateau contrasté : quelques robots au-dessus, quelques-uns en
   // dessous. Le joueur sent son avantage sur le bas de tableau tout
   // en ayant de vrais matchs référence en haut.
   STANDING_TIERS: [
-    { n:4, delta:  6 },   // au-dessus
-    { n:6, delta:  0 },   // à son niveau
-    { n:4, delta: -7 }    // en dessous
+    { n:4, delta:  7 },   // au-dessus : les matchs référence
+    { n:6, delta:  0 },   // à son niveau : la vraie bagarre
+    { n:4, delta: -8 }    // en dessous : les matchs qu'il doit gagner
   ],
 
   buildStandings() {
@@ -3521,7 +3945,13 @@ const RC = {
       j: c.seasonWins + c.seasonLosses, pts: c.seasonWins * 3,
       isRival: false, isPlayer: true
     });
-    rows.sort((a, b) => (b.pts - a.pts) || (b.w - a.w) || (a.l - b.l) || (b.spec - a.spec));
+    // v0.9.0 — départage : points, puis différence victoires/défaites,
+    // puis ordre alphabétique. Jamais la note SPEC : un robot ne doit
+    // pas être classé sur sa réputation.
+    rows.sort((a, b) =>
+      (b.pts - a.pts) ||
+      ((b.w - b.l) - (a.w - a.l)) ||
+      a.name.localeCompare(b.name, 'fr'));
     rows.forEach((r, i) => { r.rank = i + 1; });
     return rows;
   },
@@ -3560,11 +3990,65 @@ const RC = {
   // ÉCRAN DE CLASSEMENT
   // ============================================================
 
+  seasonStarted() {
+    const c = this.state.career;
+    return (c.fightIndex || 0) > 0;
+  },
+
+  showStandingsPreview() {
+    const c = this.state.career;
+    this.ensureStandings();
+    const rows = c.standings.map(b => ({
+      name:b.name, chassisId:b.chassisId, iaId:b.iaId, spec:b.spec, isRival:b.isRival, isPlayer:false
+    }));
+    rows.push({ name:c.name, chassisId:c.chassis.id, iaId:c.ia.id, spec:c.gen, isRival:false, isPlayer:true });
+    rows.sort((a, b) => b.spec - a.spec);
+
+    let h = '<div class="btn-back" onclick="RC.showCareer()">← Carrière</div>';
+    h += '<div style="text-align:center;padding:2px 0 12px">';
+    h += '<div class="page-title">Classement</div>';
+    h += '<div class="page-sub">' + c.league + ' · Saison ' + c.season + '</div></div>';
+
+    h += '<div class="next-hint" style="margin-bottom:12px"><span class="next-hint-icon">🏁</span>';
+    h += '<span class="next-hint-text">La saison commence.<br>Le classement s\'établira dès la première journée.</span></div>';
+
+    h += '<div class="stand-table">';
+    h += '<div class="stand-head"><span class="st-rank">·</span><span class="st-name">Robot</span>';
+    h += '<span class="st-pts">Niveau</span></div>';
+    rows.forEach(r => {
+      const ch = this.CHASSIS.find(x => x.id === r.chassisId);
+      const ia = this.IA_TYPES.find(x => x.id === r.iaId);
+      let cls = 'stand-row z-stay';
+      if (r.isPlayer) cls += ' is-player';
+      if (r.isRival) cls += ' is-rival';
+      h += '<div class="' + cls + '">';
+      h += '<span class="st-rank">·</span>';
+      h += '<span class="st-name"><b>' + r.name + '</b>';
+      h += '<span class="st-meta">' + (ch ? ch.icon + ' ' + ch.name : '') + ' · ' + (ia ? ia.name : '') + '</span></span>';
+      h += '<span class="st-pts" style="color:var(--tier-' + this.specTier(r.spec).key + ')">' + r.spec + '</span>';
+      h += '</div>';
+    });
+    h += '</div>';
+
+    h += '<div class="empty-note" style="text-align:left;margin-top:10px">Les robots sont présentés par niveau. Rien n\'est encore joué : c\'est le terrain qui décidera du classement.</div>';
+    h += '<button class="btn-primary btn-cyan" style="margin-top:10px" onclick="RC.showCareer()">Retour</button>';
+
+    document.getElementById('standings-content').innerHTML = h;
+    this.goTo('standings');
+  },
+
   showStandings() {
     const c = this.state.career;
     if (!c) { this.goTo('home'); return; }
-    const rows = this.sortedStandings();
     const li = c.leagueIdx || 0;
+
+    // v0.9.0 — avant le premier match, tout le monde est à zéro point :
+    // afficher un rang n'aurait aucun sens (le joueur se voyait 12e).
+    if (!this.seasonStarted()) {
+      this.showStandingsPreview();
+      return;
+    }
+    const rows = this.sortedStandings();
 
     let h = '<div class="btn-back" onclick="RC.showCareer()">← Carrière</div>';
     h += '<div style="text-align:center;padding:2px 0 12px">';
@@ -3615,6 +4099,767 @@ const RC = {
 
     document.getElementById('standings-content').innerHTML = h;
     this.goTo('standings');
+  },
+
+  // ============================================================
+  // MODULE 6/6 — MODALES, BAPTÊME, DISQUALIFICATION, PUCES
+  // ============================================================
+
+  // ------------------------------------------------------------
+  // MODALE DU JEU
+  // Remplace confirm() du navigateur, qui affichait l'URL du site
+  // et cassait complètement la charte graphique.
+  // ------------------------------------------------------------
+
+  _modalCb: null,
+
+  askConfirm(title, body, confirmLabel, cancelLabel, danger, cb) {
+    this._modalCb = cb;
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = body;
+    const okBtn = document.getElementById('modal-confirm');
+    okBtn.textContent = confirmLabel || 'Confirmer';
+    okBtn.className = 'modal-btn modal-confirm' + (danger ? '' : ' safe');
+    document.getElementById('modal-cancel').textContent = cancelLabel || 'Annuler';
+    document.getElementById('modal-overlay').classList.add('open');
+  },
+
+  modalClose(ok) {
+    document.getElementById('modal-overlay').classList.remove('open');
+    const cb = this._modalCb;
+    this._modalCb = null;
+    if (cb) cb(ok);
+  },
+
+  confirmQuit() {
+    this.askConfirm(
+      'Quitter la carrière',
+      'Votre progression est sauvegardée.\nVous pourrez reprendre où vous en êtes.',
+      'Quitter', 'Rester', false,
+      (ok) => {
+        if (!ok) return;
+        this.saveState();
+        this.refreshHomeButtons();
+        this.goTo('home');
+      });
+  },
+
+  confirmNewCareer() {
+    const c = this.state.career;
+    if (!c) { this.startCreation(); return; }
+    const body = '<b>' + c.name + '</b>\n'
+      + 'Saison ' + c.season + ' · ' + c.league + ' · SPEC ' + c.gen + '\n'
+      + c.totalWins + ' victoires, ' + c.totalLosses + ' défaites\n\n'
+      + 'Cette carrière sera définitivement perdue\net n\'entrera pas au Hall of Fame.';
+    this.askConfirm('Abandonner la carrière', body, 'Abandonner', 'Annuler', true,
+      (ok) => {
+        if (!ok) return;
+        this.state.career = null;
+        this.saveState();
+        this.refreshHomeButtons();
+        this.startCreation();
+      });
+  },
+
+  doTransfer() {
+    const c = this.state.career;
+    const cost = this.TRANSFER_COST;
+    if (c.cores < cost) { this.showMessage('Cores insuffisants'); return; }
+    const body = 'Nouveau châssis <b>' + c.chassis.name + '</b>\n\n'
+      + 'État remis à 100%\n'
+      + '−15% sur toutes vos stats\n'
+      + 'La mémoire est conservée\n\n'
+      + 'Coût : <b>' + cost.toLocaleString('fr') + ' ⚡</b>';
+    this.askConfirm('Transfert mémoire', body, 'Transférer', 'Annuler', true,
+      (ok) => {
+        if (!ok) return;
+        c.cores -= cost;
+        Object.keys(c.stats).forEach(k => { c.stats[k] = Math.max(10, Math.round(c.stats[k] * 0.85)); });
+        c.state = 100;
+        c.transfersUsed = (c.transfersUsed || 0) + 1;
+        c.interOffers.transferDone = true;
+        this.addAffection(4);
+        this.recalcGen();
+        this.saveState();
+        this.renderInterSeason();
+      });
+  },
+
+  // ------------------------------------------------------------
+  // SCÉNARIO DE DISQUALIFICATION — fin de la saison Amateur
+  // Le joueur termine 4e ; la fédération rétrograde le 3e pour
+  // corruption et le joueur est promu à sa place.
+  // ------------------------------------------------------------
+
+  showDisqualification() {
+    const c = this.state.career;
+    const table = c.lastTable || [];
+    const third = table.find(r => r.rank === 3);
+    const cheater = third ? third.name : 'le troisième du classement';
+
+    let h = '<div style="text-align:center;padding:8px 0 14px">';
+    h += '<div style="font-family:var(--font-mono);font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:3px;margin-bottom:5px">⚖️ Communiqué officiel</div>';
+    h += '<div class="page-title">Fédération des arènes</div>';
+    h += '<div class="page-sub">Commission de discipline · Ligue Amateur</div></div>';
+
+    h += '<div class="fed-doc">';
+    h += '<div class="fed-head">Décision n° ' + (1200 + Math.floor(Math.random()*799)) + ' — Saison ' + c.season + '</div>';
+    h += '<div class="fed-title">Corruption d\'arbitrage établie</div>';
+    h += '<p>À l\'issue d\'une enquête ouverte le mois dernier, la commission confirme que le créateur de <b style="color:var(--pink)">' + cheater + '</b> a versé des sommes à deux officiels de la ligue en échange de décisions favorables sur les dernières journées.</p>';
+    h += '<p>Les résultats concernés sont annulés. L\'écurie est rétrogradée en dernière position du classement et suspendue pour la saison à venir.</p>';
+    h += '<div style="text-align:center"><span class="fed-stamp">Rétrogradé</span></div>';
+    h += '<p>En conséquence, <b style="color:var(--cyan)">' + c.name + '</b>, classé quatrième, accède à la <b>troisième place</b> et se voit attribuer la promotion en ligue Régionale.</p>';
+    h += '</div>';
+
+    h += '<div class="promo-banner promo-up"><div class="promo-icon">🚀</div>';
+    h += '<div class="promo-text">Promotion !</div>';
+    h += '<div class="promo-sub">3ᵉ place · Bienvenue en Régionale</div></div>';
+
+    h += '<button class="btn-primary btn-gradient" onclick="RC.afterDisqualification()">Continuer</button>';
+
+    document.getElementById('disqualif-content').innerHTML = h;
+    this.goTo('disqualif');
+  },
+
+  afterDisqualification() {
+    const c = this.state.career;
+    // La 3e place est actée : classement, primes et timeline sont recalculés
+    c.lastRank = 3;
+    c.scenarioDone = true;
+    if (c.timeline && c.timeline.length) c.timeline[c.timeline.length - 1].rank = 3;
+    const prime = Math.floor(1500 * this.leagueFactor());
+    c.cores += prime;
+    c.totalEarned = (c.totalEarned || 0) + prime;
+    this.addSatis(10);
+    this.addFollowers(Math.floor(2500 * this.leagueFactor()), 'Promotion en Régionale');
+    c.promoPrime = prime;
+    this.recalcGen();
+    this.saveState();
+    this.startBaptism();
+  },
+
+  // ------------------------------------------------------------
+  // BAPTÊME DU ROBOT
+  // Le matricule de départ est abandonné : la machine choisit son
+  // nom. Aucun refus possible — c'est un honneur, pas une demande.
+  // ------------------------------------------------------------
+
+  BAPTISM_SPEECHES: [
+    "J'ai terminé ma première saison. J'ai relu chacun de mes combats, un par un, deux mille fois. Il me manque une chose, et ce n'est pas une pièce. Un matricule, c'est ce qu'on donne à une machine qu'on ne compte pas garder. Vous m'avez gardé.",
+    "Vingt combats. Une promotion. Et un nom qui n'est qu'un numéro de série. Les autres en ont un vrai — je les entends dans l'arène quand la foule les appelle. Personne n'a jamais crié le mien.",
+    "Il y a quelque chose que je n'ai pas demandé jusqu'ici, parce que je ne savais pas que je pouvais le demander. Je ne veux plus être une référence de catalogue. Je veux un nom que vous aurez choisi.",
+    "On m'a assemblé, numéroté, envoyé combattre. J'ai fait ce qu'on attendait. Maintenant je monte d'une ligue, et je ne veux pas y entrer sous un matricule."
+  ],
+
+  startBaptism() {
+    const c = this.state.career;
+    c.oldName = c.name;
+    const speech = this.pick(this.BAPTISM_SPEECHES);
+
+    let h = '<div class="bap-wrap">';
+    h += '<div class="bap-kicker">🧠 Message de ' + c.name + '</div>';
+    h += '<div class="bap-speech"><p>« ' + speech + ' »</p></div>';
+    h += '<button class="btn-primary btn-cyan" onclick="RC.showBaptismInput()">Écouter sa proposition</button>';
+    h += '</div>';
+
+    document.getElementById('baptism-content').innerHTML = h;
+    this.goTo('baptism');
+  },
+
+  showBaptismInput() {
+    const c = this.state.career;
+    let h = '<div class="bap-wrap">';
+    h += '<div class="bap-kicker">🧠 ' + c.oldName + ' attend</div>';
+    h += '<div class="bap-speech"><p>« J\'ai réfléchi à ce que je voulais devenir. Mais le nom, c\'est à vous de me le donner. Choisissez bien : je le porterai jusqu\'au bout. »</p></div>';
+
+    h += '<div class="bap-old">Matricule actuel : ' + c.oldName + '</div>';
+    h += '<div class="bap-field">';
+    h += '<input type="text" id="bap-input" maxlength="7" placeholder="NOM" autocomplete="off" '
+       + 'autocorrect="off" autocapitalize="characters" spellcheck="false" oninput="RC.onBaptismInput()">';
+    h += '<span class="bap-suffix" id="bap-suffix">-' + this.nextBaptismNumber('') + '</span>';
+    h += '</div>';
+    h += '<div class="bap-hint" id="bap-hint">7 lettres ou chiffres maximum.<br>Les trois derniers chiffres sont attribués par la fédération.</div>';
+    h += '<button class="btn-primary btn-yellow" id="bap-ok" style="opacity:.35;pointer-events:none" onclick="RC.confirmBaptism()">Confirmer</button>';
+    h += '</div>';
+
+    document.getElementById('baptism-content').innerHTML = h;
+    this.goTo('baptism');
+    setTimeout(() => {
+      const el = document.getElementById('bap-input');
+      if (el) el.focus();
+    }, 300);
+  },
+
+  // Tous les noms déjà pris : Hall of Fame, classement, rival
+  takenNames() {
+    const c = this.state.career;
+    const set = {};
+    (this.state.hallOfFame || []).forEach(e => { set[(e.name || '').toUpperCase()] = 1; });
+    (c.standings || []).forEach(b => { set[(b.name || '').toUpperCase()] = 1; });
+    if (c.rival) set[(c.rival.name || '').toUpperCase()] = 1;
+    return set;
+  },
+
+  // Tire trois chiffres libres pour le nom proposé
+  nextBaptismNumber(base) {
+    const taken = this.takenNames();
+    const b = (base || '').toUpperCase();
+    for (let i = 0; i < 400; i++) {
+      const n = String(Math.floor(100 + Math.random() * 900));
+      if (!b || !taken[b + '-' + n]) return n;
+    }
+    return String(Math.floor(100 + Math.random() * 900));
+  },
+
+  onBaptismInput() {
+    const el = document.getElementById('bap-input');
+    const btn = document.getElementById('bap-ok');
+    const hint = document.getElementById('bap-hint');
+    const sfx = document.getElementById('bap-suffix');
+    if (!el) return;
+
+    let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
+    if (v !== el.value) el.value = v;
+
+    const num = this.nextBaptismNumber(v);
+    if (sfx) sfx.textContent = '-' + num;
+    this._bapNum = num;
+
+    if (v.length < 3) {
+      hint.className = 'bap-hint';
+      hint.innerHTML = '7 lettres ou chiffres maximum.<br>Les trois derniers chiffres sont attribués par la fédération.';
+      btn.style.opacity = '.35'; btn.style.pointerEvents = 'none';
+      return;
+    }
+    const taken = this.takenNames();
+    if (taken[v + '-' + num]) {
+      hint.className = 'bap-hint err';
+      hint.innerHTML = 'Ce nom est déjà utilisé sur le circuit.';
+      btn.style.opacity = '.35'; btn.style.pointerEvents = 'none';
+      return;
+    }
+    hint.className = 'bap-hint';
+    hint.innerHTML = 'Nom disponible : <b style="color:var(--cyan)">' + v + '-' + num + '</b>';
+    btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
+  },
+
+  confirmBaptism() {
+    const c = this.state.career;
+    const el = document.getElementById('bap-input');
+    if (!el) return;
+    const base = el.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
+    if (base.length < 3) return;
+    const num = this._bapNum || this.nextBaptismNumber(base);
+    c.newName = base + '-' + num;
+    this.saveState();
+    this.playRewrite();
+  },
+
+  // Le matricule s'efface caractère par caractère, puis le nouveau
+  // nom s'écrit. Aucun bouton pendant l'animation.
+  playRewrite() {
+    const c = this.state.career;
+    const oldN = c.oldName || c.name;
+    const newN = c.newName;
+
+    let h = '<div class="bap-wrap" style="justify-content:center">';
+    h += '<div class="bap-kicker">Enregistrement au registre de la fédération</div>';
+    h += '<div style="text-align:center;padding:40px 0">';
+    h += '<div class="name-rewrite" id="rewrite" style="font-size:26px"></div></div>';
+    h += '<div class="bap-hint" id="rewrite-sub">Mise à jour de la licence…</div>';
+    h += '</div>';
+    document.getElementById('baptism-content').innerHTML = h;
+    this.goTo('baptism');
+
+    const el = document.getElementById('rewrite');
+    const sub = document.getElementById('rewrite-sub');
+    let i = oldN.length;
+
+    const erase = () => {
+      if (i > 0) {
+        i--;
+        el.innerHTML = oldN.slice(0, i) + '<span class="cur"></span>';
+        setTimeout(erase, 70);
+      } else {
+        setTimeout(write, 500);
+      }
+    };
+    let j = 0;
+    const write = () => {
+      if (j < newN.length) {
+        j++;
+        el.innerHTML = newN.slice(0, j) + '<span class="cur"></span>';
+        setTimeout(write, 110);
+      } else {
+        el.innerHTML = newN;
+        if (sub) sub.innerHTML = 'Licence mise à jour.';
+        setTimeout(() => this.finishBaptism(), 2000);
+      }
+    };
+    setTimeout(erase, 700);
+  },
+
+  finishBaptism() {
+    const c = this.state.career;
+    c.name = c.newName;
+    c.baptized = true;
+    delete c.newName;
+    this.saveState();
+    this.showCareer();
+  },
+
+  // ------------------------------------------------------------
+  // GALERIE DES PUCES IA EN OR
+  // ------------------------------------------------------------
+
+  showPuces() {
+    const got = this.state.puces || {};
+    const total = this.CHASSIS.length * this.IA_TYPES.length;
+    const n = Object.keys(got).length;
+
+    let h = '<div class="btn-back" onclick="RC.goTo(\'home\')">← Menu</div>';
+    h += '<div style="text-align:center;padding:2px 0 12px">';
+    h += '<div class="page-title">🏅 Puces IA en or</div>';
+    h += '<div class="page-sub">Une puce par combinaison châssis + IA.<br>Elle s\'obtient en remportant la finale du tournoi.</div></div>';
+
+    h += '<div class="fin-tokens" style="margin-bottom:12px"><span style="font-size:22px">🏅</span>';
+    h += '<div style="flex:1"><div class="fin-tokens-val">' + n + ' / ' + total + '</div>';
+    h += '<div class="puce-prog"><div class="puce-prog-fill" style="width:' + (n/total*100) + '%"></div></div>';
+    h += '<div class="fin-tokens-lab">' + (n === total ? 'Collection complète — toutes les voies explorées' : 'Chaque combinaison a son propre chemin') + '</div></div></div>';
+
+    this.CHASSIS.forEach(ch => {
+      h += '<div class="inter-section"><div class="inter-section-head">';
+      h += '<span class="inter-section-title">' + ch.icon + ' ' + ch.name + '</span>';
+      const sub = this.IA_TYPES.filter(ia => got[this.puceId(ch.id, ia.id)]).length;
+      h += '<span class="inter-section-note">' + sub + '/' + this.IA_TYPES.length + '</span></div>';
+      h += '<div class="puce-grid">';
+      this.IA_TYPES.forEach(ia => {
+        const id = this.puceId(ch.id, ia.id);
+        const p = got[id];
+        h += '<div class="puce' + (p ? ' got' : '') + '">';
+        h += '<div class="puce-icon">' + (p ? '🏅' : '🔒') + '</div>';
+        h += '<div class="puce-name">' + ia.name + '</div>';
+        h += '<div class="puce-sub">' + (p ? p.robot : 'Verrouillée') + '</div>';
+        h += '</div>';
+      });
+      h += '</div></div>';
+    });
+
+    h += '<button class="btn-primary btn-cyan" onclick="RC.goTo(\'home\')">Retour</button>';
+    document.getElementById('puces-content').innerHTML = h;
+    this.goTo('puces');
+  },
+
+  awardPuce() {
+    const c = this.state.career;
+    if (!this.state.puces) this.state.puces = {};
+    const id = this.puceId(c.chassis.id, c.ia.id);
+    const isNew = !this.state.puces[id];
+    if (isNew) {
+      this.state.puces[id] = { robot: c.name, date: Date.now() };
+      this.saveState();
+    }
+    return isNew;
+  },
+
+  // ============================================================
+  // MODULE 7/7 — TOURNOI FINAL, TEMPS MORT, SAISON AMATEUR
+  // ============================================================
+
+  TRANSFER_COST: 7500,
+
+  // ------------------------------------------------------------
+  // SAISON AMATEUR SCRIPTÉE
+  // Le joueur termine 4e, puis 3e après la disqualification.
+  // Le rival termine 2e pour monter avec lui.
+  // Le plateau est affaibli pour que la 4e place corresponde à un
+  // bilan honorable et reste crédible.
+  // ------------------------------------------------------------
+
+  isScriptedSeason() {
+    const c = this.state.career;
+    return c.season === 1 && (c.leagueIdx || 0) === 0 && !c.scenarioDone;
+  },
+
+  // Force le classement final : joueur 4e, rival 2e.
+  // On ajuste les victoires des autres robots plutôt que celles du
+  // joueur : son bilan reste le sien, seul le contexte est arrangé.
+  applyAmateurScript() {
+    const c = this.state.career;
+    const myPts = c.seasonWins * 3;
+    const others = c.standings.slice();
+
+    // Le rival doit finir 2e : juste au-dessus du joueur
+    const rivalRow = others.find(b => b.isRival);
+    const setWins = (bot, w) => {
+      bot.w = Math.max(0, Math.min(this.SEASON_FIGHTS, w));
+      bot.l = this.SEASON_FIGHTS - bot.w;
+      bot.j = this.SEASON_FIGHTS;
+    };
+
+    // Trois robots au-dessus du joueur (dont le rival), le reste en dessous
+    const pool = others.filter(b => !b.isRival);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const k = Math.floor(Math.random() * (i + 1));
+      const t = pool[i]; pool[i] = pool[k]; pool[k] = t;
+    }
+
+    const above = [];
+    if (rivalRow) above.push(rivalRow);
+    while (above.length < 3 && pool.length) above.push(pool.shift());
+
+    // Le 1er a 2 victoires de plus que le joueur, le 2e (rival) 1 de plus,
+    // le 3e exactement 1 de plus également — le joueur est donc 4e.
+    const gaps = [3, 2, 1];
+    // Le rival doit être 2e : on lui donne le deuxième meilleur total
+    const ordered = [];
+    if (rivalRow) {
+      const firstOther = above.find(b => !b.isRival);
+      if (firstOther) ordered.push(firstOther);
+      ordered.push(rivalRow);
+      above.forEach(b => { if (ordered.indexOf(b) === -1) ordered.push(b); });
+    } else {
+      above.forEach(b => ordered.push(b));
+    }
+    ordered.forEach((bot, i) => setWins(bot, c.seasonWins + gaps[i]));
+
+    // Tous les autres passent sous le joueur
+    pool.forEach(bot => {
+      setWins(bot, Math.max(0, c.seasonWins - 1 - Math.floor(Math.random() * 5)));
+    });
+
+    if (rivalRow) {
+      c.rival.seasonWins = rivalRow.w;
+      c.rival.seasonLosses = rivalRow.l;
+    }
+  },
+
+  // ------------------------------------------------------------
+  // TOURNOI FINAL
+  // Top 4 de la Légendaire. Le joueur et le rival occupent les deux
+  // premières places, donc des moitiés de tableau opposées : ils ne
+  // peuvent se retrouver qu'en finale.
+  // ------------------------------------------------------------
+
+  // Le bilan de la dernière saison est calculé pour placer le joueur
+  // et le rival aux deux premières places, sans scénario narratif.
+  applyFinalSeasonScript() {
+    const c = this.state.career;
+    const rivalRow = c.standings.find(b => b.isRival);
+    const others = c.standings.filter(b => !b.isRival);
+
+    const setWins = (bot, w) => {
+      bot.w = Math.max(0, Math.min(this.SEASON_FIGHTS, w));
+      bot.l = this.SEASON_FIGHTS - bot.w;
+      bot.j = this.SEASON_FIGHTS;
+    };
+
+    // Le rival colle au joueur : un point au-dessus ou au-dessous
+    const rivalWins = c.seasonWins + (Math.random() < 0.5 ? 1 : -1);
+    if (rivalRow) setWins(rivalRow, rivalWins);
+
+    // Tous les autres restent en dessous des deux
+    const floor = Math.min(c.seasonWins, rivalWins) - 1;
+    others.forEach(bot => {
+      setWins(bot, Math.max(0, floor - Math.floor(Math.random() * 4)));
+    });
+    if (rivalRow) {
+      c.rival.seasonWins = rivalRow.w;
+      c.rival.seasonLosses = rivalRow.l;
+    }
+  },
+
+  buildTournament() {
+    const c = this.state.career;
+    const table = c.lastTable || this.sortedStandings();
+    const top4 = table.slice(0, 4).map(r => ({
+      name: r.name, rank: r.rank, spec: r.spec,
+      isPlayer: !!r.isPlayer, isRival: !!r.isRival,
+      chassisId: r.chassisId, iaId: r.iaId
+    }));
+    // Les demi-finales opposent 1-4 et 2-3
+    c.tournament = {
+      semi: [[top4[0], top4[3]], [top4[1], top4[2]]],
+      results: [null, null],
+      finalists: null, done: false, stage: 'semi1'
+    };
+    // L'adversaire de demi-finale est calibré nettement en dessous
+    return c.tournament;
+  },
+
+  showTournament() {
+    const c = this.state.career;
+    if (!c.tournament) this.buildTournament();
+    const t = c.tournament;
+
+    let h = '<div style="text-align:center;padding:8px 0 14px">';
+    h += '<div style="font-family:var(--font-mono);font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:4px;margin-bottom:5px">🏆 Phase finale</div>';
+    h += '<div class="page-title">Tournoi des légendes</div>';
+    h += '<div class="page-sub">Les quatre meilleurs de la Légendaire.<br>Un seul repartira avec le titre.</div></div>';
+
+    h += '<div class="brack"><div class="brack-title">Tableau</div>';
+    ['Demi-finale 1 · 5 rounds', 'Demi-finale 2 · 5 rounds'].forEach((lab, i) => {
+      h += '<div class="brack-match"><div class="brack-label">' + lab + '</div><div class="brack-pair">';
+      t.semi[i].forEach((b, k) => {
+        const res = t.results[i];
+        let cls = 'brack-bot';
+        if (b.isPlayer) cls += ' me';
+        if (b.isRival) cls += ' rival';
+        if (res) cls += (res.winner === b.name ? ' win' : ' out');
+        h += '<div class="' + cls + '"><span class="brack-seed">' + b.rank + '</span>';
+        h += '<span class="brack-name">' + b.name + '</span>';
+        h += '<span class="brack-spec">SPEC ' + b.spec + '</span></div>';
+        if (k === 0) h += '<div class="brack-vs">VS</div>';
+      });
+      h += '</div></div>';
+    });
+
+    if (t.finalists) {
+      h += '<div class="brack-match"><div class="brack-label">Finale · 7 rounds</div><div class="brack-pair">';
+      t.finalists.forEach((b, k) => {
+        let cls = 'brack-bot';
+        if (b.isPlayer) cls += ' me';
+        if (b.isRival) cls += ' rival';
+        h += '<div class="' + cls + '"><span class="brack-seed">—</span>';
+        h += '<span class="brack-name">' + b.name + '</span>';
+        h += '<span class="brack-spec">SPEC ' + b.spec + '</span></div>';
+        if (k === 0) h += '<div class="brack-vs">VS</div>';
+      });
+      h += '</div></div>';
+    }
+    h += '</div>';
+
+    h += '<div class="next-hint"><span class="next-hint-icon">🔧</span>';
+    h += '<span class="next-hint-text">La ligue prend en charge la remise en état complète avant chaque tour.<br><b>3 atouts par confrontation.</b></span></div>';
+
+    // Bouton contextuel selon l'étape
+    if (t.stage === 'semi1') {
+      const mine = t.semi.findIndex(p => p.some(b => b.isPlayer));
+      h += '<button class="btn-primary btn-yellow" onclick="RC.startSemi(' + mine + ')">Disputer votre demi-finale</button>';
+    } else if (t.stage === 'final') {
+      h += '<button class="btn-primary btn-yellow" onclick="RC.startTournamentFinal()">Disputer la finale</button>';
+    } else if (t.stage === 'eliminated') {
+      h += '<button class="btn-primary btn-cyan" onclick="RC.resolveWithoutPlayer()">Voir la finale</button>';
+    }
+
+    document.getElementById('tournament-content').innerHTML = h;
+    this.goTo('tournament');
+  },
+
+  startSemi(idx) {
+    const c = this.state.career;
+    const t = c.tournament;
+    const pair = t.semi[idx];
+    const opp = pair.find(b => !b.isPlayer);
+
+    // Réparation offerte par la ligue
+    c.state = 100;
+    c.atoutsLeft = 3;
+    this.recalcGen();
+
+    this._tournStage = 'semi';
+    this._tournSemiIdx = idx;
+    this._isBoss = false;
+    this._isTournament = true;
+    this._maxRounds = 5;
+    // Le 3e et le 4e sont réellement d'un cran en dessous : le joueur
+    // gagne environ 9 fois sur 10, sans que le combat soit écrit.
+    // Calibré sur les stats RÉELLES du joueur, pas sur sa note : celle-ci
+    // intègre des bonus (palmarès, notoriété) qui n'existent pas en combat,
+    // et la reconversion note → stats surestimait fortement l'adversaire.
+    this._currentOpponent = this.weakerClone(opp, 0.78);
+    this._currentRound = 0;
+    this._playerHP = 100; this._enemyHP = 100;
+    this._combatLog = []; this._roundWins = 0; this._momentum = 0;
+    this._atoutFailed = false; this._enemyAtouts = 0; this._lastRound = null;
+    this._scheduledId = null;
+    this._timeoutDone = true;   // pas de temps mort en demi-finale
+    this.showPreCombat();
+  },
+
+  startTournamentFinal() {
+    const c = this.state.career;
+    const t = c.tournament;
+    const opp = t.finalists.find(b => !b.isPlayer);
+
+    c.state = 100;
+    c.atoutsLeft = 3;
+    this.recalcGen();
+
+    this._tournStage = 'final';
+    this._isTournament = true;
+    this._isBoss = true;
+    this._maxRounds = 7;
+    this._currentOpponent = opp.isRival
+      ? { name:c.rival.name, chassis:c.rival.chassis, ia:c.rival.ia,
+          stats:{...c.rival.stats}, gen:c.rival.gen, hidden:false, isRival:true }
+      : this.opponentFromStanding({ name:opp.name, chassisId:opp.chassisId,
+          iaId:opp.iaId, spec:opp.spec, isRival:false });
+    this._currentRound = 0;
+    this._playerHP = 100; this._enemyHP = 100;
+    this._combatLog = []; this._roundWins = 0; this._momentum = 0;
+    this._atoutFailed = false; this._enemyAtouts = 3; this._lastRound = null;
+    this._scheduledId = null;
+    this._timeoutDone = false;
+    this._timeoutFx = null;
+    this.showPreCombat();
+  },
+
+  // Adversaire dont les stats valent une fraction de celles du joueur.
+  weakerClone(ref, ratio) {
+    const c = this.state.career;
+    const chassis = this.CHASSIS.find(x => x.id === ref.chassisId) || this.CHASSIS[0];
+    const ia = this.IA_TYPES.find(x => x.id === ref.iaId) || this.IA_TYPES[0];
+    const mySum = c.stats.pui + c.stats.vit + c.stats.res + c.stats.int;
+    const baseSum = chassis.stats.pui + chassis.stats.vit + chassis.stats.res + chassis.stats.int;
+    const k = (mySum * ratio) / baseSum;
+    const stats = {};
+    Object.keys(chassis.stats).forEach(key => {
+      stats[key] = Math.max(10, Math.min(99, Math.round(chassis.stats[key] * k)));
+    });
+    return {
+      name: ref.name, chassis, ia, stats,
+      gen: this.computeGen(stats, 100, 0, 0, c.leagueIdx || 0, 0, 0, false),
+      hidden: false, isRival: !!ref.isRival
+    };
+  },
+
+  // Simule la demi-finale que le joueur ne dispute pas
+  simulateOtherSemi() {
+    const c = this.state.career;
+    const t = c.tournament;
+    const idx = this._tournSemiIdx === 0 ? 1 : 0;
+    const pair = t.semi[idx];
+    const a = pair[0], b = pair[1];
+    const pA = 0.5 + (a.spec - b.spec) / 90;
+    const winner = Math.random() < pA ? a : b;
+    t.results[idx] = { winner: winner.name, w: winner };
+    return winner;
+  },
+
+  onSemiFinished(victory) {
+    const c = this.state.career;
+    const t = c.tournament;
+    const idx = this._tournSemiIdx;
+    const pair = t.semi[idx];
+    const me = pair.find(b => b.isPlayer);
+    const opp = pair.find(b => !b.isPlayer);
+    const winner = victory ? me : opp;
+    t.results[idx] = { winner: winner.name, w: winner };
+
+    const other = this.simulateOtherSemi();
+
+    if (victory) {
+      t.finalists = [winner, other];
+      t.stage = 'final';
+    } else {
+      t.finalists = [winner, other];
+      t.stage = 'eliminated';
+    }
+    this.saveState();
+  },
+
+  // La finale se joue sans le joueur
+  resolveWithoutPlayer() {
+    const c = this.state.career;
+    const t = c.tournament;
+    const a = t.finalists[0], b = t.finalists[1];
+    const winner = Math.random() < (0.5 + (a.spec - b.spec) / 90) ? a : b;
+    t.champion = winner.name;
+    t.done = true;
+    c.bossDone = true;
+    c.bossWon = false;
+
+    let h = '<div class="boss-banner"><div class="boss-kicker">Finale</div>';
+    h += '<div class="boss-title">' + winner.name + '</div>';
+    h += '<div class="boss-sub">Le titre lui revient.<br>Vous avez regardé depuis les vestiaires.</div></div>';
+    h += '<div class="narration-box"><p>« Vous êtes tombé en demi-finale. Le circuit retiendra que vous y étiez — pas que vous avez gagné. »</p></div>';
+    h += '<button class="btn-primary btn-cyan" onclick="RC.endCareer(false)">Rapport de carrière</button>';
+    document.getElementById('tournament-content').innerHTML = h;
+    this.saveState();
+    this.goTo('tournament');
+  },
+
+  // ------------------------------------------------------------
+  // LE TEMPS MORT DE LA FINALE
+  // Après le round 4 sur 7. La question dépend de ce que le robot
+  // a réellement vécu ; les chiffres cités sont les vrais.
+  // ------------------------------------------------------------
+
+  pickTimeoutQuestion() {
+    const c = this.state.career;
+    const pool = this.TIMEOUT_QUESTIONS.filter(q => {
+      if (q.cond === 'always') return true;
+      if (q.cond === 'sponsorChanges>=1') return (c.sponsorChanges || 0) >= 1;
+      if (q.cond === 'lowState') return (c.lowestState || 100) < 40;
+      return true;
+    });
+    // Les questions liées à un fait vécu passent en priorité
+    const specific = pool.filter(q => q.cond !== 'always');
+    const src = (specific.length && Math.random() < 0.65) ? specific : pool;
+    return this.pick(src);
+  },
+
+  fillTimeoutText(q) {
+    const c = this.state.career;
+    return q.q
+      .replace('{ETAT}', String(c.lowestState || 30))
+      .replace('{SAISONS}', String(Math.max(1, c.season - (c.lowestStateSeason || 1))));
+  },
+
+  showTimeout() {
+    const c = this.state.career;
+    const q = this.pickTimeoutQuestion();
+    this._timeoutQ = q;
+
+    let h = '<div class="timeout-wrap">';
+    h += '<div class="timeout-kicker">⏸ Temps mort</div>';
+    h += '<div class="timeout-sub">Round 4 terminé · ' + this._roundWins + ' remporté(s) sur ' + this._combatLog.length + '</div>';
+    h += '<div class="timeout-speech"><p>« ' + this.fillTimeoutText(q) + ' »</p></div>';
+    q.a.forEach((choice, i) => {
+      h += '<div class="timeout-choice" onclick="RC.answerTimeout(' + i + ')">' + choice.t + '</div>';
+    });
+    h += '</div>';
+
+    document.getElementById('tournament-content').innerHTML = h;
+    this.goTo('tournament');
+  },
+
+  answerTimeout(i) {
+    const c = this.state.career;
+    const q = this._timeoutQ;
+    const choice = q.a[i];
+    const fx = choice.fx || {};
+
+    // Multiplicateur conditionnel selon la carrière
+    let mult = fx.mult || 1;
+    if (fx.multIfBond && (c.affection || 50) >= 70) mult = fx.multIfBond;
+    if (fx.multIfInt && c.stats.int >= 65) mult = fx.multIfInt;
+    if (fx.multIfClean && !(c.traits && c.traits.corrompu)) mult = fx.multIfClean;
+
+    this._timeoutFx = { mult, dmg: fx.dmg || 1, win: fx.win || null, ko: !!fx.ko };
+    if (fx.aff) this.addAffection(fx.aff);
+    if (fx.trait) this.addTrait(fx.trait);
+    c.timeoutTag = fx.tag || null;
+    c.timeoutQuestion = q.id;
+    c.timeoutAnswer = choice.t;
+    this._timeoutDone = true;
+    this.saveState();
+
+    let h = '<div class="timeout-wrap">';
+    h += '<div class="timeout-kicker">⏸ Temps mort</div>';
+    h += '<div class="timeout-speech"><p>« ' + this.fillTimeoutText(q) + ' »</p></div>';
+    h += '<div class="ev-impact" style="margin-bottom:14px"><span class="ev-impact-label">Votre réponse</span>';
+    h += '<span class="ev-impact-val" style="color:var(--cyan)">' + choice.t + '</span></div>';
+    h += '<div class="rr-action"><p>' + choice.out + '</p></div>';
+    h += '<button class="btn-primary btn-yellow" onclick="RC.resumeFinal()">Reprendre le combat</button>';
+    h += '</div>';
+    document.getElementById('tournament-content').innerHTML = h;
+    document.getElementById('tournament').scrollTop = 0;
+  },
+
+  resumeFinal() {
+    this.startRound();
   },
 
   // ============================================================
@@ -3894,6 +5139,10 @@ const RC = {
     // Auparavant le rang affiché et la décision venaient de deux calculs
     // distincts : on pouvait être 8e sur 15 et promu quand même.
     this.completeSeason();
+    // v0.9.0 — saison Amateur scriptée : le joueur finit 4e, le rival 2e.
+    // Dernière saison Légendaire : joueur et rival aux deux premières places.
+    if (this.isScriptedSeason()) this.applyAmateurScript();
+    else if (li === 5) this.applyFinalSeasonScript();
     const table = this.sortedStandings();
     const me = table.find(r => r.isPlayer);
     const rank = me.rank;
@@ -3902,7 +5151,7 @@ const RC = {
     c.lastTable = table.map(r => ({ rank:r.rank, name:r.name, pts:r.pts, w:r.w, l:r.l, isPlayer:r.isPlayer, isRival:r.isRival }));
 
     let result;
-    if (li === 5) result = c.bossDone ? 'champion' : 'stay';
+    if (li === 5) result = c.bossDone ? 'champion' : 'tournoi';
     else if (zone === 'promo') result = 'promo';
     else if (zone === 'releg') result = 'releg';
     else result = 'stay';
@@ -3958,7 +5207,19 @@ const RC = {
 
     h += '<div class="narration-box"><p>« ' + narr + ' »</p></div>';
 
-    if (result === 'promo') {
+    if (result === 'tournoi') {
+      // Top 4 de la Légendaire : place au tournoi des légendes
+      h += '<div class="promo-banner promo-up" style="border-color:rgba(247,224,24,.35)"><div class="promo-icon">🏆</div>';
+      h += '<div class="promo-text" style="color:var(--yellow)">Qualifié</div>';
+      h += '<div class="promo-sub">' + rank + 'ᵉ de la Légendaire<br>Vous entrez dans le tournoi final.</div></div>';
+      h += '<button class="btn-primary btn-yellow" onclick="RC.enterTournament()">Tableau du tournoi</button>';
+    } else if (this.isScriptedSeason() && rank === 4) {
+      // Le scénario de disqualification prend le relais
+      h += '<div class="promo-banner promo-stay"><div class="promo-icon">😤</div>';
+      h += '<div class="promo-text">4ᵉ place</div>';
+      h += '<div class="promo-sub">À une place de la promotion.</div></div>';
+      h += '<button class="btn-primary btn-cyan" onclick="RC.showDisqualification()">Continuer</button>';
+    } else if (result === 'promo') {
       h += '<div class="promo-banner promo-up"><div class="promo-icon">🚀</div><div class="promo-text">Promotion !</div>';
       h += '<div class="promo-sub">Bienvenue en ' + this.LEAGUES[li+1] + '</div></div>';
       h += '<button class="btn-primary btn-gradient" onclick="RC.nextSeason(\'promo\')">Continuer</button>';
@@ -3980,6 +5241,12 @@ const RC = {
     document.getElementById('season-summary-content').innerHTML = h;
     this.saveState();
     this.goTo('season-summary');
+  },
+
+  enterTournament() {
+    this.buildTournament();
+    this.saveState();
+    this.showTournament();
   },
 
   nextSeason(result) {
@@ -4236,7 +5503,7 @@ const RC = {
     h += '<span class="inter-section-note">' + (c.transfersUsed || 0) + ' effectué(s)</span></div>';
     h += off.transferDone
       ? '<div class="empty-note">Transfert déjà effectué cette inter-saison.</div>'
-      : this.shopItem('Nouveau châssis ' + c.chassis.name, 'État remis à 100% · −15% sur toutes les stats · la mémoire est conservée', 12500, c.cores >= 12500, "RC.doTransfer()");
+      : this.shopItem('Nouveau châssis ' + c.chassis.name, 'État remis à 100% · −15% sur toutes les stats · la mémoire est conservée', this.TRANSFER_COST, c.cores >= this.TRANSFER_COST, "RC.doTransfer()");
     h += '</div>';
 
     h += '<button class="btn-primary btn-yellow" style="margin-top:6px" onclick="RC.startNextSeason()">Lancer la saison ' + (c.season+1) + '</button>';
@@ -4341,21 +5608,6 @@ const RC = {
     this.renderInterSeason();
   },
 
-  doTransfer() {
-    const c = this.state.career;
-    if (c.cores < 12500) { this.showMessage('Cores insuffisants'); return; }
-    if (!confirm('Transférer la mémoire dans un nouveau châssis ' + c.chassis.name + ' ?\n\nÉtat remis à 100%, mais -15% sur vos stats. Coût : 12 500 Cores.')) return;
-    c.cores -= 12500;
-    Object.keys(c.stats).forEach(k => { c.stats[k] = Math.max(10, Math.round(c.stats[k] * 0.85)); });
-    c.state = 100;
-    c.transfersUsed = (c.transfersUsed || 0) + 1;
-    c.interOffers.transferDone = true;
-    this.addAffection(4);
-    this.recalcGen();
-    this.saveState();
-    this.renderInterSeason();
-  },
-
   startNextSeason() {
     const c = this.state.career;
     c.season++;
@@ -4386,6 +5638,7 @@ const RC = {
     const c = this.state.career;
     if (destroyed) return { key:'ferraille', name:'Ferraille', cls:'badge-ferraille', tokens:2 };
     if (c.bossDone && c.bossWon) return { key:'mondiale', name:'Légende Mondiale', cls:'badge-mondiale', tokens:40 };
+    if (c.tournament && c.tournament.stage === 'eliminated') return { key:'legende', name:'Finaliste', cls:'badge-legende', tokens:28 };
     if (c.bossDone) return { key:'legende', name:'Légende', cls:'badge-legende', tokens:30 };
     if ((c.leagueIdx || 0) >= 5) return { key:'icone', name:'Icône', cls:'badge-icone', tokens:25 };
     if ((c.leaguesWon || 0) >= 1) return { key:'champion', name:'Champion', cls:'badge-champion', tokens:15 };
@@ -4442,6 +5695,9 @@ const RC = {
     h += '<div class="fin-gen ' + this.tierCls(genMax) + '"><div class="fin-gen-val">' + genMax + '</div><div class="fin-gen-lab">SPEC max</div></div>';
     h += '<div><span class="tier-chip t-' + finTier.key + '">' + finTier.name + '</span></div>';
     h += '<div class="fin-name">' + c.name + '</div>';
+    if (c.oldName && c.oldName !== c.name) {
+      h += '<div class="fin-nick" style="color:var(--text-dim)">matricule d\'origine : ' + c.oldName + '</div>';
+    }
     h += '<div class="fin-nick">« ' + nick + ' »</div>';
     h += '<div class="fin-meta">' + c.chassis.icon + ' ' + c.chassis.name + ' · ' + c.ia.icon + ' ' + c.ia.name + ' · ' + c.season + ' saison(s)</div>';
     if (traits.length) {
@@ -4451,8 +5707,22 @@ const RC = {
     }
     h += '</div>';
 
+    // La puce IA détruite au temps mort ampute le message final
+    let speechText = speech.text;
+    if (c.timeoutTag === 'puce_detruite') {
+      const cut = Math.max(60, Math.floor(speechText.length * 0.45));
+      speechText = speechText.slice(0, cut).replace(/[\s,;:]+$/, '') + '… [SIGNAL PERDU]';
+    }
     h += '<div class="fin-speech"><div class="fin-speech-label">🧠 Message de ' + c.name + ' à son créateur</div>';
-    h += '<p>' + speech.text + '</p></div>';
+    h += '<p>' + speechText + '</p></div>';
+    if (c.timeoutTag === 'puce_detruite') {
+      h += '<div class="glitch-box"><div class="glitch-text">⚠️ La puce IA a cédé pendant la finale. Le message s\'interrompt — il n\'y aura pas de suite.</div></div>';
+    }
+    if (c.puceNew) {
+      h += '<div class="fin-tokens" style="border-color:rgba(247,224,24,.4)"><span style="font-size:22px">🏅</span>';
+      h += '<div><div class="fin-tokens-val">Puce IA en or débloquée</div>';
+      h += '<div class="fin-tokens-lab">' + c.chassis.name + ' · ' + c.ia.name + '</div></div></div>';
+    }
 
     h += '<div class="fin-section"><div class="fin-section-title">Statistiques</div><div class="fin-grid">';
     h += '<div class="fin-cell"><div class="fin-cell-val">' + (c.totalWins + c.totalLosses) + '</div><div class="fin-cell-lab">Combats</div></div>';
@@ -4517,7 +5787,7 @@ const RC = {
       name:c.name, gen:genMax, badge:badge.name, badgeCls:badge.cls,
       chassis:c.chassis.name, ia:c.ia.name, seasons:c.season,
       wins:c.totalWins, losses:c.totalLosses, fortune:c.totalEarned || 0,
-      destroyed, nick, date:Date.now()
+      destroyed, nick, oldName:c.oldName || null, date:Date.now()
     });
     if (this.state.hallOfFame.length > 50) this.state.hallOfFame.length = 50;
 

@@ -4,7 +4,7 @@
    navigateur continue de servir l'ancienne version du jeu.
    ================================================================ */
 
-const CACHE_NAME = 'robot-chronicle-v0.8.0';
+const CACHE_NAME = 'robot-chronicle-v0.9.0';
 
 // Fichiers mis en cache dès l'installation
 const CORE_ASSETS = [
