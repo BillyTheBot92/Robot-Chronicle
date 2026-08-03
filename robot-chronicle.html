@@ -923,6 +923,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
   overflow:hidden;margin:10px 0 6px}
 .puce-prog-fill{height:100%;background:linear-gradient(90deg,var(--yellow),#FFD700);
   border-radius:4px;transition:width .6s}
+
+/* v0.10.0 — l'écran d'avant-saison affiche « Niveau » à la place de « Pts » :
+   34px suffisaient pour trois lettres, pas pour six. */
+.stand-table.preview .st-pts{width:54px}
+.stand-table.preview .stand-head .st-pts{font-size:9px}
 </style>
 </head>
 <body>
@@ -1005,7 +1010,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <a class="support-btn" id="support-btn" href="https://www.paypal.me/" target="_blank" rel="noopener noreferrer">☕ Soutenir le créateur</a>
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
-    <div class="version" id="version-text">v0.9.0</div>
+    <div class="version" id="version-text">v0.10.0</div>
     <div class="credit">© 2026 Alexandre Lavrard — Tous droits réservés</div>
     <div class="credit">Robot Chronicle — créé par Alexandre Lavrard</div>
   </div>
@@ -1269,13 +1274,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
 <script>
 /* ================================================================
-   ROBOT CHRONICLE v0.9.0 — MODULE 1/4 : DONNÉES
+   ROBOT CHRONICLE v0.10.0 — MODULE 1/4 : DONNÉES
    Réécriture complète. Les pools de textes sont le contenu validé
    des versions précédentes ; toute la logique est neuve.
    ================================================================ */
 
 const RC = {
-  VERSION: '0.9.0',
+  VERSION: '0.10.0',
 
   // ============================================================
   // CHÂSSIS
@@ -2204,7 +2209,7 @@ const RC = {
 
   state: {
     firstLaunch: true,
-    version: '0.9.0',
+    version: '0.10.0',
     tokens: 0,
     hallOfFame: [],
     badges: {},
@@ -3128,7 +3133,16 @@ const RC = {
     s += '<div class="sponsor-strip" onclick="RC.showRivalProfile()"><span class="sponsor-logo">' + ra.icon + '</span>';
     s += '<div class="sponsor-mid"><div class="sponsor-name" style="color:var(--orange)">Rival · ' + r.name + '</div>';
     s += '<div class="shop-desc">' + this.LEAGUES[r.leagueIdx] + ' · SPEC ' + r.gen + ' · Saison : ' + r.seasonWins + 'V-' + r.seasonLosses + 'D · Carrière : ' + r.wins + 'V-' + r.losses + 'D';
-    s += (r.leagueIdx === c.leagueIdx ? ' · <b style="color:var(--orange)">dans votre ligue</b>' : '') + '</div></div>';
+    s += '</div>';
+    // v0.10.0 — la rivalité doit rester lisible même à distance
+    if (r.leagueIdx === c.leagueIdx) {
+      s += '<div class="shop-desc" style="color:var(--orange)">⚔️ Dans votre ligue — vous vous affronterez cette saison</div>';
+    } else if (r.leagueIdx === c.leagueIdx - 1) {
+      s += '<div class="shop-desc">Une ligue derrière vous. S\'il monte, vous vous croiserez.</div>';
+    } else {
+      s += '<div class="shop-desc">Une ligue devant vous. Rattrapez-le.</div>';
+    }
+    s += '</div>';
     if (r.h2hWins + r.h2hLosses > 0) {
       s += '<div style="text-align:right;margin-left:8px"><div class="satis-val" style="color:var(--orange);width:auto">' + r.h2hWins + '-' + r.h2hLosses + '</div>';
       s += '<div class="inter-bar-label" style="margin-top:1px">Vos duels</div></div>';
@@ -3626,6 +3640,14 @@ const RC = {
     const cm = this.CHASSIS_MOD[c.chassis.id] || this.CHASSIS_MOD.tactical;
     const roundsLost = this._combatLog.length - this._roundWins;
 
+    // v0.10.0 — certaines réponses au temps mort promettent la victoire :
+    // la promesse doit être tenue sur l'ISSUE du combat, pas seulement sur
+    // les rounds restants. Mené 3-1 avant le temps mort, gagner les trois
+    // derniers ne suffisait pas toujours.
+    const forced = (this._timeoutFx && this._timeoutFx.win) || null;
+    if (forced === 'force' && this._playerHP > 0) { this._enemyHP = 0; }
+    else if (forced === 'lose' && this._enemyHP > 0) { this._playerHP = 0; }
+
     let victory, koDealt = false, koTaken = false, resultSub = '';
     if (this._enemyHP <= 0) { victory = true; koDealt = true; resultSub = 'KO au round ' + this._currentRound; }
     else if (this._playerHP <= 0) { victory = false; koTaken = true; resultSub = 'KO subi au round ' + this._currentRound; }
@@ -3664,7 +3686,10 @@ const RC = {
     this.addFollowers(folGain, victory ? (this._isBoss ? 'Combat final' : 'Victoire narrative') : 'Défaite');
     if (!this._isTournament) { c.narrativeCombat++; c.fightIndex++; }
     c.combatsFought = (c.combatsFought || 0) + 1;
-    if (!this._isBoss && !this._isTournament) this.playMatchday(this._scheduledId, victory);
+    if (!this._isBoss && !this._isTournament) {
+      this.playMatchday(this._scheduledId, victory);
+      if (this.isScriptedSeason()) this.applyAmateurProgressive();
+    }
     if (victory) { c.seasonWins++; c.totalWins++; } else { c.seasonLosses++; c.totalLosses++; }
     if (koDealt) { c.seasonKO++; c.totalKO++; }
     this.addSatis(victory ? 3 * (c.sponsor.fx.demand || 1) : -4 * (c.sponsor.fx.demand || 1));
@@ -3683,7 +3708,7 @@ const RC = {
       if (victory) c.rival.h2hWins++; else c.rival.h2hLosses++;
     }
     this.recalcGen();
-    const destroyed = c.state <= 0 && !this._isBoss;
+    const destroyed = c.state <= 0 && !this._isBoss && !this._isTournament;
     const narr = victory ? this.pick(this.POST_NARRATIONS_WIN) : this.pick(this.POST_NARRATIONS_LOSS);
 
     let h = '';
@@ -3767,8 +3792,12 @@ const RC = {
     const c = this.state.career;
     const theoric = 61 + leagueIdx * 7;
     if (!c) return theoric;
-    // On suit le joueur, avec un garde-fou si sa note est aberrante
-    return Math.round(Math.max(theoric - 10, Math.min(theoric + 12, c.gen)));
+    // On suit le joueur, avec un garde-fou si sa note est aberrante.
+    // v0.10.0 — chaque saison passée dans la même ligue affaiblit un peu
+    // le plateau : un joueur qui stagne finit par la dominer, ce qui évite
+    // les carrières interminables passées à faire l'ascenseur.
+    const stuck = Math.min(12, c.seasonsInLeague || 0);
+    return Math.round(Math.max(theoric - 10, Math.min(theoric + 12, c.gen - 5 - stuck)));
   },
 
   // Plateau contrasté : quelques robots au-dessus, quelques-uns en
@@ -3788,13 +3817,19 @@ const RC = {
     const bots = [];
     let id = 0;
 
+    // v0.10.0 — un radical ne peut apparaître qu'une fois par plateau.
+    // Auparavant seul le nom complet était vérifié, ce qui laissait passer
+    // BLAZE-72 et BLAZE-92, ou RAVEN-67 et RAVEN-79, dans la même ligue.
+    const myRoot = (c.name || '').split('-')[0].toUpperCase();
+    used[myRoot] = true;
+    if (c.rival) used[(c.rival.name || '').split('-')[0].toUpperCase()] = true;
+
     this.STANDING_TIERS.forEach(tier => {
       for (let i = 0; i < tier.n; i++) {
-        let name;
-        do {
-          name = this.pick(this.ROBOT_NAMES_POOL) + '-' + Math.floor(10 + Math.random()*90);
-        } while (used[name]);
-        used[name] = true;
+        let root, guard = 0;
+        do { root = this.pick(this.ROBOT_NAMES_POOL); } while (used[root] && guard++ < 80);
+        used[root] = true;
+        const name = root + '-' + Math.floor(10 + Math.random()*90);
         const chassis = this.pick(this.CHASSIS);
         const ia = this.pick(this.IA_TYPES);
         const spec = Math.max(25, Math.min(99, base + tier.delta + Math.floor(Math.random()*7) - 3));
@@ -3907,6 +3942,12 @@ const RC = {
       }
     }
 
+    // v0.10.0 — quand le rival évolue dans une autre ligue, personne ne
+    // jouait ses matchs : son bilan restait à 0V-0D et sa performance à 0%,
+    // si bien qu'il ne pouvait jamais monter par lui-même. Il se contentait
+    // d'être tiré une division derrière le joueur par la règle d'écart.
+    if (!c.standings.some(b => b.isRival)) this.simulateRivalMatchday();
+
     const others = c.standings.filter(b => b.id !== playerOpponentId);
     for (let i = others.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -3928,6 +3969,32 @@ const RC = {
                                   c.rival.wins, c.rival.losses, c.rival.leagueIdx, 0, 0, false);
     const rs = c.standings.find(b => b.isRival);
     if (rs) rs.spec = c.rival.gen;
+  },
+
+  // Une journée du rival dans sa propre ligue
+  simulateRivalMatchday() {
+    const c = this.state.career;
+    const r = c.rival;
+    if ((r.seasonWins + r.seasonLosses) >= this.SEASON_FIGHTS) return;
+    // Sa réussite dépend de son niveau face à sa propre ligue
+    const expected = this.leagueBaseSpec(r.leagueIdx);
+    const p = Math.max(0.25, Math.min(0.75, (r.perf || 0.5) + (r.gen - expected) / 160));
+    if (Math.random() < p) {
+      r.seasonWins++; r.wins++;
+      if (Math.random() < 0.12) r.ko++;
+    } else { r.seasonLosses++; r.losses++; }
+    r.gen = this.computeGen(r.stats, r.state || 92, r.wins, r.losses, r.leagueIdx, 0, 0, false);
+  },
+
+  // Termine la saison du rival hors ligue, pour que son bilan soit complet
+  completeRivalSeason() {
+    const c = this.state.career;
+    const r = c.rival;
+    if (c.standings && c.standings.some(b => b.isRival)) return;
+    let guard = 0;
+    while ((r.seasonWins + r.seasonLosses) < this.SEASON_FIGHTS && guard++ < 40) {
+      this.simulateRivalMatchday();
+    }
   },
 
   // Table complète, joueur inclus, triée
@@ -3969,10 +4036,60 @@ const RC = {
     return 'stay';
   },
 
+  // v0.10.0 — la 4e place du joueur se construit journée après journée au
+  // lieu d'être plaquée au bilan. Auparavant il pouvait consulter le
+  // classement à la journée 20 et se voir 9e, avant de devenir 4e au bilan.
+  // Cible de victoires de la saison Amateur, figée à la création.
+  // Bornée pour que les trois robots de tête (+1, +2, +3) tiennent dans
+  // les 20 journées sans jamais se retrouver à égalité avec le joueur.
+  amateurTargetWins() {
+    const c = this.state.career;
+    if (!c._amateurTarget) c._amateurTarget = 12 + Math.floor(Math.random() * 5);
+    return c._amateurTarget;
+  },
+
+  applyAmateurProgressive() {
+    const c = this.state.career;
+    if (!c.standings) return;
+    const j = Math.min(this.SEASON_FIGHTS, c.fightIndex);
+    const pw = c.seasonWins;
+    const prog = j / this.SEASON_FIGHTS;
+
+    const rivalRow = c.standings.find(b => b.isRival);
+    const pool = c.standings.filter(b => !b.isRival);
+    if (!c._amateurOrder) {
+      // Ordre figé en début de saison pour que le classement reste stable
+      const shuffled = pool.slice();
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const k = Math.floor(Math.random() * (i + 1));
+        const t = shuffled[i]; shuffled[i] = shuffled[k]; shuffled[k] = t;
+      }
+      c._amateurOrder = shuffled.map(b => b.id);
+    }
+    const ordered = c._amateurOrder.map(id => this.standingById(id)).filter(Boolean);
+
+    const setW = (bot, w) => {
+      bot.w = Math.max(0, Math.min(j, Math.round(w)));
+      bot.l = j - bot.w;
+      bot.j = j;
+    };
+    // 1er devant le joueur, rival 2e, un 3e devant lui : le joueur est 4e
+    const cap = Math.min(this.SEASON_FIGHTS, this.amateurTargetWins() + 3);
+    if (ordered[0]) setW(ordered[0], Math.min(cap,     pw + 3 * prog));
+    if (rivalRow)   setW(rivalRow,   Math.min(cap - 1, pw + 2 * prog));
+    if (ordered[1]) setW(ordered[1], Math.min(cap - 2, pw + 1 * prog));
+    // Tous les autres restent derrière
+    ordered.slice(2).forEach((bot, i) => {
+      setW(bot, pw - (1 + (i % 5)) * prog);
+    });
+    if (rivalRow) { c.rival.seasonWins = rivalRow.w; c.rival.seasonLosses = rivalRow.l; }
+  },
+
   // Termine la saison des autres robots pour que la table finale soit complète
   completeSeason() {
     const c = this.state.career;
     this.ensureStandings();
+    this.completeRivalSeason();
     c.standings.forEach(b => {
       while (b.j < this.SEASON_FIGHTS) {
         const won = Math.random() < 0.5 + (b.spec - this.leagueBaseSpec(c.leagueIdx || 0)) / 120;
@@ -4012,7 +4129,7 @@ const RC = {
     h += '<div class="next-hint" style="margin-bottom:12px"><span class="next-hint-icon">🏁</span>';
     h += '<span class="next-hint-text">La saison commence.<br>Le classement s\'établira dès la première journée.</span></div>';
 
-    h += '<div class="stand-table">';
+    h += '<div class="stand-table preview">';
     h += '<div class="stand-head"><span class="st-rank">·</span><span class="st-name">Robot</span>';
     h += '<span class="st-pts">Niveau</span></div>';
     rows.forEach(r => {
@@ -4404,8 +4521,11 @@ const RC = {
     c.name = c.newName;
     c.baptized = true;
     delete c.newName;
+    // v0.10.0 — la promotion n'était jamais appliquée : le joueur montait
+    // à la 3e place, recevait sa prime, se faisait baptiser… et restait en
+    // Amateur. Le bilan se rejouait alors et le renvoyait en maintien.
     this.saveState();
-    this.showCareer();
+    this.nextSeason('promo');
   },
 
   // ------------------------------------------------------------
@@ -4667,7 +4787,7 @@ const RC = {
     // Calibré sur les stats RÉELLES du joueur, pas sur sa note : celle-ci
     // intègre des bonus (palmarès, notoriété) qui n'existent pas en combat,
     // et la reconversion note → stats surestimait fortement l'adversaire.
-    this._currentOpponent = this.weakerClone(opp, 0.78);
+    this._currentOpponent = this.weakerClone(opp, 0.96);
     this._currentRound = 0;
     this._playerHP = 100; this._enemyHP = 100;
     this._combatLog = []; this._roundWins = 0; this._momentum = 0;
@@ -4907,7 +5027,19 @@ const RC = {
       const chance = stI
         ? Math.max(0.15, Math.min(0.88, baseChance + (c.gen - stI.spec) / 120))
         : baseChance;
-      const won = Math.random() < chance;
+      let won = Math.random() < chance;
+
+      // v0.10.0 — saison Amateur : les combats simulés compensent les
+      // résultats narratifs pour converger vers une cible de victoires.
+      // C'est ce qui permet à la 4e place d'être exacte sans jamais
+      // corriger le classement brutalement à la fin.
+      if (this.isScriptedSeason()) {
+        const played = c.fightIndex + i;
+        const left = this.SEASON_FIGHTS - played;
+        const need = this.amateurTargetWins() - c.seasonWins;
+        if (need >= left) won = true;            // il faut tout gagner
+        else if (need <= 0) won = false;         // la cible est atteinte
+      }
       const ko = won && Math.random() < koChance;
       let dmg = 0;
       if (Math.random() < 0.2) {
@@ -4938,6 +5070,7 @@ const RC = {
     const wonCount = results.filter(r => r.won).length;
     results.forEach(r => this.playMatchday(r.standingId, r.won));
     c.fightIndex += batch;
+    if (this.isScriptedSeason()) this.applyAmateurProgressive();
     c.simulatedResults = c.simulatedResults.concat(results);
     this.addFollowers(folDelta, 'Combats de ligue');
     this.addSatis((wonCount >= 2 ? 2 : -3) * (c.sponsor.fx.demand || 1));
@@ -5133,6 +5266,11 @@ const RC = {
   showSeasonSummary() {
     const c = this.state.career;
     const li = c.leagueIdx || 0;
+    // v0.10.0 — verrou : le bilan déjà rendu ne doit pas se recalculer.
+    // Sinon un retour sur l'écran de carrière permettait de le rejouer,
+    // ce qui faisait traverser deux inter-saisons et vidait les Cores.
+    if (c.summaryDone) { this.resumeAfterSummary(); return; }
+    c.summaryDone = true;
     const winRate = c.seasonWins / Math.max(1, c.seasonWins + c.seasonLosses);
 
     // v0.8.0 — le classement décide seul de la promotion et de la relégation.
@@ -5243,6 +5381,14 @@ const RC = {
     this.goTo('season-summary');
   },
 
+  // Reprend le parcours là où il en était si le bilan a déjà été rendu
+  resumeAfterSummary() {
+    const c = this.state.career;
+    if (c.leagueIdx === 5 && this.zoneOf(c.lastRank || 15) === 'promo') { this.showTournament(); return; }
+    if (this.isScriptedSeason() && c.lastRank === 4) { this.showDisqualification(); return; }
+    this.showInterSeason();
+  },
+
   enterTournament() {
     this.buildTournament();
     this.saveState();
@@ -5252,8 +5398,16 @@ const RC = {
   nextSeason(result) {
     const c = this.state.career;
     const li = c.leagueIdx || 0;
-    if (result === 'promo') { c.leagueIdx = li + 1; c.league = this.LEAGUES[c.leagueIdx]; }
-    else if (result === 'releg') { c.leagueIdx = Math.max(0, li - 1); c.league = this.LEAGUES[c.leagueIdx]; }
+    // v0.10.0 — compteur de stagnation, remis à zéro uniquement à la
+    // promotion. Un joueur qui fait l'ascenseur entre deux ligues doit
+    // finir par franchir le palier, sinon sa carrière dépasse 30 saisons.
+    if (result === 'promo') {
+      c.leagueIdx = li + 1; c.league = this.LEAGUES[c.leagueIdx];
+      c.seasonsInLeague = 0;
+    } else {
+      if (result === 'releg') { c.leagueIdx = Math.max(0, li - 1); c.league = this.LEAGUES[c.leagueIdx]; }
+      c.seasonsInLeague = (c.seasonsInLeague || 0) + 1;
+    }
     c.state = Math.max(1, c.state - (2 + Math.floor(Math.random()*3)));
     c.interOffers = null;
     if (c.rivalPending) { this.advanceRival(); c.rivalPending = false; }
@@ -5615,6 +5769,7 @@ const RC = {
     c.narrativeCombat = 0; c.simulatedResults = [];
     c.fightIndex = 0; c.atoutsLeft = 3; c.interOffers = null; c.midRepairUsed = false;
     c.standings = null; c.schedule = null;   // plateau renouvelé chaque saison
+    c.summaryDone = false; c._amateurOrder = null;
 
     const fx = c.ia.fx || {};
     if (fx.seasonStat) {
