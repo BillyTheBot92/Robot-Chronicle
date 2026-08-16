@@ -72,16 +72,10 @@ function hideBoot() {
   setTimeout(function () { boot.style.display = 'none'; }, 400);
 }
 frame.addEventListener('load', hideBoot);
-
-// Si l'iframe est déjà chargée (cache, retour arrière), l'événement
-// 'load' est PASSÉ avant que l'écouteur soit posé : le voile resterait
-// alors affiché et bloquerait tous les taps sur le jeu.
-try {
-  var d = frame.contentDocument;
-  if (d && d.readyState === 'complete') hideBoot();
-} catch (e) { /* même origine attendue, on ignore */ }
-
-setTimeout(hideBoot, 2500);   // filet de sécurité, raccourci
+// Si l'iframe est déjà chargée (cache), l'événement 'load' est PASSÉ
+// avant que l'écouteur soit posé : le voile bloquerait alors les taps.
+try { var d = frame.contentDocument; if (d && d.readyState === 'complete') hideBoot(); } catch (e) {}
+setTimeout(hideBoot, 2500);
 
 // ----------------------------------------------------------------
 // Service worker : enregistrement et détection de mise à jour
