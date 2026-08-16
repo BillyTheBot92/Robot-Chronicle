@@ -56,6 +56,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* === SPLASH SCREEN === */
 #splash{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;z-index:1000;background:var(--bg);min-height:100vh;min-height:100dvh}
 #splash.active{display:flex}
+#splash{overflow:hidden}
 #splash .splash-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;opacity:0;animation:splashArtIn 1.1s ease-out .15s forwards;z-index:0}
 #splash .splash-fade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,14,39,.45) 0%,rgba(10,14,39,0) 18%,rgba(10,14,39,0) 88%,rgba(10,14,39,.35) 100%)}
 @keyframes splashArtIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
@@ -955,6 +956,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #jserr b{color:var(--red);display:block;margin-bottom:4px}
 .splash-ver{position:absolute;top:10px;right:12px;z-index:6;font-family:var(--font-mono);
   font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.35)}
+#diag{position:fixed;left:8px;right:8px;bottom:8px;z-index:9998;display:none;
+  background:rgba(0,240,255,.10);border:1px solid var(--cyan);border-radius:10px;
+  padding:8px 12px;font-family:var(--font-mono);font-size:10px;color:var(--cyan);text-align:center}
 </style>
 </head>
 <body>
@@ -977,7 +981,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <!-- v0.12.0 — zone de tap explicite au-dessus de tous les calques.
        En v0.11.1 l'écouteur n'était posé qu'après 2 s et en once:true :
        un appui pendant le chargement était perdu définitivement. -->
-  <div class="splash-ver">v0.12.3</div>
+  <div class="splash-ver">v0.12.4</div>
   <div class="splash-tapzone" id="splash-tapzone"></div>
   <div class="splash-hint" id="splash-hint">D&eacute;marrage&hellip;</div>
 </div>
@@ -1052,7 +1056,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <a class="support-btn" id="support-btn" href="https://www.paypal.me/" target="_blank" rel="noopener noreferrer">☕ Soutenir le créateur</a>
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
-    <div class="version" id="version-text">v0.12.3</div>
+    <div class="version" id="version-text">v0.12.4</div>
     <div class="credit">© 2026 Alexandre Lavrard — Tous droits réservés</div>
     <div class="credit">Robot Chronicle — créé par Alexandre Lavrard</div>
   </div>
@@ -1258,20 +1262,19 @@ input,textarea{-webkit-user-select:text;user-select:text}
 </div><!-- /app -->
 
 <div id="jserr"></div>
+<div id="diag"></div>
 
 <script>
 /* ================================================================
-   v0.12.3 — SORTIE DU SPLASH, AUTONOME
-   Placé HORS du conteneur .app, entre le balisage et le moteur.
-   Ne dépend de rien : ni de RC, ni de DOMContentLoaded, ni d'un
-   événement tactile. Même si le moteur du jeu échoue à se charger,
-   l'écran passe.
+   v0.12.4 — SORTIE DU SPLASH
+   Le masquage se fait en style INLINE (display:none), qui bat
+   toutes les règles CSS. Retirer la classe .active ne suffisait
+   pas : une règle ou un ré-affichage pouvait la reprendre.
    ================================================================ */
 (function () {
   var DELAY = 2600;
   var done = false;
 
-  // Sur mobile il n'y a pas de console : toute erreur JS s'affiche.
   window.addEventListener('error', function (e) {
     var box = document.getElementById('jserr');
     if (!box) return;
@@ -1280,11 +1283,26 @@ input,textarea{-webkit-user-select:text;user-select:text}
       '\nligne ' + (e.lineno || '?') + '\n\n';
   });
 
-  function show(id) {
+  function diag(txt) {
+    var d = document.getElementById('diag');
+    if (!d) return;
+    d.textContent = txt;
+    d.style.display = 'block';
+    setTimeout(function () { d.style.display = 'none'; }, 4000);
+  }
+
+  function hardShow(id) {
     var all = document.querySelectorAll('.screen');
-    for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
+    for (var i = 0; i < all.length; i++) {
+      all[i].classList.remove('active');
+      all[i].style.display = 'none';        // inline : gagne sur tout
+    }
     var t = document.getElementById(id);
-    if (t) { t.classList.add('active'); t.scrollTop = 0; }
+    if (t) {
+      t.classList.add('active');
+      t.style.display = 'block';
+      t.scrollTop = 0;
+    }
     if (window.scrollTo) window.scrollTo(0, 0);
   }
 
@@ -1292,16 +1310,30 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (done) return;
     done = true;
     window.__splashDone = true;
+
     var seen = false;
     try {
       var raw = localStorage.getItem('rc_save');
       if (raw) seen = !!JSON.parse(raw).tutoSeen;
     } catch (err) { seen = false; }
 
+    // On laisse le moteur faire son travail s'il est là…
+    var engineOk = false;
     if (window.RC && typeof window.RC.afterSplash === 'function') {
-      try { window.RC.afterSplash(); return; } catch (err) {}
+      try { window.RC.afterSplash(); engineOk = true; } catch (err) {
+        var box = document.getElementById('jserr');
+        if (box) { box.style.display = 'block'; box.innerHTML += '<b>afterSplash</b>' + err.message + '\n\n'; }
+      }
     }
-    show(seen ? 'home' : 'tuto');
+
+    // …mais dans TOUS les cas le splash disparaît, en dur.
+    var sp = document.getElementById('splash');
+    if (sp) { sp.classList.remove('active'); sp.style.display = 'none'; }
+
+    // Si aucun écran n'est visible, on force.
+    var act = document.querySelector('.screen.active');
+    if (!act || act.id === 'splash') { hardShow(seen ? 'home' : 'tuto'); act = document.querySelector('.screen.active'); }
+    diag('moteur:' + (engineOk ? 'ok' : 'absent') + ' · écran:' + (act ? act.id : 'aucun'));
   }
 
   window.__leaveSplash = leaveSplash;
@@ -1312,8 +1344,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
     z.addEventListener(ev, function () { leaveSplash(); });
   });
 
-  // Décompte visible : seul moyen, sur mobile, de savoir si la
-  // minuterie tourne ou si le JavaScript s'est figé.
   var hint = document.getElementById('splash-hint');
   if (hint) hint.classList.add('on');
   var t0 = Date.now();
@@ -1321,11 +1351,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     if (done) { clearInterval(tick); return; }
     var rest = Math.ceil((DELAY - (Date.now() - t0)) / 1000);
     if (hint) hint.textContent = 'Démarrage… ' + (rest > 0 ? rest : 0);
-    if (Date.now() - t0 > DELAY + 1500) {
-      clearInterval(tick);
-      if (hint) hint.textContent = 'Bascule forcée';
-      show('home');
-    }
+    if (Date.now() - t0 > DELAY + 1500) { clearInterval(tick); leaveSplash(); }
   }, 200);
 })();
 </script>
@@ -1339,7 +1365,7 @@ const RC = {
   //  Châssis, IA, sponsors, ligues, économie, paliers
   // ============================================================
 
-  VERSION: '0.12.3',
+  VERSION: '0.12.4',
 
   // --- Structure de saison (GDD RÈGLES § 5) ---
   SEASON_FIGHTS: 20,          // 5 narratifs + 15 simulés
@@ -5010,10 +5036,17 @@ const RC = {
   // correctifs empilés, parce que le contenu était injecté après
   // la navigation. On rend d'abord, on navigue ensuite.
   goTo(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    // Le display est piloté en INLINE, comme dans le script de
+    // démarrage : les deux doivent parler le même langage, sinon un
+    // écran masqué en dur ne peut plus jamais réapparaître.
+    document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    });
     const t = this.el(screenId);
     if (!t) { console.warn('Écran inconnu:', screenId); return; }
     t.classList.add('active');
+    t.style.display = 'block';
     t.scrollTop = 0;
     if (window.scrollTo) window.scrollTo(0, 0);
     this._screen = screenId;
