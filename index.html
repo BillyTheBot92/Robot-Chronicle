@@ -17,7 +17,7 @@
   #frame{width:100%;height:100%;border:0;display:block}
 
   #boot{
-    position:fixed;inset:0;background:#0A0E27;z-index:10;
+    position:fixed;inset:0;background:#0A0E27;z-index:10;pointer-events:none;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     font-family:'Fira Code',monospace;color:#00F0FF;
     transition:opacity .4s;
@@ -64,12 +64,24 @@
 var frame = document.getElementById('frame');
 var boot  = document.getElementById('boot');
 
+var bootGone = false;
 function hideBoot() {
+  if (bootGone) return;
+  bootGone = true;
   boot.classList.add('hidden');
   setTimeout(function () { boot.style.display = 'none'; }, 400);
 }
 frame.addEventListener('load', hideBoot);
-setTimeout(hideBoot, 6000);   // filet de sécurité
+
+// Si l'iframe est déjà chargée (cache, retour arrière), l'événement
+// 'load' est PASSÉ avant que l'écouteur soit posé : le voile resterait
+// alors affiché et bloquerait tous les taps sur le jeu.
+try {
+  var d = frame.contentDocument;
+  if (d && d.readyState === 'complete') hideBoot();
+} catch (e) { /* même origine attendue, on ignore */ }
+
+setTimeout(hideBoot, 2500);   // filet de sécurité, raccourci
 
 // ----------------------------------------------------------------
 // Service worker : enregistrement et détection de mise à jour
