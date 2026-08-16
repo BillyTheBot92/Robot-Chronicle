@@ -945,6 +945,16 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .shop-done span, .support-btn, button, [onclick]{
   touch-action: manipulation;
 }
+
+/* v0.12.1 — diagnostic visible : sur mobile il n'y a pas de console.
+   Toute erreur JS s'affiche ici, sinon on cherche à l'aveugle. */
+#jserr{position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;display:none;
+  background:#2a0a12;border:1px solid var(--red);border-radius:10px;padding:10px 12px;
+  font-family:var(--font-mono);font-size:10px;line-height:1.5;color:#ffb3c0;
+  max-height:42vh;overflow:auto;white-space:pre-wrap;word-break:break-word}
+#jserr b{color:var(--red);display:block;margin-bottom:4px}
+.splash-ver{position:absolute;top:10px;right:12px;z-index:6;font-family:var(--font-mono);
+  font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.35)}
 </style>
 </head>
 <body>
@@ -967,8 +977,77 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <!-- v0.12.0 — zone de tap explicite au-dessus de tous les calques.
        En v0.11.1 l'écouteur n'était posé qu'après 2 s et en once:true :
        un appui pendant le chargement était perdu définitivement. -->
+  <div class="splash-ver">v0.12.1</div>
   <div class="splash-tapzone" id="splash-tapzone"></div>
-  <div class="splash-hint" id="splash-hint">Toucher pour continuer</div>
+  <div class="splash-hint" id="splash-hint">D&eacute;marrage&hellip;</div>
+</div>
+
+<div id="jserr"></div>
+
+<script>
+/* ================================================================
+   v0.12.1 — SORTIE DU SPLASH, AUTONOME
+   Ce script ne dépend de RIEN : ni de l'objet RC, ni de
+   DOMContentLoaded, ni d'un événement tactile. Il s'exécute pendant
+   l'analyse du document, juste après le splash.
+   Même si tout le reste du jeu échoue à se charger, l'écran passe.
+   ================================================================ */
+(function () {
+  var DELAY = 2600;
+  var done = false;
+
+  // Toute erreur JS devient visible à l'écran : sur mobile il n'y a
+  // pas de console, et on cherchait à l'aveugle.
+  window.addEventListener('error', function (e) {
+    var box = document.getElementById('jserr');
+    if (!box) return;
+    box.style.display = 'block';
+    box.innerHTML += '<b>Erreur JS</b>' +
+      String(e.message || e.error || 'inconnue') +
+      '\nligne ' + (e.lineno || '?') + '\n\n';
+  });
+
+  function show(id) {
+    var all = document.querySelectorAll('.screen');
+    for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
+    var t = document.getElementById(id);
+    if (t) { t.classList.add('active'); t.scrollTop = 0; }
+  }
+
+  function leaveSplash() {
+    if (done) return;
+    done = true;
+    window.__splashDone = true;
+    var seen = false;
+    try {
+      var raw = localStorage.getItem('rc_save');
+      if (raw) seen = !!JSON.parse(raw).tutoSeen;
+    } catch (err) { seen = false; }
+
+    // Si le jeu s'est chargé correctement, on lui laisse la main.
+    if (window.RC && typeof window.RC.afterSplash === 'function') {
+      try { window.RC.afterSplash(seen); return; } catch (err) {}
+    }
+    // Sinon on bascule quand même, à la main.
+    show(seen ? 'home' : 'tuto');
+  }
+
+  window.__leaveSplash = leaveSplash;
+  setTimeout(leaveSplash, DELAY);
+
+  // Le tap reste possible, mais il n'est plus indispensable.
+  var z = document.getElementById('splash-tapzone');
+  if (z) {
+    ['pointerup', 'touchend', 'click'].forEach(function (ev) {
+      z.addEventListener(ev, function () { leaveSplash(); });
+    });
+  }
+  setTimeout(function () {
+    var h = document.getElementById('splash-hint');
+    if (h && !done) h.classList.add('on');
+  }, 400);
+})();
+</script>
   <!-- v0.8.0 — l'illustration porte déjà le titre et la promesse.
        Tout texte en surimpression se superposait au lettrage. -->
 </div>
@@ -1043,7 +1122,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <a class="support-btn" id="support-btn" href="https://www.paypal.me/" target="_blank" rel="noopener noreferrer">☕ Soutenir le créateur</a>
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
-    <div class="version" id="version-text">v0.12.0</div>
+    <div class="version" id="version-text">v0.12.1</div>
     <div class="credit">© 2026 Alexandre Lavrard — Tous droits réservés</div>
     <div class="credit">Robot Chronicle — créé par Alexandre Lavrard</div>
   </div>
@@ -1258,7 +1337,7 @@ const RC = {
   //  Châssis, IA, sponsors, ligues, économie, paliers
   // ============================================================
 
-  VERSION: '0.12.0',
+  VERSION: '0.12.1',
 
   // --- Structure de saison (GDD RÈGLES § 5) ---
   SEASON_FIGHTS: 20,          // 5 narratifs + 15 simulés
@@ -6270,39 +6349,29 @@ const RC = {
     this.load();
     this.setText('version-text', 'v' + this.VERSION);
     this.renderHome();
+    // Le splash est géré par un script autonome placé juste après son
+    // balisage : il ne dépend ni de RC, ni de DOMContentLoaded, ni
+    // d'un événement tactile. Si le jeu s'est chargé avant la fin du
+    // délai, ce script nous rend la main via afterSplash().
+    // Si le splash est DÉJÀ passé quand init() s'exécute, on rattrape.
+    if (window.__splashDone) this.afterSplash(this.state.tutoSeen);
 
-    // ------------------------------------------------------------
-    //  SPLASH — sortie garantie
-    //  Trois voies indépendantes : tap, clavier, minuterie.
-    //  Les écouteurs sont posés IMMÉDIATEMENT et sur plusieurs
-    //  types d'événement — un appui n'est jamais perdu.
-    // ------------------------------------------------------------
-    let left = false;
-    const leave = () => {
-      if (left) return;
-      left = true;
-      clearTimeout(this._splashT);
-      if (!this.state.tutoSeen) this.showTuto(0);
-      else { this.renderHome(); this.goTo('home'); }
-    };
-    this._leaveSplash = leave;
-
-    const zone = this.el('splash-tapzone') || this.el('splash');
-    if (zone) {
-      ['click', 'touchend', 'pointerdown', 'pointerup'].forEach(ev => {
-        zone.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); leave(); }, { passive: false });
-      });
-    }
-    // Filet : un tap n'importe où sur l'écran splash
-    const sp = this.el('splash');
-    if (sp && sp !== zone) sp.addEventListener('click', leave);
-    document.addEventListener('keydown', e => {
-      if (!left && (e.key === 'Enter' || e.key === ' ')) leave();
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      this._installEvt = e;
+      const b = this.el('btn-install');
+      if (b) b.style.display = '';
     });
+  },
 
-    const hint = this.el('splash-hint');
-    setTimeout(() => { if (hint && !left) hint.classList.add('on'); }, 900);
-    this._splashT = setTimeout(leave, 3200);
+  // Appelé par le script autonome du splash, ou depuis init() si le
+  // splash s'est terminé avant que le jeu soit prêt.
+  afterSplash() {
+    if (this._splashHandled) return;
+    this._splashHandled = true;
+    this.renderHome();
+    if (!this.state.tutoSeen) this.showTuto(0);
+    else this.goTo('home');
   },
 
   installApp() {
@@ -6329,7 +6398,9 @@ const RC = {
   confirmNewCareer() { this.newCareer(); }
 };
 window.RC = RC;
-document.addEventListener('DOMContentLoaded', function(){ RC.init(); });
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", function(){ RC.init(); });
+} else { RC.init(); }
 })();
 </script>
 </body>
