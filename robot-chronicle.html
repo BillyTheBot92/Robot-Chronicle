@@ -977,92 +977,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <!-- v0.12.0 — zone de tap explicite au-dessus de tous les calques.
        En v0.11.1 l'écouteur n'était posé qu'après 2 s et en once:true :
        un appui pendant le chargement était perdu définitivement. -->
-  <div class="splash-ver">v0.12.2</div>
+  <div class="splash-ver">v0.12.3</div>
   <div class="splash-tapzone" id="splash-tapzone"></div>
   <div class="splash-hint" id="splash-hint">D&eacute;marrage&hellip;</div>
-</div>
-
-<div id="jserr"></div>
-
-<script>
-/* ================================================================
-   v0.12.1 — SORTIE DU SPLASH, AUTONOME
-   Ce script ne dépend de RIEN : ni de l'objet RC, ni de
-   DOMContentLoaded, ni d'un événement tactile. Il s'exécute pendant
-   l'analyse du document, juste après le splash.
-   Même si tout le reste du jeu échoue à se charger, l'écran passe.
-   ================================================================ */
-(function () {
-  var DELAY = 2600;
-  var done = false;
-
-  // Toute erreur JS devient visible à l'écran : sur mobile il n'y a
-  // pas de console, et on cherchait à l'aveugle.
-  window.addEventListener('error', function (e) {
-    var box = document.getElementById('jserr');
-    if (!box) return;
-    box.style.display = 'block';
-    box.innerHTML += '<b>Erreur JS</b>' +
-      String(e.message || e.error || 'inconnue') +
-      '\nligne ' + (e.lineno || '?') + '\n\n';
-  });
-
-  function show(id) {
-    var all = document.querySelectorAll('.screen');
-    for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
-    var t = document.getElementById(id);
-    if (t) { t.classList.add('active'); t.scrollTop = 0; }
-  }
-
-  function leaveSplash() {
-    if (done) return;
-    done = true;
-    window.__splashDone = true;
-    var seen = false;
-    try {
-      var raw = localStorage.getItem('rc_save');
-      if (raw) seen = !!JSON.parse(raw).tutoSeen;
-    } catch (err) { seen = false; }
-
-    // Si le jeu s'est chargé correctement, on lui laisse la main.
-    if (window.RC && typeof window.RC.afterSplash === 'function') {
-      try { window.RC.afterSplash(seen); return; } catch (err) {}
-    }
-    // Sinon on bascule quand même, à la main.
-    show(seen ? 'home' : 'tuto');
-  }
-
-  window.__leaveSplash = leaveSplash;
-  setTimeout(leaveSplash, DELAY);
-
-  // Le tap reste possible, mais il n'est plus indispensable.
-  var z = document.getElementById('splash-tapzone');
-  if (z) {
-    ['pointerup', 'touchend', 'click'].forEach(function (ev) {
-      z.addEventListener(ev, function () { leaveSplash(); });
-    });
-  }
-  // Décompte visible : c'est le seul moyen, sur mobile, de savoir si
-  // la minuterie tourne vraiment ou si le JavaScript s'est figé.
-  var hint = document.getElementById('splash-hint');
-  if (hint) hint.classList.add('on');
-  var t0 = Date.now();
-  var tick = setInterval(function () {
-    if (done) { clearInterval(tick); return; }
-    var rest = Math.ceil((DELAY - (Date.now() - t0)) / 1000);
-    if (hint) hint.textContent = 'Démarrage… ' + (rest > 0 ? rest : 0);
-    if (Date.now() - t0 > DELAY + 1200) {
-      // La minuterie a dépassé son terme sans que la bascule ait eu
-      // lieu : on force, et on le signale.
-      clearInterval(tick);
-      if (hint) hint.textContent = 'Bascule forcée';
-      show('home');
-    }
-  }, 200);
-})();
-</script>
-  <!-- v0.8.0 — l'illustration porte déjà le titre et la promesse.
-       Tout texte en surimpression se superposait au lettrage. -->
 </div>
 
 <!-- ================================================================
@@ -1135,7 +1052,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <a class="support-btn" id="support-btn" href="https://www.paypal.me/" target="_blank" rel="noopener noreferrer">☕ Soutenir le créateur</a>
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
-    <div class="version" id="version-text">v0.12.2</div>
+    <div class="version" id="version-text">v0.12.3</div>
     <div class="credit">© 2026 Alexandre Lavrard — Tous droits réservés</div>
     <div class="credit">Robot Chronicle — créé par Alexandre Lavrard</div>
   </div>
@@ -1340,6 +1257,78 @@ input,textarea{-webkit-user-select:text;user-select:text}
 
 </div><!-- /app -->
 
+<div id="jserr"></div>
+
+<script>
+/* ================================================================
+   v0.12.3 — SORTIE DU SPLASH, AUTONOME
+   Placé HORS du conteneur .app, entre le balisage et le moteur.
+   Ne dépend de rien : ni de RC, ni de DOMContentLoaded, ni d'un
+   événement tactile. Même si le moteur du jeu échoue à se charger,
+   l'écran passe.
+   ================================================================ */
+(function () {
+  var DELAY = 2600;
+  var done = false;
+
+  // Sur mobile il n'y a pas de console : toute erreur JS s'affiche.
+  window.addEventListener('error', function (e) {
+    var box = document.getElementById('jserr');
+    if (!box) return;
+    box.style.display = 'block';
+    box.innerHTML += '<b>Erreur JS</b>' + String(e.message || e.error || 'inconnue') +
+      '\nligne ' + (e.lineno || '?') + '\n\n';
+  });
+
+  function show(id) {
+    var all = document.querySelectorAll('.screen');
+    for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
+    var t = document.getElementById(id);
+    if (t) { t.classList.add('active'); t.scrollTop = 0; }
+    if (window.scrollTo) window.scrollTo(0, 0);
+  }
+
+  function leaveSplash() {
+    if (done) return;
+    done = true;
+    window.__splashDone = true;
+    var seen = false;
+    try {
+      var raw = localStorage.getItem('rc_save');
+      if (raw) seen = !!JSON.parse(raw).tutoSeen;
+    } catch (err) { seen = false; }
+
+    if (window.RC && typeof window.RC.afterSplash === 'function') {
+      try { window.RC.afterSplash(); return; } catch (err) {}
+    }
+    show(seen ? 'home' : 'tuto');
+  }
+
+  window.__leaveSplash = leaveSplash;
+  setTimeout(leaveSplash, DELAY);
+
+  var z = document.getElementById('splash-tapzone');
+  if (z) ['pointerup', 'touchend', 'click'].forEach(function (ev) {
+    z.addEventListener(ev, function () { leaveSplash(); });
+  });
+
+  // Décompte visible : seul moyen, sur mobile, de savoir si la
+  // minuterie tourne ou si le JavaScript s'est figé.
+  var hint = document.getElementById('splash-hint');
+  if (hint) hint.classList.add('on');
+  var t0 = Date.now();
+  var tick = setInterval(function () {
+    if (done) { clearInterval(tick); return; }
+    var rest = Math.ceil((DELAY - (Date.now() - t0)) / 1000);
+    if (hint) hint.textContent = 'Démarrage… ' + (rest > 0 ? rest : 0);
+    if (Date.now() - t0 > DELAY + 1500) {
+      clearInterval(tick);
+      if (hint) hint.textContent = 'Bascule forcée';
+      show('home');
+    }
+  }, 200);
+})();
+</script>
 <script>
 (function(){
 "use strict";
@@ -1350,7 +1339,7 @@ const RC = {
   //  Châssis, IA, sponsors, ligues, économie, paliers
   // ============================================================
 
-  VERSION: '0.12.2',
+  VERSION: '0.12.3',
 
   // --- Structure de saison (GDD RÈGLES § 5) ---
   SEASON_FIGHTS: 20,          // 5 narratifs + 15 simulés
