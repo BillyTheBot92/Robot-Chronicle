@@ -4,7 +4,7 @@
    navigateur continue de servir l'ancienne version du jeu.
    ================================================================ */
 
-const CACHE_NAME = 'robot-chronicle-v0.12.0';
+const CACHE_NAME = 'robot-chronicle-v0.16.1';
 
 // Fichiers mis en cache dès l'installation
 const CORE_ASSETS = [
@@ -80,11 +80,19 @@ self.addEventListener('fetch', (event) => {
         return res;
       })
       .catch(() => {
-        // Hors ligne : on sert la version en cache
-        return caches.match(req).then((cached) => {
+        // Hors ligne : on sert la version en cache.
+        //
+        // v0.16.1 — G8 : caches.match() appelé sur l'objet global interroge
+        // TOUS les caches de l'origine. Sur billythebot92.github.io, chaque
+        // PWA a mis son propre index.html en cache : Robot Chronicle pouvait
+        // donc servir la page d'une autre application — symptôme constaté,
+        // splash figé au démarrage. On n'interroge plus que NOTRE cache.
+        return caches.open(CACHE_NAME).then((cache) => cache.match(req)).then((cached) => {
           if (cached) return cached;
           // Navigation sans correspondance : on renvoie la page d'accueil
-          if (req.mode === 'navigate') return caches.match('./index.html');
+          if (req.mode === 'navigate') {
+            return caches.open(CACHE_NAME).then((cache) => cache.match('./index.html'));
+          }
           return new Response('Hors ligne', {
             status: 503,
             statusText: 'Hors ligne',
