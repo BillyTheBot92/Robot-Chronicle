@@ -11,7 +11,7 @@
 <title>Robot Chronicle</title>
 <style>
 /* ================================================================
-   ROBOT CHRONICLE — © 2026 Alexandre Lavrard
+   ROBOT CHRONICLE — © 2026
    "De tas de ferraille à légende."
    ================================================================ */
 
@@ -849,7 +849,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
    Bordures et contours épaissis, lueurs sur les verdicts, zones du
    classement rendues lisibles. Aucune couleur de la charte n'est
    remplacée : on ne joue que sur l'épaisseur, l'opacité et la lueur,
-   pour éviter la répétition de teintes dont Alexandre ne veut pas.
+   pour éviter la répétition de teintes.
    ================================================================ */
 
 /* --- D1 · Cartes et panneaux : contours plus francs -------------- */
@@ -1271,7 +1271,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
     <br>
     <div class="install-btn" id="install-btn" style="display:none" onclick="RC.installApp()">📲 Installer l'application</div>
     <div class="version" id="version-text" onclick="RC.tapVersion()">v0.16.1</div>
-    <div class="credit">Robot Chronicle — créé par Alexandre Lavrard</div>
+    <div class="credit">Robot Chronicle</div>
   </div>
 </div>
 
@@ -3962,7 +3962,7 @@ const RC = {
   },
 
   // v0.16.0 — F4 : dans le rouge, plus aucun paiement n'est possible.
-  // Règle tranchée par Alexandre : aucune exception, pas même une
+  // Règle : aucune exception, pas même une
   // réparation d'urgence à crédit.
   inDebt() {
     const c = this.state.career;
@@ -6082,7 +6082,7 @@ const RC = {
   //
   // Le couplage agit EN AMONT, sur la cible de victoires de la saison,
   // jamais sur son résultat — le scénario doit rester invisible (R3).
-  // Trois interdits, posés par Alexandre :
+  // Trois interdits :
   //   1. Ne jamais bloquer une promotion déjà acquise à l'écran.
   //   2. Le joueur ne redescend jamais parce que le rival monte.
   //   3. Si le rival stagne en dessous, c'est LUI qu'on pousse.
@@ -6812,7 +6812,7 @@ const RC = {
   //   défaite nette ........ 0-3 ............ −3
   //   défaite par KO ....... 0-3 d'office ... −3
   //
-  // RÈGLE DU KO — tranchée avec Alexandre : le KO vaut le score maximum
+  // RÈGLE DU KO : le KO vaut le score maximum
   // QUEL QUE SOIT le round où il tombe. Un KO au round 1 clôt le combat
   // sur 1-0, ce qui ne vaudrait que +1 alors qu'écraser d'entrée est plus
   // dominant qu'une victoire 2-1 ; pire, un KO au round 3 après deux
@@ -7522,7 +7522,7 @@ const RC = {
   // dernier combat, hors ligue, sans arbitre.
   // ------------------------------------------------------------
 
-  // v0.16.0 — F8 : réécriture validée par Alexandre.
+  // v0.16.0 — F8 : réécriture validée.
   //
   // L'ancienne version était à la troisième personne, sous un titre
   // « HÉPHAÏSTOS » surgissant sans contexte — on ne savait pas d'où ça
@@ -7941,7 +7941,7 @@ const RC = {
     // sont grisées. Le joueur voit ce qu'il rate, ce qui donne du poids à
     // la situation, sans que ça devienne un piège sans fond.
     //
-    // RISQUE DE BLOCAGE, signalé par Alexandre : si TOUTES les options
+    // RISQUE DE BLOCAGE : si TOUTES les options
     // coûtent, l'écran devient une impasse — trois choix grisés et rien ne
     // se passe. On garantit donc qu'au moins une reste toujours cliquable.
     // Les options dont le coût n'est pas annoncé (fx.cores absent, effet
