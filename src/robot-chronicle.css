@@ -1,0 +1,1164 @@
+/* ================================================================
+   ROBOT CHRONICLE — © 2026
+   "De tas de ferraille à légende."
+   ================================================================ */
+
+/* === FONTS === */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+/* === RESET & GLOBAL === */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+body{background:#0A0E27;font-family:'Inter',sans-serif;color:#fff;display:flex;justify-content:center}
+.app{width:100%;max-width:430px;min-height:100vh;min-height:100dvh;position:relative;overflow:hidden}
+input,textarea{-webkit-user-select:text;user-select:text}
+
+/* === VARIABLES CSS === */
+:root{
+  --bg:#0A0E27;
+  --yellow:#F7E018;
+  --cyan:#00F0FF;
+  --pink:#FF2D6B;
+  --green:#4CAF50;
+  --blue:#2196F3;
+  --orange:#FF9800;
+  --purple:#CE93D8;
+  --card:rgba(255,255,255,0.03);
+  --border:rgba(0,240,255,0.12);
+  --text-dim:rgba(255,255,255,0.4);
+  --text-mid:rgba(255,255,255,0.6);
+  --font-title:'Orbitron',sans-serif;
+  --font-mono:'Fira Code',monospace;
+  --font-body:'Inter',sans-serif;
+}
+
+/* === SCREENS === */
+.screen{display:none;position:absolute;top:0;left:0;width:100%;height:100vh;height:100dvh;padding:15px;padding-bottom:60px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{display:block;animation:screenIn .35s ease-out}
+@keyframes screenIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* === SPLASH SCREEN === */
+/* v0.12 — #splash est un sélecteur d'ID : il l'emportait sur
+   .screen.active et l'écran restait affiché en permanence,
+   par-dessus tout le reste (z-index:1000). Il suit désormais
+   la même règle que les autres écrans. */
+#splash{display:none;padding:0;z-index:1000;background:var(--bg);min-height:100vh;min-height:100dvh}
+#splash.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+#splash.active{display:flex}
+#splash .splash-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;opacity:0;animation:splashArtIn 1.1s ease-out .15s forwards;z-index:0}
+#splash .splash-fade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(10,14,39,.45) 0%,rgba(10,14,39,0) 18%,rgba(10,14,39,0) 88%,rgba(10,14,39,.35) 100%)}
+#splash .splash-inner{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding-bottom:14vh;width:100%}
+@keyframes splashArtIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
+@keyframes splashRobotIn{to{opacity:1;transform:scale(1)}}
+#splash .splash-title{display:none}
+#splash .splash-tagline{font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.72);letter-spacing:2px;opacity:0;animation:fadeUp .7s ease-out 1.3s forwards;text-shadow:0 2px 12px rgba(0,0,0,.9);text-align:center}
+#splash .splash-tap{position:absolute;bottom:38px;z-index:3;text-shadow:0 2px 10px rgba(0,0,0,.9);font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.25);letter-spacing:2px;text-transform:uppercase;opacity:0;animation:blink 1.5s ease-in-out 2s infinite}
+#splash .splash-glitch{position:absolute;width:100%;height:3px;z-index:2;background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),transparent);opacity:0;animation:glitchScan 2s linear .8s forwards;z-index:2}
+#splash::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,240,255,.012) 2px,rgba(0,240,255,.012) 4px);pointer-events:none}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}from{transform:translateY(8px)}}
+@keyframes blink{0%,100%{opacity:0}50%{opacity:.5}}
+@keyframes glitchScan{0%{top:-5px;opacity:.7}100%{top:105%;opacity:0}}
+
+/* === BACK / MENU BUTTON === */
+.btn-back{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--text-dim);font-family:var(--font-title);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-bottom:15px;transition:all .2s}
+.btn-back:active{background:rgba(0,240,255,.1);color:var(--cyan);border-color:rgba(0,240,255,.3)}
+
+/* === COMMON COMPONENTS === */
+
+/* Page titles */
+.page-title{font-family:var(--font-title);font-size:16px;font-weight:900;color:var(--cyan);text-align:center;text-shadow:0 0 15px rgba(0,240,255,.3);margin-bottom:5px}
+.page-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);text-align:center;margin-bottom:18px;line-height:1.5}
+
+/* Section titles */
+.section-title{font-family:var(--font-title);font-size:12px;font-weight:700;color:var(--yellow);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-left:4px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(0,240,255,.04),transparent);opacity:0;transition:opacity .25s}
+.card:active::before,.card.selected::before{opacity:1}
+.card.selected{border-color:var(--cyan);box-shadow:0 0 18px rgba(0,240,255,.12)}
+
+/* Primary button */
+.btn-primary{display:block;width:100%;padding:16px;border:none;border-radius:12px;font-family:var(--font-title);font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-align:center;transition:transform .15s}
+.btn-primary:active{transform:scale(.97)}
+.btn-yellow{background:linear-gradient(135deg,var(--yellow),#FFD700);color:var(--bg);box-shadow:0 0 25px rgba(247,224,24,.25)}
+.btn-red{background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;box-shadow:0 0 25px rgba(255,45,107,.25)}
+.btn-cyan{background:rgba(0,240,255,.1);border:1px solid var(--cyan);color:var(--cyan);box-shadow:0 0 15px rgba(0,240,255,.12)}
+.btn-gradient{background:linear-gradient(135deg,var(--cyan),#0080FF);color:var(--bg);box-shadow:0 0 25px rgba(0,240,255,.2)}
+
+/* Small button row */
+.btn-row{display:flex;gap:8px;margin-bottom:12px}
+.btn-small{flex:1;padding:12px 8px;background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.18);border-radius:10px;text-align:center;font-family:var(--font-title);font-size:9px;font-weight:700;color:var(--cyan);letter-spacing:1px;cursor:pointer;transition:all .2s}
+.btn-small:active{background:rgba(0,240,255,.15);border-color:var(--cyan)}
+
+/* Step dots */
+.step-dots{display:flex;justify-content:center;gap:8px;padding:12px 0 8px}
+.step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .3s}
+.step-dot.active{background:var(--cyan);box-shadow:0 0 8px rgba(0,240,255,.5)}
+.step-dot.done{background:var(--yellow)}
+/* Tutorial long dot */
+.step-dot.active-long{background:var(--cyan);box-shadow:0 0 8px rgba(0,240,255,.4);width:22px;border-radius:5px}
+
+/* Section card (accueil) */
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+.section-card-title{font-family:var(--font-title);font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+
+/* Tags */
+.tag{display:inline-block;padding:5px 10px;border:1px solid rgba(255,255,255,.15);border-radius:20px;font-family:var(--font-mono);font-size:10px;color:var(--text-mid);margin:3px}
+
+/* Stats display */
+.stats-row{display:flex;justify-content:space-between;gap:6px}
+.stat-box{flex:1;text-align:center;padding:8px 4px;background:rgba(255,255,255,.03);border-radius:8px}
+.stat-value{font-family:var(--font-title);font-size:16px;font-weight:900;color:var(--cyan)}
+.stat-label{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* Risk bar (IA selection) */
+.risk-bar{display:flex;align-items:center;gap:8px;margin-top:8px}
+.risk-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.risk-meter{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.risk-fill{height:100%;border-radius:2px}
+.risk-low{width:15%;background:var(--green)}
+.risk-med{width:40%;background:var(--yellow)}
+.risk-med-high{width:65%;background:var(--orange)}
+.risk-high{width:85%;background:var(--pink)}
+.risk-special{width:50%;background:linear-gradient(90deg,var(--yellow),var(--pink))}
+
+/* Card name colors */
+.card-name{font-family:var(--font-title);font-size:15px;font-weight:700;color:var(--yellow);margin-bottom:5px}
+.card-icon{font-size:26px;margin-bottom:5px}
+.card-desc{font-family:var(--font-body);font-size:13px;color:var(--text-mid);line-height:1.5;margin-bottom:8px}
+.card-stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat-tag{padding:4px 9px;background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.18);border-radius:6px;font-family:var(--font-mono);font-size:10px;color:var(--cyan)}
+
+/* Sponsor colors */
+.sponsor-indie .card-name{color:var(--green)}
+.sponsor-indie .stat-tag{border-color:rgba(76,175,80,.25);color:var(--green);background:rgba(76,175,80,.06)}
+.sponsor-corp .card-name{color:var(--blue)}
+.sponsor-corp .stat-tag{border-color:rgba(33,150,243,.25);color:var(--blue);background:rgba(33,150,243,.06)}
+.sponsor-mega .card-name{color:var(--yellow)}
+.sponsor-under .card-name{color:var(--pink)}
+.sponsor-under .stat-tag{border-color:rgba(255,45,107,.25);color:var(--pink);background:rgba(255,45,107,.06)}
+
+/* Recap */
+.recap-card{background:rgba(0,240,255,.03);border:1px solid rgba(0,240,255,.18);border-radius:16px;padding:22px 18px;text-align:center}
+.recap-title{font-family:var(--font-title);font-size:13px;color:var(--text-dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.gen-badge{display:inline-block;padding:6px 18px;background:rgba(247,224,24,.08);border:1px solid var(--yellow);border-radius:20px;font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--yellow);margin-bottom:12px}
+.recap-name{font-family:var(--font-title);font-size:22px;font-weight:900;color:var(--cyan);text-shadow:0 0 18px rgba(0,240,255,.35);margin-bottom:4px}
+.recap-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-bottom:16px}
+.recap-items{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;text-align:left}
+.recap-item{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:rgba(255,255,255,.025);border-radius:8px}
+.recap-item-label{font-family:var(--font-mono);font-size:11px;color:var(--text-dim)}
+.recap-item-value{font-family:var(--font-title);font-size:12px;font-weight:700;color:var(--yellow)}
+
+/* Tutorial explain cards */
+.explain{display:flex;flex-direction:column;gap:10px}
+.explain-card{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.explain-icon{font-size:24px;width:32px;text-align:center;flex-shrink:0;margin-top:2px}
+.explain-name{font-family:var(--font-title);font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:4px;letter-spacing:1px}
+.explain-desc{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);line-height:1.6}
+.highlight-box{background:rgba(247,224,24,.04);border:1px solid rgba(247,224,24,.12);border-radius:12px;padding:14px;text-align:center;margin-top:10px}
+.highlight-text{font-family:var(--font-mono);font-size:11px;color:var(--yellow);line-height:1.6}
+.demo-box{background:rgba(0,0,0,.2);border:1px solid rgba(0,240,255,.08);border-radius:12px;padding:14px;margin-top:10px}
+.demo-label{font-family:var(--font-mono);font-size:9px;color:rgba(0,240,255,.45);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;text-align:center}
+.demo-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.demo-row:last-child{border:none}
+.demo-row-label{font-family:var(--font-mono);font-size:10px;color:var(--text-dim)}
+.demo-row-val{font-family:var(--font-title);font-size:10px;font-weight:700}
+.demo-green{color:var(--green)}.demo-red{color:var(--pink)}.demo-yellow{color:var(--yellow)}.demo-cyan{color:var(--cyan)}
+
+/* Tutorial nav */
+.tuto-nav{display:flex;gap:10px;padding:12px 0}
+.tuto-nav .btn-primary{font-size:11px;padding:13px;letter-spacing:1px}
+
+/* Defi du jour section */
+.section-defi{border-color:rgba(255,45,107,.15)}
+.section-defi .section-card-title{color:var(--pink)}
+.section-defi .btn-small{background:rgba(255,45,107,.1);border-color:rgba(255,45,107,.2);color:var(--pink)}
+.score-text{font-family:var(--font-title);font-size:11px;color:var(--yellow);margin-top:6px}
+
+/* Quetes section */
+.quetes-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin:8px 0}
+.quetes-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--yellow));border-radius:3px;width:0%;transition:width .5s}
+.quetes-text{font-family:var(--font-title);font-size:11px;color:var(--yellow)}
+
+/* Footer */
+.app-footer{text-align:center;padding:15px 0 10px;margin-top:5px}
+.app-footer .support-btn{display:inline-block;padding:10px 22px;background:transparent;border:1px solid rgba(247,224,24,.25);border-radius:20px;color:var(--yellow);font-family:var(--font-title);font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-bottom:12px}
+.app-footer .install-btn{display:inline-block;padding:8px 18px;background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2);border-radius:8px;color:var(--cyan);font-family:var(--font-mono);font-size:9px;cursor:pointer;margin-bottom:10px}
+.app-footer .version{font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,.15)}
+.app-footer .credit{font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,.12);margin-top:4px}
+
+/* ================================================================
+   CAREER & COMBAT STYLES
+   ================================================================ */
+
+/* Profile header */
+.profile-header{background:linear-gradient(135deg,rgba(0,240,255,.05),rgba(247,224,24,.02));border:1px solid rgba(0,240,255,.12);border-radius:16px;padding:14px;margin-bottom:12px}
+.profile-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.robot-identity{display:flex;align-items:center;gap:10px}
+.gen-circle{width:48px;height:48px;border-radius:50%;border:2px solid var(--yellow);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(247,224,24,.06);box-shadow:0 0 12px rgba(247,224,24,.12)}
+.gen-circle-val{font-family:var(--font-title);font-size:18px;font-weight:900;color:var(--yellow);line-height:1}
+.gen-circle-label{font-family:var(--font-mono);font-size:7px;color:rgba(247,224,24,.5);text-transform:uppercase;letter-spacing:1px}
+.robot-name{font-family:var(--font-title);font-size:14px;font-weight:900;color:var(--cyan)}
+.robot-details{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:2px}
+.league-badge{padding:4px 10px;border-radius:6px;font-family:var(--font-title);font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.league-Amateur{background:rgba(76,175,80,.12);color:var(--green);border:1px solid rgba(76,175,80,.25)}
+.league-Régionale{background:rgba(33,150,243,.12);color:var(--blue);border:1px solid rgba(33,150,243,.25)}
+.league-Nationale{background:rgba(156,39,176,.12);color:var(--purple);border:1px solid rgba(156,39,176,.25)}
+.league-Mondiale{background:rgba(247,224,24,.12);color:var(--yellow);border:1px solid rgba(247,224,24,.25)}
+.league-Elite{background:rgba(255,152,0,.12);color:var(--orange);border:1px solid rgba(255,152,0,.25)}
+.league-Légendaire{background:rgba(255,45,107,.12);color:var(--pink);border:1px solid rgba(255,45,107,.25)}
+
+/* Bars */
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;width:45px}
+.bar-track{flex:1;height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s}
+.bar-etat{background:linear-gradient(90deg,var(--pink),var(--green))}
+.bar-moral{background:linear-gradient(90deg,var(--orange),var(--cyan))}
+.bar-val{font-family:var(--font-title);font-size:10px;font-weight:700;color:var(--text-mid);width:32px;text-align:right}
+
+/* Resources row */
+.resources-row{display:flex;gap:8px;margin-top:10px}
+.resource-box{flex:1;display:flex;align-items:center;gap:7px;padding:7px 10px;background:rgba(255,255,255,.025);border-radius:8px}
+.resource-icon{font-size:16px}
+.resource-val{font-family:var(--font-title);font-size:13px;font-weight:700;color:var(--yellow)}
+.resource-label{font-family:var(--font-mono);font-size:7px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.resource-pink .resource-val{color:var(--pink)}
+
+/* Season card */
+.season-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.season-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.season-title{font-family:var(--font-title);font-size:12px;font-weight:700;color:var(--yellow);letter-spacing:2px;text-transform:uppercase}
+.season-record{font-family:var(--font-mono);font-size:10px;color:var(--text-dim)}
+.progress-bar{height:7px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--yellow));border-radius:4px;transition:width .4s}
+.season-stats{display:flex;justify-content:space-around}
+.season-stat{text-align:center}
+.season-stat-val{font-family:var(--font-title);font-size:17px;font-weight:900}
+.season-stat-label{font-family:var(--font-mono);font-size:7px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.val-green{color:var(--green)}.val-red{color:var(--pink)}.val-yellow{color:var(--yellow)}.val-cyan{color:var(--cyan)}
+
+/* Next fight hint */
+.next-hint{display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:10px;margin-bottom:10px}
+.next-hint-icon{font-size:18px}
+.next-hint-text{font-family:var(--font-mono);font-size:10px;color:var(--text-mid);line-height:1.4}
+.next-hint-text b{color:var(--yellow);font-family:var(--font-title);font-size:10px;font-weight:700}
+
+/* VS Card */
+.vs-card{display:flex;border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px}
+.vs-side{flex:1;padding:14px 10px;text-align:center}
+.vs-you{background:rgba(0,240,255,.04)}
+.vs-enemy{background:rgba(255,45,107,.04)}
+.vs-divider{width:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);font-family:var(--font-title);font-size:13px;font-weight:900;color:var(--yellow)}
+.vs-name{font-family:var(--font-title);font-size:12px;font-weight:700;margin-bottom:3px}
+.vs-you .vs-name{color:var(--cyan)}.vs-enemy .vs-name{color:var(--pink)}
+.vs-chassis{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:7px}
+.vs-stat{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;padding:2px 0}
+.vs-stat-label{color:var(--text-dim)}
+.vs-you .vs-stat-val{color:var(--cyan)}.vs-enemy .vs-stat-val{color:var(--pink)}
+.vs-stat-hidden{color:rgba(255,255,255,.12);font-style:italic}
+
+/* Strategy */
+.strategy-options{display:flex;gap:8px;margin:12px 0}
+.strategy-btn{flex:1;padding:10px 6px;background:rgba(255,255,255,.03);border:1px solid rgba(0,240,255,.12);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s}
+.strategy-btn.selected{border-color:var(--cyan);background:rgba(0,240,255,.08);box-shadow:0 0 12px rgba(0,240,255,.12)}
+.strategy-btn:active{border-color:var(--cyan);background:rgba(0,240,255,.08)}
+.strategy-icon{font-size:20px;margin-bottom:3px}
+.strategy-name{font-family:var(--font-title);font-size:8px;font-weight:700;color:var(--cyan);letter-spacing:1px}
+.strategy-hint{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);margin-top:3px;line-height:1.3}
+
+/* Combat round */
+.combat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.round-dots{display:flex;gap:5px}
+.round-dot{width:26px;height:4px;border-radius:2px;background:rgba(255,255,255,.08)}
+.round-dot.active{background:var(--cyan);box-shadow:0 0 6px rgba(0,240,255,.4)}
+.round-dot.done{background:var(--yellow)}
+.round-dot.lost{background:var(--pink)}
+.round-label{font-family:var(--font-title);font-size:10px;font-weight:700;color:var(--yellow);letter-spacing:1px}
+
+/* Health bars */
+.combat-health{display:flex;gap:12px;margin-bottom:12px}
+.health-side{flex:1}
+.health-name{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:3px;display:flex;justify-content:space-between}
+.health-hp{font-family:var(--font-title);font-size:9px;font-weight:700}
+.health-side.you .health-hp{color:var(--cyan)}
+.health-side.enemy .health-hp{color:var(--pink)}
+.health-bar{height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.health-you{height:100%;background:var(--cyan);border-radius:4px;transition:width .5s}
+.health-enemy{height:100%;background:var(--pink);border-radius:4px;transition:width .5s}
+
+/* Round feedback */
+.round-feedback{padding:10px 12px;border-radius:10px;margin-bottom:10px;text-align:center;font-family:var(--font-mono);font-size:11px;line-height:1.5}
+.rf-win{background:rgba(76,175,80,.08);border:1px solid rgba(76,175,80,.22);color:var(--green)}
+.rf-loss{background:rgba(255,45,107,.08);border:1px solid rgba(255,45,107,.22);color:var(--pink)}
+.rf-dodge{background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.22);color:var(--cyan)}
+
+/* Terminal */
+.terminal-box{background:rgba(0,0,0,.25);border:1px solid rgba(0,240,255,.08);border-radius:12px;padding:14px;margin-bottom:12px;min-height:100px;cursor:pointer}
+.terminal-text{font-family:var(--font-mono);font-size:12px;color:var(--text-mid);line-height:1.7}
+.terminal-cursor{display:inline-block;width:7px;height:14px;background:var(--cyan);animation:cursorBlink .7s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Combat choices */
+.combat-choices{display:flex;flex-direction:column;gap:7px}
+.combat-choice{position:relative;padding:12px 14px;border-radius:10px;cursor:pointer;transition:all .2s;opacity:0;transform:translateY(6px);overflow:hidden}
+.combat-choice.visible{opacity:1;transform:translateY(0);transition:opacity .3s,transform .3s}
+.combat-choice:active{transform:scale(.98)}
+
+/* v0.13 (ajusté) — §3.7 : couleur par famille, même intensité sur les
+   deux. Le faisceau tournant en conic-gradient + mask-composite ne
+   s'affichait pas de façon fiable sur Chrome Android — remplacé par une
+   pulsation de lueur, technique plus robuste. Les deux boutons restent
+   JAMAIS synchronisés : durée et décalage propres à chacun, pour
+   qu'aucun des deux ne semble mis en avant. */
+.choice-pow{background:rgba(229,56,59,.06);border:2.5px solid rgba(229,56,59,.35);color:var(--text-mid);font-size:12px;
+  animation:glowPow 3.6s ease-in-out infinite}
+.choice-tech{background:rgba(0,240,255,.06);border:2.5px solid rgba(0,240,255,.35);color:var(--text-mid);font-size:12px;
+  animation:glowTech 4.4s ease-in-out .6s infinite}
+.choice-special{background:rgba(247,224,24,.05);border:2.5px solid rgba(247,224,24,.3);color:var(--text-mid);font-size:12px;
+  position:relative;animation:glowAtout 2.6s ease-in-out infinite}
+
+/* v0.13 (ajusté) — lueurs intensifiees : rayon et opacite au pic augmentes
+   sur les trois. */
+@keyframes glowPow{
+  0%,100%{box-shadow:0 0 0 rgba(229,56,59,0);border-color:rgba(229,56,59,.35)}
+  50%{box-shadow:0 0 22px rgba(229,56,59,.65);border-color:rgba(229,56,59,.95)}
+}
+@keyframes glowTech{
+  0%,100%{box-shadow:0 0 0 rgba(0,240,255,0);border-color:rgba(0,240,255,.35)}
+  50%{box-shadow:0 0 22px rgba(0,240,255,.65);border-color:rgba(0,240,255,.95)}
+}
+/* v0.13 (ajusté) — l'atout utilisait encore un degrade radial glissant
+   par background-position : technique fragile, mal rendue sur Android
+   Chrome (meme defaut que l'ancien faisceau des deux choix normaux).
+   Remplacee par la meme lueur en box-shadow, avec un rythme plus rapide
+   et plus dore pour rester distincte — c'est une ressource limitee,
+   pas un choix ordinaire. */
+@keyframes glowAtout{
+  0%,100%{box-shadow:0 0 0 rgba(247,224,24,0);border-color:rgba(247,224,24,.3)}
+  50%{box-shadow:0 0 24px rgba(247,224,24,.7);border-color:rgba(247,224,24,1)}
+}
+.choice-special-label{font-family:var(--font-title);font-size:8px;font-weight:700;color:var(--yellow);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.choice-stock{font-family:var(--font-mono);font-size:9px;color:rgba(247,224,24,.4);margin-top:3px}
+.choice-profile{font-family:var(--font-mono);font-size:8px;color:rgba(0,240,255,.45);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+/* Result banner */
+.result-banner{text-align:center;padding:22px;margin-bottom:16px;border-radius:16px}
+.result-victory{background:linear-gradient(135deg,rgba(0,240,255,.08),rgba(76,175,80,.08));border:1px solid rgba(76,175,80,.25)}
+.result-defeat{background:linear-gradient(135deg,rgba(255,45,107,.08),rgba(255,107,0,.08));border:1px solid rgba(255,45,107,.25)}
+.result-text{font-family:var(--font-title);font-size:26px;font-weight:900;letter-spacing:4px;text-transform:uppercase}
+.result-victory .result-text{color:var(--green);text-shadow:0 0 18px rgba(76,175,80,.35)}
+.result-defeat .result-text{color:var(--pink);text-shadow:0 0 18px rgba(255,45,107,.35)}
+.result-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px}
+
+/* Post-combat stats */
+.post-stats{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.post-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:rgba(255,255,255,.025);border-radius:8px}
+.post-row-label{font-family:var(--font-mono);font-size:10px;color:var(--text-dim)}
+.post-row-val{font-family:var(--font-title);font-size:12px;font-weight:700}
+
+/* Narration box */
+.narration-box{background:rgba(0,0,0,.15);border-left:3px solid var(--yellow);border-radius:0 10px 10px 0;padding:13px 15px;margin-bottom:16px}
+.narration-box p{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);line-height:1.6;font-style:italic}
+
+/* Simulated results */
+.sim-row{display:flex;align-items:center;padding:8px 10px;background:rgba(255,255,255,.025);border-radius:6px;gap:8px;margin-bottom:4px;opacity:0;animation:simIn .25s ease-out forwards}
+@keyframes simIn{to{opacity:1}}
+.sim-num{font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,.2);width:22px}
+.sim-opponent{flex:1;font-family:var(--font-mono);font-size:10px;color:var(--text-mid)}
+.sim-result{font-family:var(--font-title);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px}
+.sim-win{color:var(--green);background:rgba(76,175,80,.08)}
+.sim-loss{color:var(--pink);background:rgba(255,45,107,.08)}
+.sim-dmg{font-family:var(--font-mono);font-size:8px;color:var(--orange);width:35px;text-align:right}
+
+/* Promotion banner */
+.promo-banner{text-align:center;padding:16px;border-radius:14px;margin-bottom:14px}
+.promo-up{background:linear-gradient(135deg,rgba(76,175,80,.08),rgba(0,240,255,.08));border:1px solid rgba(76,175,80,.25)}
+.promo-stay{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08)}
+.promo-down{background:linear-gradient(135deg,rgba(255,45,107,.08),rgba(255,107,0,.08));border:1px solid rgba(255,45,107,.25)}
+.promo-icon{font-size:28px;margin-bottom:5px}
+.promo-text{font-family:var(--font-title);font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.promo-up .promo-text{color:var(--green)}
+.promo-stay .promo-text{color:var(--text-dim)}
+.promo-down .promo-text{color:var(--pink)}
+.promo-sub{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:3px}
+
+/* ================================================================
+   INTER-SEASON STYLES (v0.3.0)
+   ================================================================ */
+.inter-bar{display:flex;gap:8px;margin-bottom:14px}
+.inter-bar-box{flex:1;display:flex;align-items:center;gap:7px;padding:9px 11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px}
+.inter-bar-val{font-family:var(--font-title);font-size:13px;font-weight:900;color:var(--yellow);line-height:1}
+.inter-bar-label{font-family:var(--font-mono);font-size:7px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+.inter-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.inter-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.inter-section-title{font-family:var(--font-title);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan)}
+.inter-section-note{font-family:var(--font-mono);font-size:9px;color:var(--text-dim)}
+.inter-section.warn{border-color:rgba(255,45,107,.2)}
+.inter-section.warn .inter-section-title{color:var(--pink)}
+.inter-section.gold{border-color:rgba(247,224,24,.2)}
+.inter-section.gold .inter-section-title{color:var(--yellow)}
+
+.shop-item{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:rgba(255,255,255,.025);border:1px solid transparent;border-radius:9px;margin-bottom:6px;cursor:pointer;transition:all .2s}
+.shop-item:active{border-color:var(--cyan);background:rgba(0,240,255,.06)}
+.shop-item.locked{opacity:.35;pointer-events:none}
+.shop-item.done{opacity:.4;pointer-events:none;border-color:rgba(76,175,80,.2)}
+.shop-info{flex:1;min-width:0}
+.shop-name{font-family:var(--font-title);font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:3px}
+.shop-desc{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);line-height:1.4}
+.shop-price{font-family:var(--font-title);font-size:11px;font-weight:700;color:var(--yellow);white-space:nowrap;margin-left:10px;text-align:right}
+.shop-price.cant{color:var(--pink)}
+.shop-price.free{color:var(--green)}
+
+.upgrade-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.upgrade-btn{padding:10px 8px;background:rgba(255,255,255,.025);border:1px solid rgba(0,240,255,.12);border-radius:9px;text-align:center;cursor:pointer;transition:all .2s}
+.upgrade-btn:active{border-color:var(--cyan);background:rgba(0,240,255,.08)}
+.upgrade-btn.locked{opacity:.32;pointer-events:none}
+.upgrade-stat{font-family:var(--font-title);font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:1px}
+.upgrade-val{font-family:var(--font-title);font-size:16px;font-weight:900;color:var(--cyan);margin:2px 0}
+.upgrade-plus{font-family:var(--font-mono);font-size:9px;color:var(--yellow)}
+
+.empty-note{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);text-align:center;padding:12px 6px;line-height:1.5}
+
+/* ================================================================
+   v0.4.0 — RÉSOLUTION DE ROUND
+   ================================================================ */
+.rr-wrap{padding-top:6px}
+.rr-round{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:3px;text-align:center;margin-bottom:10px}
+.rr-verdict{text-align:center;padding:18px 14px;border-radius:16px;margin-bottom:14px}
+.rr-win{background:linear-gradient(135deg,rgba(76,175,80,.10),rgba(0,240,255,.06));border:1px solid rgba(76,175,80,.28)}
+.rr-loss{background:linear-gradient(135deg,rgba(255,45,107,.10),rgba(255,152,0,.06));border:1px solid rgba(255,45,107,.28)}
+.rr-neutral{background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.22)}
+.rr-icon{font-size:34px;margin-bottom:6px}
+.rr-title{font-family:var(--font-title);font-size:17px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.rr-win .rr-title{color:var(--green);text-shadow:0 0 16px rgba(76,175,80,.3)}
+.rr-loss .rr-title{color:var(--pink);text-shadow:0 0 16px rgba(255,45,107,.3)}
+.rr-neutral .rr-title{color:var(--cyan)}
+.rr-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:5px;line-height:1.5}
+.rr-action{background:rgba(0,0,0,.18);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:12px}
+.rr-action p{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);line-height:1.65}
+.rr-dmg-row{display:flex;gap:8px;margin-bottom:12px}
+.rr-dmg-box{flex:1;padding:11px 8px;background:rgba(255,255,255,.025);border-radius:10px;text-align:center}
+.rr-dmg-label{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.rr-dmg-val{font-family:var(--font-title);font-size:18px;font-weight:900}
+.rr-dmg-sub{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:3px}
+.rr-bars{margin-bottom:14px}
+.rr-bar-row{margin-bottom:9px}
+.rr-bar-head{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;margin-bottom:4px}
+.rr-bar-name{color:var(--text-dim)}
+.rr-bar-hp{font-family:var(--font-title);font-size:10px;font-weight:700}
+.rr-bar-track{height:9px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.rr-bar-fill{height:100%;border-radius:5px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.rr-momentum{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(206,147,216,.07);border:1px solid rgba(206,147,216,.22);border-radius:10px;margin-bottom:12px}
+.rr-momentum-icon{font-size:16px}
+.rr-momentum-text{font-family:var(--font-mono);font-size:10px;color:var(--purple);line-height:1.4}
+
+/* ================================================================
+   v0.4.0 — ÉVÉNEMENTS NARRATIFS (6 catégories)
+   ================================================================ */
+.ev-head{text-align:center;margin-bottom:14px}
+.ev-cat{display:inline-block;padding:5px 14px;border-radius:20px;font-family:var(--font-title);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.ev-title{font-family:var(--font-title);font-size:16px;font-weight:900;margin-bottom:4px}
+.ev-body{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:14px}
+.ev-body p{font-family:var(--font-mono);font-size:12px;color:var(--text-mid);line-height:1.75}
+.ev-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.ev-tag{padding:5px 11px;border:1px dashed rgba(255,255,255,.2);border-radius:20px;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.ev-choices{display:flex;flex-direction:column;gap:8px}
+.ev-choice{padding:14px;border-radius:11px;cursor:pointer;transition:all .2s;font-family:var(--font-body);font-size:12px;color:var(--text-mid);line-height:1.5}
+.ev-choice:active{transform:scale(.98)}
+/* v0.16.0 — F4 : option hors de portée quand le solde est négatif. */
+.ev-choice-locked{padding:14px;border-radius:11px;font-family:var(--font-body);font-size:12px;
+  line-height:1.5;color:var(--text-dim);background:rgba(255,255,255,.02);
+  border:1px dashed rgba(255,45,107,.3);opacity:.55;cursor:not-allowed;
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ev-choice-cost{font-family:var(--font-mono);font-size:9px;color:var(--pink);
+  white-space:nowrap;letter-spacing:1px}
+.ev-outcome{padding:13px 15px;border-radius:12px;margin-bottom:14px}
+.ev-outcome p{font-family:var(--font-mono);font-size:11px;line-height:1.7;color:var(--text-mid);font-style:italic}
+.ev-impacts{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.ev-impact{display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:rgba(255,255,255,.025);border-radius:9px}
+.ev-impact-label{font-family:var(--font-mono);font-size:10px;color:var(--text-dim)}
+.ev-impact-val{font-family:var(--font-title);font-size:12px;font-weight:700}
+/* couleurs par catégorie */
+.cat-meca .ev-cat{background:rgba(0,240,255,.1);color:var(--cyan);border:1px solid rgba(0,240,255,.3)}
+.cat-meca .ev-title{color:var(--cyan)}
+.cat-meca .ev-choice{background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.18)}
+.cat-meca .ev-choice:active{border-color:var(--cyan);background:rgba(0,240,255,.09)}
+.cat-sponsor .ev-cat{background:rgba(33,150,243,.1);color:var(--blue);border:1px solid rgba(33,150,243,.3)}
+.cat-sponsor .ev-title{color:var(--blue)}
+.cat-sponsor .ev-choice{background:rgba(33,150,243,.04);border:1px solid rgba(33,150,243,.18)}
+.cat-sponsor .ev-choice:active{border-color:var(--blue);background:rgba(33,150,243,.09)}
+.cat-ia .ev-cat{background:rgba(206,147,216,.1);color:var(--purple);border:1px solid rgba(206,147,216,.3)}
+.cat-ia .ev-title{color:var(--purple)}
+.cat-ia .ev-choice{background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.18)}
+.cat-ia .ev-choice:active{border-color:var(--purple);background:rgba(206,147,216,.09)}
+.cat-rival .ev-cat{background:rgba(255,152,0,.1);color:var(--orange);border:1px solid rgba(255,152,0,.3)}
+.cat-rival .ev-title{color:var(--orange)}
+.cat-rival .ev-choice{background:rgba(255,152,0,.04);border:1px solid rgba(255,152,0,.18)}
+.cat-rival .ev-choice:active{border-color:var(--orange);background:rgba(255,152,0,.09)}
+.cat-media .ev-cat{background:rgba(247,224,24,.1);color:var(--yellow);border:1px solid rgba(247,224,24,.3)}
+.cat-media .ev-title{color:var(--yellow)}
+.cat-media .ev-choice{background:rgba(247,224,24,.04);border:1px solid rgba(247,224,24,.18)}
+.cat-media .ev-choice:active{border-color:var(--yellow);background:rgba(247,224,24,.09)}
+.cat-under .ev-cat{background:rgba(255,45,107,.1);color:var(--pink);border:1px solid rgba(255,45,107,.3)}
+.cat-under .ev-title{color:var(--pink)}
+.cat-under .ev-choice{background:rgba(255,45,107,.04);border:1px solid rgba(255,45,107,.18)}
+.cat-under .ev-choice:active{border-color:var(--pink);background:rgba(255,45,107,.09)}
+
+/* ================================================================
+   v0.4.0 — SPONSOR & FOLLOWERS
+   ================================================================ */
+.sponsor-strip{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:11px;margin-bottom:10px}
+/* v0.13 (ajusté) — presentation de l'apport garanti, sur l'ecran Sponsor */
+.sponsor-guarantee{display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:16px;
+  border-radius:12px;background:rgba(76,175,80,.06);border:1px solid rgba(76,175,80,.25)}
+.sponsor-guarantee-icon{flex:none;font-size:22px}
+.sponsor-guarantee-val{font-family:var(--font-title);font-size:19px;font-weight:900;color:var(--green)}
+.sponsor-guarantee-lab{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:2px}
+/* v0.13 (ajusté) — un halo pulse doucement sur le bloc rival pour
+   donner envie de cliquer, dans le meme esprit que les lueurs de round. */
+.sponsor-strip.rival-strip{cursor:pointer;border-color:rgba(255,152,0,.3);
+  transition:border-color .2s,background .2s;animation:glowRival 3.2s ease-in-out infinite}
+.sponsor-strip.rival-strip:active{border-color:rgba(255,152,0,.7);background:rgba(255,152,0,.09)}
+@keyframes glowRival{
+  0%,100%{box-shadow:0 0 0 rgba(255,152,0,0);border-color:rgba(255,152,0,.3)}
+  50%{box-shadow:0 0 18px rgba(255,152,0,.5);border-color:rgba(255,152,0,.8)}
+}
+.rival-arrow{color:var(--orange);font-size:16px;opacity:.7}
+.sponsor-logo{font-size:20px;flex-shrink:0}
+.sponsor-mid{flex:1;min-width:0}
+.sponsor-name{font-family:var(--font-title);font-size:10px;font-weight:700;margin-bottom:4px}
+.satis-track{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.satis-fill{height:100%;border-radius:3px;transition:width .5s}
+.satis-val{font-family:var(--font-title);font-size:10px;font-weight:700;width:34px;text-align:right}
+/* v0.13 — §3.1 : la barre de satisfaction affichait un pourcentage sans
+   dire de quoi il s'agissait. Un libellé + un état en clair. */
+.satis-label-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.satis-label{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim)}
+.satis-state{font-family:var(--font-title);font-size:10px;font-weight:700}
+
+/* Affiche d'adversaire — remplace l'ancien bloc « Prochain combat » qui
+   expliquait la mécanique (3 rounds, 3 choix) au lieu de montrer qui
+   on affronte. */
+/* v0.13 (ajusté) — titre explicite au-dessus de l'affiche, et l'affiche
+   elle-même legerement decalee pour bien la distinguer de ce qui precede */
+.foe-poster-title{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;
+  color:var(--text-dim);margin:14px 0 6px 4px;text-transform:uppercase}
+.foe-poster{display:flex;align-items:center;gap:12px;margin-left:6px;padding:13px 14px;border-radius:12px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+.foe-poster.foe-rival{background:rgba(255,152,0,.05);border-color:rgba(255,152,0,.28)}
+.foe-poster.foe-boss{background:rgba(247,224,24,.05);border-color:rgba(247,224,24,.32)}
+.foe-poster-badge{flex:none;font-family:var(--font-mono);font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text-dim);writing-mode:vertical-rl;text-orientation:mixed;
+  padding:6px 2px}
+.foe-poster-mid{flex:1;min-width:0}
+.foe-poster-name{font-family:var(--font-title);font-size:16px;font-weight:900;letter-spacing:.5px;
+  color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.foe-poster-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:2px}
+.foe-poster-spec{flex:none;text-align:center}
+.foe-poster-spec-val{font-family:var(--font-title);font-size:20px;font-weight:900}
+.foe-poster-spec-lab{font-family:var(--font-mono);font-size:7px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--text-dim)}
+
+/* Bloc « Vos stats » — §3.1, remplace le face-a-face qui vivait sur la
+   fiche du rival. Vous a gauche, lui a droite, sans ecart calcule (R2). */
+.vs-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.vs-title{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text-dim);margin-bottom:10px;text-align:center}
+.vs-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.vs-row:last-child{margin-bottom:0}
+.vs-side{flex:1;text-align:center}
+.vs-side-you{color:var(--cyan)}
+.vs-side-foe{color:var(--orange)}
+.vs-label{font-family:var(--font-mono);font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px}
+.vs-val{font-family:var(--font-title);font-size:15px;font-weight:800}
+.vs-mid{flex:none;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);width:52px;text-align:center}
+.sponsor-warn{font-family:var(--font-mono);font-size:9px;color:var(--pink);margin-top:4px}
+
+.fol-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.fol-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.fol-count{font-family:var(--font-title);font-size:20px;font-weight:900;color:var(--pink)}
+.fol-next{font-family:var(--font-mono);font-size:9px;color:var(--text-dim)}
+.fol-track{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.fol-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--yellow));border-radius:3px;transition:width .6s}
+.fol-tier{font-family:var(--font-title);font-size:9px;font-weight:700;color:var(--yellow);letter-spacing:1px;text-transform:uppercase}
+.fol-log{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+.fol-log-row{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;background:rgba(255,255,255,.02);border-radius:7px}
+.fol-log-reason{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);flex:1;min-width:0}
+.fol-log-val{font-family:var(--font-title);font-size:9px;font-weight:700;margin-left:8px}
+
+/* ================================================================
+   v0.4.0 — RIVAL
+   ================================================================ */
+.rival-card{background:linear-gradient(135deg,rgba(255,152,0,.07),rgba(255,45,107,.03));border:1px solid rgba(255,152,0,.25);border-radius:16px;padding:16px;margin-bottom:12px}
+.rival-head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.rival-avatar{width:46px;height:46px;border-radius:50%;border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(255,152,0,.08);flex-shrink:0}
+.rival-id{flex:1;min-width:0}
+.rival-label{font-family:var(--font-mono);font-size:8px;color:var(--orange);text-transform:uppercase;letter-spacing:2px}
+.rival-name{font-family:var(--font-title);font-size:15px;font-weight:900;color:var(--orange)}
+.rival-meta{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:2px}
+.rival-gen{width:44px;height:44px;border-radius:50%;border:2px solid var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,152,0,.06);flex-shrink:0}
+.rival-gen-val{font-family:var(--font-title);font-size:16px;font-weight:900;color:var(--orange);line-height:1}
+.rival-gen-lab{font-family:var(--font-mono);font-size:6px;color:rgba(255,152,0,.5);letter-spacing:1px}
+.rival-quote{background:rgba(0,0,0,.2);border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:11px 13px;margin-top:10px}
+.rival-quote p{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);line-height:1.6;font-style:italic}
+.rival-h2h{display:flex;gap:6px;margin-top:10px}
+.h2h-box{flex:1;text-align:center;padding:8px 4px;background:rgba(255,255,255,.03);border-radius:8px}
+.h2h-val{font-family:var(--font-title);font-size:15px;font-weight:900}
+.h2h-lab{font-family:var(--font-mono);font-size:7px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.boss-banner{text-align:center;padding:20px 14px;border-radius:16px;margin-bottom:14px;background:linear-gradient(135deg,rgba(255,152,0,.12),rgba(255,45,107,.08));border:1px solid rgba(255,152,0,.35)}
+.boss-kicker{font-family:var(--font-mono);font-size:9px;color:var(--orange);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
+.boss-title{font-family:var(--font-title);font-size:20px;font-weight:900;color:var(--yellow);letter-spacing:2px;text-shadow:0 0 20px rgba(247,224,24,.3)}
+.boss-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-mid);margin-top:6px;line-height:1.5}
+
+/* ================================================================
+   v0.4.0 — RAPPORT FINAL
+   ================================================================ */
+.fin-hero{text-align:center;padding:22px 16px;border-radius:18px;margin-bottom:14px;background:linear-gradient(135deg,rgba(247,224,24,.07),rgba(0,240,255,.04));border:1px solid rgba(247,224,24,.28)}
+.fin-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-family:var(--font-title);font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.fin-gen{width:104px;height:104px;border-radius:50%;border:3px solid var(--yellow);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;background:radial-gradient(circle,rgba(247,224,24,.12),transparent);box-shadow:0 0 34px rgba(247,224,24,.22)}
+.fin-gen-val{font-family:var(--font-title);font-size:40px;font-weight:900;color:var(--yellow);line-height:1}
+.fin-gen-lab{font-family:var(--font-mono);font-size:8px;color:rgba(247,224,24,.6);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.fin-name{font-family:var(--font-title);font-size:21px;font-weight:900;color:var(--cyan);text-shadow:0 0 18px rgba(0,240,255,.3)}
+.fin-nick{font-family:var(--font-mono);font-size:11px;color:var(--yellow);margin-top:5px;font-style:italic}
+.fin-meta{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:6px}
+.fin-traits{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.fin-trait{padding:5px 12px;background:rgba(206,147,216,.08);border:1px solid rgba(206,147,216,.3);border-radius:20px;font-family:var(--font-mono);font-size:9px;color:var(--purple)}
+.fin-speech{background:linear-gradient(135deg,rgba(206,147,216,.08),transparent);border:1px solid rgba(206,147,216,.28);border-left:3px solid var(--purple);border-radius:0 14px 14px 0;padding:16px;margin-bottom:14px}
+.fin-speech-label{font-family:var(--font-mono);font-size:8px;color:var(--purple);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.fin-speech p{font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,.82);line-height:1.75;font-style:italic}
+.fin-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.fin-section-title{font-family:var(--font-title);font-size:11px;font-weight:700;color:var(--yellow);letter-spacing:2px;text-transform:uppercase;margin-bottom:11px}
+.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.fin-cell{padding:10px 8px;background:rgba(255,255,255,.025);border-radius:9px;text-align:center}
+.fin-cell-val{font-family:var(--font-title);font-size:16px;font-weight:900;color:var(--cyan)}
+.fin-cell-lab{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.fin-time{display:flex;flex-direction:column;gap:7px}
+.fin-time-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:rgba(255,255,255,.02);border-radius:9px}
+.fin-time-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.fin-time-mid{flex:1;min-width:0}
+.fin-time-league{font-family:var(--font-title);font-size:10px;font-weight:700;margin-bottom:2px}
+.fin-time-detail{font-family:var(--font-mono);font-size:9px;color:var(--text-dim)}
+.fin-time-gen{font-family:var(--font-title);font-size:12px;font-weight:900;color:var(--yellow)}
+.fin-vs{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.fin-vs:last-child{border:none}
+.fin-vs-you{flex:1;text-align:right;font-family:var(--font-title);font-size:12px;font-weight:700;color:var(--cyan)}
+.fin-vs-lab{width:96px;text-align:center;font-family:var(--font-mono);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.fin-vs-rival{flex:1;font-family:var(--font-title);font-size:12px;font-weight:700;color:var(--orange)}
+.fin-rank{text-align:center;padding:15px;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.2);border-radius:14px;margin-bottom:12px}
+.fin-rank-val{font-family:var(--font-title);font-size:26px;font-weight:900;color:var(--cyan)}
+.fin-rank-lab{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.5}
+.fin-tokens{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:rgba(247,224,24,.05);border:1px solid rgba(247,224,24,.25);border-radius:14px;margin-bottom:12px}
+.fin-tokens-val{font-family:var(--font-title);font-size:24px;font-weight:900;color:var(--yellow)}
+.fin-tokens-lab{font-family:var(--font-mono);font-size:10px;color:var(--text-dim)}
+.badge-ferraille{background:rgba(255,255,255,.06);color:var(--text-mid);border:1px solid rgba(255,255,255,.15)}
+.badge-combattant{background:rgba(76,175,80,.1);color:var(--green);border:1px solid rgba(76,175,80,.3)}
+.badge-champion{background:rgba(0,240,255,.1);color:var(--cyan);border:1px solid rgba(0,240,255,.3)}
+.badge-icone{background:rgba(206,147,216,.1);color:var(--purple);border:1px solid rgba(206,147,216,.3)}
+.badge-legende{background:rgba(247,224,24,.1);color:var(--yellow);border:1px solid rgba(247,224,24,.35)}
+.badge-mondiale{background:linear-gradient(135deg,rgba(247,224,24,.15),rgba(255,45,107,.1));color:var(--yellow);border:1px solid rgba(247,224,24,.5)}
+
+/* ================================================================
+   v0.4.0 — DIVERS
+   ================================================================ */
+.ia-effect{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.18);border-radius:10px;margin-bottom:10px}
+.ia-effect-icon{font-size:15px;flex-shrink:0}
+.ia-effect-text{font-family:var(--font-mono);font-size:10px;color:var(--text-mid);line-height:1.5}
+.ia-effect-text b{color:var(--purple);font-family:var(--font-title);font-size:9px}
+.glitch-box{background:rgba(255,45,107,.07);border:1px dashed rgba(255,45,107,.3);border-radius:10px;padding:11px 13px;margin-bottom:11px}
+.glitch-text{font-family:var(--font-mono);font-size:10px;color:var(--pink);line-height:1.5}
+
+/* ================================================================
+   v0.5.0 — VERROUILLAGE DES CHOIX PENDANT LA FRAPPE DU TEXTE
+   ================================================================ */
+.combat-choices.locked{pointer-events:none}
+.combat-choices.locked .combat-choice{cursor:default}
+
+/* ================================================================
+   v0.6.0 — PALIERS DE NOTE SPEC (ex-GEN)
+   Un seul système de couleurs : la note ET le badge de ligue.
+   ================================================================ */
+:root{
+  --tier-epave:#6B7280;
+  --tier-bronze:#CD7F32;
+  --tier-argent:#C0C0C0;
+  --tier-or:#FFD700;
+  --tier-violet:#CE93D8;
+  --tier-rouge:#E5383B;
+  --tier-diamant:#7DF9FF;
+}
+
+/* Cercle SPEC du profil — la couleur suit le palier */
+.gen-circle.t-epave{border-color:var(--tier-epave);background:rgba(107,114,128,.08);box-shadow:0 0 12px rgba(107,114,128,.15)}
+.gen-circle.t-epave .gen-circle-val{color:var(--tier-epave)}
+.gen-circle.t-epave .gen-circle-label{color:rgba(107,114,128,.6)}
+.gen-circle.t-bronze{border-color:var(--tier-bronze);background:rgba(205,127,50,.08);box-shadow:0 0 12px rgba(205,127,50,.2)}
+.gen-circle.t-bronze .gen-circle-val{color:var(--tier-bronze)}
+.gen-circle.t-bronze .gen-circle-label{color:rgba(205,127,50,.6)}
+.gen-circle.t-argent{border-color:var(--tier-argent);background:rgba(192,192,192,.08);box-shadow:0 0 12px rgba(192,192,192,.2)}
+.gen-circle.t-argent .gen-circle-val{color:var(--tier-argent)}
+.gen-circle.t-argent .gen-circle-label{color:rgba(192,192,192,.6)}
+.gen-circle.t-or{border-color:var(--tier-or);background:rgba(255,215,0,.08);box-shadow:0 0 14px rgba(255,215,0,.22)}
+.gen-circle.t-or .gen-circle-val{color:var(--tier-or)}
+.gen-circle.t-or .gen-circle-label{color:rgba(255,215,0,.6)}
+.gen-circle.t-violet{border-color:var(--tier-violet);background:rgba(206,147,216,.08);box-shadow:0 0 14px rgba(206,147,216,.25)}
+.gen-circle.t-violet .gen-circle-val{color:var(--tier-violet)}
+.gen-circle.t-violet .gen-circle-label{color:rgba(206,147,216,.6)}
+.gen-circle.t-rouge{border-color:var(--tier-rouge);background:rgba(229,56,59,.09);box-shadow:0 0 16px rgba(229,56,59,.28)}
+.gen-circle.t-rouge .gen-circle-val{color:var(--tier-rouge)}
+.gen-circle.t-rouge .gen-circle-label{color:rgba(229,56,59,.6)}
+
+/* Diamant — seul palier animé */
+.gen-circle.t-diamant{
+  border-color:transparent;
+  background:
+    linear-gradient(var(--bg),var(--bg)) padding-box,
+    linear-gradient(120deg,#7DF9FF,#FFFFFF,#B9F5FF,#7DF9FF) border-box;
+  background-size:100% 100%,300% 100%;
+  animation:diamondBorder 3.5s linear infinite, diamondPulse 2.2s ease-in-out infinite;
+}
+.gen-circle.t-diamant .gen-circle-val{
+  background:linear-gradient(120deg,#7DF9FF 0%,#FFFFFF 45%,#7DF9FF 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:diamondShine 3s linear infinite;
+}
+.gen-circle.t-diamant .gen-circle-label{color:rgba(125,249,255,.7)}
+@keyframes diamondBorder{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
+@keyframes diamondShine{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes diamondPulse{0%,100%{box-shadow:0 0 14px rgba(125,249,255,.25)}50%{box-shadow:0 0 26px rgba(125,249,255,.55)}}
+
+/* Badges de ligue alignés sur les mêmes paliers */
+.league-badge.t-bronze{background:rgba(205,127,50,.12);color:var(--tier-bronze);border:1px solid rgba(205,127,50,.32)}
+.league-badge.t-argent{background:rgba(192,192,192,.12);color:var(--tier-argent);border:1px solid rgba(192,192,192,.32)}
+.league-badge.t-or{background:rgba(255,215,0,.12);color:var(--tier-or);border:1px solid rgba(255,215,0,.32)}
+.league-badge.t-violet{background:rgba(206,147,216,.12);color:var(--tier-violet);border:1px solid rgba(206,147,216,.32)}
+.league-badge.t-rouge{background:rgba(229,56,59,.12);color:var(--tier-rouge);border:1px solid rgba(229,56,59,.35)}
+.league-badge.t-diamant{
+  color:#0A0E27;font-weight:900;border:1px solid rgba(125,249,255,.5);
+  background:linear-gradient(120deg,#7DF9FF,#FFFFFF,#B9F5FF,#7DF9FF);
+  background-size:300% 100%;animation:diamondBorder 3.5s linear infinite;
+}
+
+/* Pastille de palier réutilisable (récap, rapport final, fiche rival) */
+.tier-chip{display:inline-block;padding:3px 10px;border-radius:20px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+.tier-chip.t-epave{background:rgba(107,114,128,.12);color:var(--tier-epave);border:1px solid rgba(107,114,128,.3)}
+.tier-chip.t-bronze{background:rgba(205,127,50,.12);color:var(--tier-bronze);border:1px solid rgba(205,127,50,.3)}
+.tier-chip.t-argent{background:rgba(192,192,192,.12);color:var(--tier-argent);border:1px solid rgba(192,192,192,.3)}
+.tier-chip.t-or{background:rgba(255,215,0,.12);color:var(--tier-or);border:1px solid rgba(255,215,0,.3)}
+.tier-chip.t-violet{background:rgba(206,147,216,.12);color:var(--tier-violet);border:1px solid rgba(206,147,216,.3)}
+.tier-chip.t-rouge{background:rgba(229,56,59,.12);color:var(--tier-rouge);border:1px solid rgba(229,56,59,.35)}
+.tier-chip.t-diamant{color:#0A0E27;font-weight:700;background:linear-gradient(120deg,#7DF9FF,#FFFFFF,#B9F5FF,#7DF9FF);background-size:300% 100%;animation:diamondBorder 3.5s linear infinite}
+
+/* Grand cercle du rapport final */
+.fin-gen.t-epave{border-color:var(--tier-epave);box-shadow:0 0 30px rgba(107,114,128,.2)}
+.fin-gen.t-epave .fin-gen-val{color:var(--tier-epave)}
+.fin-gen.t-bronze{border-color:var(--tier-bronze);box-shadow:0 0 30px rgba(205,127,50,.25)}
+.fin-gen.t-bronze .fin-gen-val{color:var(--tier-bronze)}
+.fin-gen.t-argent{border-color:var(--tier-argent);box-shadow:0 0 30px rgba(192,192,192,.25)}
+.fin-gen.t-argent .fin-gen-val{color:var(--tier-argent)}
+.fin-gen.t-or{border-color:var(--tier-or);box-shadow:0 0 32px rgba(255,215,0,.28)}
+.fin-gen.t-or .fin-gen-val{color:var(--tier-or)}
+.fin-gen.t-violet{border-color:var(--tier-violet);box-shadow:0 0 32px rgba(206,147,216,.3)}
+.fin-gen.t-violet .fin-gen-val{color:var(--tier-violet)}
+.fin-gen.t-rouge{border-color:var(--tier-rouge);box-shadow:0 0 34px rgba(229,56,59,.32)}
+.fin-gen.t-rouge .fin-gen-val{color:var(--tier-rouge)}
+.fin-gen.t-diamant{
+  border-color:transparent;
+  background:linear-gradient(var(--bg),var(--bg)) padding-box,
+             linear-gradient(120deg,#7DF9FF,#FFFFFF,#B9F5FF,#7DF9FF) border-box;
+  background-size:100% 100%,300% 100%;
+  animation:diamondBorder 3.5s linear infinite, diamondPulse 2.2s ease-in-out infinite;
+}
+.fin-gen.t-diamant .fin-gen-val{
+  background:linear-gradient(120deg,#7DF9FF 0%,#FFFFFF 45%,#7DF9FF 100%);
+  background-size:300% 100%;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:diamondShine 3s linear infinite;
+}
+
+/* Cercle SPEC du rival */
+.rival-gen.t-bronze{border-color:var(--tier-bronze)}.rival-gen.t-bronze .rival-gen-val{color:var(--tier-bronze)}
+.rival-gen.t-argent{border-color:var(--tier-argent)}.rival-gen.t-argent .rival-gen-val{color:var(--tier-argent)}
+.rival-gen.t-or{border-color:var(--tier-or)}.rival-gen.t-or .rival-gen-val{color:var(--tier-or)}
+.rival-gen.t-violet{border-color:var(--tier-violet)}.rival-gen.t-violet .rival-gen-val{color:var(--tier-violet)}
+.rival-gen.t-rouge{border-color:var(--tier-rouge)}.rival-gen.t-rouge .rival-gen-val{color:var(--tier-rouge)}
+.rival-gen.t-diamant{border-color:#7DF9FF;animation:diamondPulse 2.2s ease-in-out infinite}
+.rival-gen.t-diamant .rival-gen-val{color:#7DF9FF}
+.rival-gen.t-epave{border-color:var(--tier-epave)}.rival-gen.t-epave .rival-gen-val{color:var(--tier-epave)}
+
+/* ================================================================
+   v0.6.1 — CONTRE (l'esquive renverse le round)
+   ================================================================ */
+.rr-win .rr-title{color:var(--green)}
+.rr-loss .rr-title{color:var(--pink)}
+
+/* ================================================================
+   v0.6.0 — RÉSULTATS INLINE (remplacent les info-bulles)
+   ================================================================ */
+.shop-item.result-win{border-color:rgba(76,175,80,.35);background:rgba(76,175,80,.06);pointer-events:none}
+.shop-item.result-win .shop-name{color:var(--green)}
+.shop-item.result-loss{border-color:rgba(255,45,107,.35);background:rgba(255,45,107,.06);pointer-events:none}
+.shop-item.result-loss .shop-name{color:var(--pink)}
+.shop-result{font-family:var(--font-title);font-size:11px;font-weight:700;white-space:nowrap;margin-left:10px;text-align:right}
+.shop-result-sub{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);margin-top:2px}
+
+/* ================================================================
+   v0.8.0 — BARRE SUPÉRIEURE DE CARRIÈRE + CLASSEMENT
+   ================================================================ */
+.career-topbar{display:flex;align-items:center;gap:8px;margin-bottom:15px}
+.btn-standings{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;
+  background:rgba(0,240,255,.07);border:1px solid rgba(0,240,255,.28);border-radius:8px;
+  color:var(--cyan);font-family:var(--font-title);font-size:10px;font-weight:700;
+  letter-spacing:1px;cursor:pointer;transition:all .2s}
+.btn-standings:active{background:rgba(0,240,255,.16);border-color:var(--cyan)}
+
+/* v0.13.4 — panneau de diagnostic. Classes NEUVES uniquement : rien
+   de la charte existante n'est touché. */
+.diag-sec{border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;margin-bottom:10px;
+  background:rgba(255,255,255,.02)}
+.diag-sec-title{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:2px;
+  color:var(--cyan);margin-bottom:8px}
+.diag-out{width:100%;height:190px;background:#05070f;color:#8FE3C8;border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;padding:8px;font-family:var(--font-mono);font-size:9px;line-height:1.45;
+  white-space:pre;overflow:auto;resize:vertical;-webkit-user-select:text;user-select:text}
+.diag-btn{display:block;width:100%;padding:10px;margin-top:8px;border-radius:8px;cursor:pointer;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-align:center;
+  background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.3);color:var(--cyan)}
+.diag-btn.danger{background:rgba(229,56,59,.08);border-color:rgba(229,56,59,.35);color:var(--red)}
+.diag-btn:active{filter:brightness(1.4)}
+.diag-note{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);line-height:1.5;margin-top:6px}
+
+/* ================================================================
+   v0.14.0 — PASSE VISUELLE (points 1 à 5, 7, 9, 10, 11, 18)
+   Bordures et contours épaissis, lueurs sur les verdicts, zones du
+   classement rendues lisibles. Aucune couleur de la charte n'est
+   remplacée : on ne joue que sur l'épaisseur, l'opacité et la lueur,
+   pour éviter la répétition de teintes.
+   ================================================================ */
+
+/* --- D1 · Cartes et panneaux : contours plus francs -------------- */
+.season-card,
+.inter-section,
+.vs-block,
+.stand-table,
+.fol-panel{
+  border-width:2px;
+  box-shadow:0 2px 14px rgba(0,0,0,.28);
+}
+/* Le panneau d'inter-saison en alerte doit se voir de loin. */
+.inter-section.warn{border-width:2px;border-color:rgba(255,45,107,.42);
+  box-shadow:0 0 18px rgba(255,45,107,.12)}
+.inter-section.gold{border-width:2px;border-color:rgba(247,224,24,.40);
+  box-shadow:0 0 18px rgba(247,224,24,.10)}
+
+/* Chaque famille garde SA couleur, déjà présente dans la charte :
+   cyan pour le joueur, orange pour le rival, jaune pour la saison. */
+.season-card{border-color:rgba(0,240,255,.24)}
+.vs-block{border-color:rgba(0,240,255,.20)}
+.rival-card{border-width:2px;box-shadow:0 0 20px rgba(255,152,0,.10)}
+.fed-doc{border-width:2px}
+
+/* --- D2 · Verdict de round : lueur portée ------------------------ */
+.rr-verdict{border-width:2px}
+.rr-win{box-shadow:0 0 26px rgba(76,175,80,.20), inset 0 0 30px rgba(76,175,80,.05)}
+.rr-loss{box-shadow:0 0 26px rgba(255,45,107,.20), inset 0 0 30px rgba(255,45,107,.05)}
+.rr-neutral{box-shadow:0 0 22px rgba(0,240,255,.16), inset 0 0 30px rgba(0,240,255,.04)}
+.rr-win .rr-title{text-shadow:0 0 22px rgba(76,175,80,.55)}
+.rr-loss .rr-title{text-shadow:0 0 22px rgba(255,45,107,.55)}
+.rr-neutral .rr-title{text-shadow:0 0 20px rgba(0,240,255,.45)}
+
+/* --- D2 · Verdict de combat : lueur FIXE, jamais animée ----------
+   Demande explicite : impactant mais stable, on ne veut pas d'un
+   clignotement sur l'écran de résultat. */
+.result-banner{border-width:2.5px}
+.result-victory{
+  box-shadow:0 0 34px rgba(76,175,80,.22), inset 0 0 44px rgba(76,175,80,.06);
+  border-color:rgba(76,175,80,.45)}
+.result-defeat{
+  box-shadow:0 0 34px rgba(255,45,107,.22), inset 0 0 44px rgba(255,45,107,.06);
+  border-color:rgba(255,45,107,.45)}
+.result-victory .result-text{text-shadow:0 0 26px rgba(76,175,80,.6), 0 0 52px rgba(76,175,80,.25)}
+.result-defeat .result-text{text-shadow:0 0 26px rgba(255,45,107,.6), 0 0 52px rgba(255,45,107,.25)}
+.boss-banner{border-width:2.5px;box-shadow:0 0 34px rgba(229,56,59,.20)}
+.boss-title{text-shadow:0 0 26px rgba(229,56,59,.55)}
+
+/* --- D3 · Messages narratifs : filet plus large et lueur --------- */
+.narration-box{border-left-width:5px;
+  background:rgba(0,0,0,.22);box-shadow:-6px 0 18px rgba(247,224,24,.07)}
+.rival-quote{border-left-width:5px;
+  background:rgba(0,0,0,.24);box-shadow:-6px 0 18px rgba(255,152,0,.09)}
+.ev-body{border-width:2px;border-color:rgba(255,255,255,.10);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.25)}
+
+/* --- D4 · Zones du classement ------------------------------------
+   Le filet latéral de 3px ne suffisait pas à distinguer les trois
+   zones. On teinte la ligne entière, très légèrement, et on épaissit
+   le filet. Le joueur et le rival gardent la priorité visuelle. */
+.stand-row::before{width:5px}
+.stand-row.z-promo{background:rgba(76,175,80,.055)}
+.stand-row.z-releg{background:rgba(255,45,107,.055)}
+.stand-row.z-promo::before{box-shadow:0 0 10px rgba(76,175,80,.5)}
+.stand-row.z-releg::before{box-shadow:0 0 10px rgba(255,45,107,.5)}
+/* Frontières de zone : un trait net là où la zone change. */
+.stand-row.zone-edge{border-bottom:2px solid rgba(255,255,255,.14)}
+/* Le joueur reste au-dessus de la teinte de zone. */
+.stand-row.is-player{background:linear-gradient(90deg,rgba(0,240,255,.16),rgba(0,240,255,.04))}
+.stand-row.is-rival{background:linear-gradient(90deg,rgba(255,152,0,.13),transparent)}
+.zone-chip{border-width:1.5px;font-weight:700}
+
+/* --- D1 · Lignes de bilan : séparation plus lisible -------------- */
+.post-row{border:1px solid rgba(255,255,255,.07)}
+.stat-box{border:1px solid rgba(255,255,255,.08)}
+
+.zone-legend{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
+.zone-chip{padding:4px 10px;border-radius:20px;font-family:var(--font-mono);font-size:8px;
+  text-transform:uppercase;letter-spacing:1px}
+.zone-chip.z-promo{background:rgba(76,175,80,.12);color:var(--green);border:1px solid rgba(76,175,80,.3)}
+.zone-chip.z-stay{background:rgba(255,255,255,.04);color:var(--text-dim);border:1px solid rgba(255,255,255,.12)}
+.zone-chip.z-releg{background:rgba(255,45,107,.12);color:var(--pink);border:1px solid rgba(255,45,107,.3)}
+
+.stand-table{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden}
+.stand-head{display:flex;align-items:center;padding:9px 11px;
+  background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07);
+  font-family:var(--font-mono);font-size:9px;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:1px}
+.stand-row{display:flex;align-items:center;padding:9px 11px;
+  border-bottom:1px solid rgba(255,255,255,.03);position:relative}
+.stand-row:last-child{border-bottom:none}
+.stand-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.stand-row.z-promo::before{background:var(--green)}
+.stand-row.z-stay::before{background:rgba(255,255,255,.10)}
+.stand-row.z-releg::before{background:var(--pink)}
+
+.st-rank{width:24px;font-family:var(--font-title);font-size:11px;font-weight:700;color:var(--text-mid)}
+.st-name{flex:1;min-width:0;display:flex;flex-direction:column;padding-right:6px}
+.st-name b{font-family:var(--font-title);font-size:11px;font-weight:700;color:rgba(255,255,255,.88);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-meta{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-num{width:26px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-mid)}
+.st-pts{width:34px;text-align:right;font-family:var(--font-title);font-size:12px;
+  font-weight:900;color:var(--yellow)}
+
+/* Le robot du joueur : effet lumineux pour le repérer d'un coup d'œil */
+.stand-row.is-player{background:linear-gradient(90deg,rgba(0,240,255,.13),rgba(0,240,255,.03));
+  box-shadow:inset 0 0 22px rgba(0,240,255,.16)}
+.stand-row.is-player .st-name b{color:var(--cyan);text-shadow:0 0 10px rgba(0,240,255,.5)}
+.stand-row.is-player .st-rank{color:var(--cyan)}
+/* Le rival : repérable sans être confondu avec le joueur */
+.stand-row.is-rival{background:linear-gradient(90deg,rgba(255,152,0,.10),transparent)}
+.stand-row.is-rival .st-name b{color:var(--orange)}
+
+/* ================================================================
+   v0.8.0 — SPLASH : l'illustration porte le titre, aucun texte dessus
+   ================================================================ */
+#splash .splash-inner{display:none}
+#splash .splash-tap{display:none}
+
+/* ================================================================
+   v0.8.0 — TOASTS : ne doivent plus recouvrir les boutons du bas
+   ================================================================ */
+#toast{bottom:auto!important;top:76px!important;max-width:88%;white-space:normal!important;
+  text-align:center;box-shadow:0 6px 26px rgba(0,0,0,.55),0 0 20px rgba(0,240,255,.18)!important}
+
+/* ================================================================
+   v0.9.0 — MODALE DU JEU (remplace les boîtes du navigateur)
+   ================================================================ */
+.modal-overlay{position:fixed;inset:0;z-index:9998;display:none;
+  align-items:center;justify-content:center;padding:24px;
+  background:rgba(4,6,18,.82);backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex;animation:modalIn .18s ease-out}
+@keyframes modalIn{from{opacity:0}to{opacity:1}}
+.modal-box{width:100%;max-width:340px;background:var(--bg);
+  border:1px solid rgba(0,240,255,.3);border-radius:16px;padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(0,240,255,.10);
+  animation:modalPop .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes modalPop{from{transform:scale(.9) translateY(10px)}to{transform:scale(1) translateY(0)}}
+.modal-title{font-family:var(--font-title);font-size:13px;font-weight:900;
+  color:var(--cyan);letter-spacing:2px;text-transform:uppercase;
+  text-align:center;margin-bottom:12px}
+.modal-body{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);
+  line-height:1.7;text-align:center;white-space:pre-line;margin-bottom:18px}
+.modal-body b{color:var(--yellow);font-family:var(--font-title);font-size:11px}
+.modal-actions{display:flex;gap:8px}
+.modal-btn{flex:1;padding:13px 8px;border:none;border-radius:10px;cursor:pointer;
+  font-family:var(--font-title);font-size:10px;font-weight:900;
+  letter-spacing:1px;text-transform:uppercase;transition:transform .12s}
+.modal-btn:active{transform:scale(.96)}
+.modal-cancel{background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.3);color:var(--cyan)}
+.modal-confirm{background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff}
+.modal-confirm.safe{background:linear-gradient(135deg,var(--cyan),#0080FF);color:var(--bg)}
+
+/* ================================================================
+   v0.9.0 — BAPTÊME DU ROBOT
+   ================================================================ */
+.bap-wrap{display:flex;flex-direction:column;justify-content:center;
+  min-height:78vh;padding:10px 0}
+.bap-kicker{font-family:var(--font-mono);font-size:9px;color:var(--purple);
+  text-transform:uppercase;letter-spacing:3px;text-align:center;margin-bottom:8px}
+.bap-speech{background:linear-gradient(135deg,rgba(206,147,216,.09),transparent);
+  border:1px solid rgba(206,147,216,.28);border-left:3px solid var(--purple);
+  border-radius:0 14px 14px 0;padding:18px;margin-bottom:20px}
+.bap-speech p{font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,.85);
+  line-height:1.8;font-style:italic}
+.bap-old{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);
+  text-align:center;letter-spacing:2px;margin-bottom:6px}
+.bap-field{display:flex;align-items:center;gap:0;margin:0 auto 6px;max-width:300px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(0,240,255,.35);border-radius:12px;
+  padding:12px 14px;box-shadow:inset 0 0 24px rgba(0,240,255,.07)}
+.bap-field input{flex:1;min-width:0;background:transparent;border:none;outline:none;
+  font-family:var(--font-title);font-size:22px;font-weight:900;color:var(--cyan);
+  letter-spacing:3px;text-transform:uppercase;text-align:right;padding:0}
+.bap-field input::placeholder{color:rgba(0,240,255,.22);letter-spacing:3px}
+.bap-suffix{font-family:var(--font-title);font-size:22px;font-weight:900;
+  color:var(--text-dim);letter-spacing:2px;white-space:nowrap;margin-left:2px}
+.bap-hint{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);
+  text-align:center;margin-bottom:16px;line-height:1.6}
+.bap-hint.err{color:var(--pink)}
+
+/* Réécriture du nom sur l'écran de carrière */
+.name-rewrite{font-family:var(--font-title);font-size:14px;font-weight:900;color:var(--cyan)}
+.name-rewrite .cur{display:inline-block;width:8px;height:15px;background:var(--cyan);
+  animation:cursorBlink .6s step-end infinite;vertical-align:middle;margin-left:2px}
+
+/* ================================================================
+   v0.9.0 — SCÉNARIO DE DISQUALIFICATION
+   ================================================================ */
+.fed-doc{background:rgba(255,255,255,.03);border:1px solid rgba(247,224,24,.28);
+  border-radius:14px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.fed-doc::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(247,224,24,.02) 3px,rgba(247,224,24,.02) 6px)}
+.fed-head{font-family:var(--font-mono);font-size:8px;color:var(--yellow);
+  text-transform:uppercase;letter-spacing:3px;text-align:center;
+  padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid rgba(247,224,24,.2)}
+.fed-title{font-family:var(--font-title);font-size:14px;font-weight:900;
+  color:var(--yellow);text-align:center;margin-bottom:12px;letter-spacing:1px}
+.fed-doc p{font-family:var(--font-mono);font-size:11px;color:var(--text-mid);
+  line-height:1.8;margin-bottom:10px}
+.fed-doc p:last-child{margin-bottom:0}
+.fed-stamp{display:inline-block;padding:6px 16px;border:2px solid var(--pink);
+  border-radius:6px;font-family:var(--font-title);font-size:11px;font-weight:900;
+  color:var(--pink);letter-spacing:2px;transform:rotate(-4deg);margin:8px 0}
+/* v0.14.0 — C2 : le tampon porte le nom du robot sanctionné et se
+   détache des paragraphes, pour qu'on ne le lise plus comme s'il
+   concernait le joueur. */
+.fed-verdict{display:flex;flex-direction:column;align-items:center;gap:2px;
+  margin:14px 0;padding:10px 0;
+  border-top:1px solid rgba(255,45,107,.18);border-bottom:1px solid rgba(255,45,107,.18)}
+.fed-verdict-who{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;
+  color:var(--pink);opacity:.85}
+
+/* ================================================================
+   v0.9.0 — TOURNOI FINAL
+   ================================================================ */
+.brack{background:var(--card);border:1px solid rgba(247,224,24,.22);
+  border-radius:14px;padding:16px;margin-bottom:14px}
+.brack-title{font-family:var(--font-title);font-size:11px;font-weight:700;
+  color:var(--yellow);letter-spacing:2px;text-transform:uppercase;
+  text-align:center;margin-bottom:14px}
+.brack-match{margin-bottom:14px}
+.brack-label{font-family:var(--font-mono);font-size:8px;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.brack-pair{display:flex;flex-direction:column;gap:4px}
+.brack-bot{display:flex;align-items:center;gap:8px;padding:9px 11px;
+  background:rgba(255,255,255,.025);border:1px solid transparent;border-radius:9px}
+.brack-bot.win{border-color:rgba(76,175,80,.35);background:rgba(76,175,80,.07)}
+.brack-bot.out{opacity:.4}
+.brack-bot.me{border-color:var(--cyan);background:linear-gradient(90deg,rgba(0,240,255,.12),transparent)}
+.brack-bot.rival{border-color:rgba(255,152,0,.4)}
+.brack-seed{width:20px;font-family:var(--font-title);font-size:10px;color:var(--text-dim)}
+.brack-name{flex:1;font-family:var(--font-title);font-size:11px;font-weight:700;
+  color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brack-bot.me .brack-name{color:var(--cyan)}
+.brack-bot.rival .brack-name{color:var(--orange)}
+.brack-spec{font-family:var(--font-mono);font-size:9px;color:var(--text-dim)}
+.brack-vs{text-align:center;font-family:var(--font-title);font-size:9px;
+  color:var(--yellow);margin:2px 0}
+
+/* ================================================================
+   v0.9.0 — TEMPS MORT DE LA FINALE
+   ================================================================ */
+.timeout-wrap{display:flex;flex-direction:column;justify-content:center;min-height:74vh}
+.timeout-kicker{font-family:var(--font-mono);font-size:9px;color:var(--yellow);
+  text-transform:uppercase;letter-spacing:4px;text-align:center;margin-bottom:6px}
+.timeout-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);
+  text-align:center;margin-bottom:20px}
+.timeout-speech{background:linear-gradient(135deg,rgba(206,147,216,.10),transparent);
+  border:1px solid rgba(206,147,216,.3);border-left:3px solid var(--purple);
+  border-radius:0 14px 14px 0;padding:18px;margin-bottom:20px}
+.timeout-speech p{font-family:var(--font-body);font-size:14px;
+  color:rgba(255,255,255,.9);line-height:1.8;font-style:italic}
+.timeout-choice{padding:15px 16px;border-radius:12px;cursor:pointer;
+  background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);
+  color:var(--text-mid);font-family:var(--font-body);font-size:13px;
+  line-height:1.5;margin-bottom:9px;transition:all .2s}
+.timeout-choice:active{transform:scale(.98);border-color:var(--purple);
+  background:rgba(206,147,216,.12)}
+
+/* ================================================================
+   v0.9.0 — GALERIE DES PUCES IA
+   ================================================================ */
+.puce-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.puce{padding:13px 10px;border-radius:12px;text-align:center;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07)}
+.puce.got{background:linear-gradient(135deg,rgba(247,224,24,.10),rgba(247,224,24,.02));
+  border-color:rgba(247,224,24,.45);box-shadow:0 0 18px rgba(247,224,24,.12)}
+.puce-icon{font-size:24px;margin-bottom:5px;filter:grayscale(1) opacity(.35)}
+.puce.got .puce-icon{filter:none}
+.puce-name{font-family:var(--font-title);font-size:9px;font-weight:700;
+  color:var(--text-dim);letter-spacing:1px}
+.puce.got .puce-name{color:var(--yellow)}
+.puce-sub{font-family:var(--font-mono);font-size:8px;color:rgba(255,255,255,.22);margin-top:3px}
+.puce.got .puce-sub{color:var(--text-dim)}
+.puce-prog{height:7px;background:rgba(255,255,255,.06);border-radius:4px;
+  overflow:hidden;margin:10px 0 6px}
+.puce-prog-fill{height:100%;background:linear-gradient(90deg,var(--yellow),#FFD700);
+  border-radius:4px;transition:width .6s}
+
+/* v0.10.0 — l'écran d'avant-saison affiche « Niveau » à la place de « Pts » :
+   34px suffisaient pour trois lettres, pas pour six. */
+.stand-table.preview .st-pts{width:54px}
+.stand-table.preview .stand-head .st-pts{font-size:9px}
+
+/* v0.12 — supprime le délai de 300 ms de double-tap : sans lui, un
+   tap peut être requalifié en appui long et « ne pas prendre ». */
+.btn-primary,.btn-small,.btn-back,.btn-standings,.card,.ev-choice,.modal-btn,
+.puce,.choice-btn,.support-btn,.install-btn,button,[onclick]{touch-action:manipulation}
+
+/* v0.12 — TROPHÉES : présentation en ligne. Réutiliser .puce était une
+   erreur : c'est un composant de grille carrée, et .puce-prog est une
+   barre de 7 px dans laquelle le texte « Obtenu » se retrouvait coupé. */
+.tro{display:flex;align-items:center;gap:12px;padding:11px 13px;margin-bottom:7px;
+  border-radius:11px;background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.07);opacity:.62;cursor:pointer;transition:.18s}
+.tro:active{transform:scale(.99)}
+.tro.got{opacity:1;background:rgba(247,224,24,.05);border-color:rgba(247,224,24,.26)}
+.tro.hid{opacity:.3}
+.tro-ico{flex:none;width:28px;font-size:20px;text-align:center;filter:grayscale(1) opacity(.4)}
+.tro.got .tro-ico{filter:none}
+.tro-txt{flex:1;min-width:0}
+.tro-txt b{display:block;font-family:var(--font-title);font-size:12px;font-weight:700;
+  letter-spacing:.5px;color:var(--text);margin-bottom:3px}
+.tro.got .tro-txt b{color:var(--yellow)}
+.tro-txt em{display:block;font-style:normal;font-family:var(--font-mono);font-size:9.5px;
+  line-height:1.5;color:var(--text-dim)}
+.tro-state{flex:none;font-family:var(--font-mono);font-size:9.5px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--text-dim);text-align:right}
+.tro.got .tro-state{color:var(--yellow)}
+
+/* Bouton de retour collant, pour les écrans longs uniquement.
+   Il s'estompe 1,5 s après l'arrêt du défilement et devient inerte
+   AU MÊME INSTANT — jamais invisible et cliquable. */
+.btn-back.sticky{position:sticky;top:6px;z-index:60;display:inline-block;
+  transition:opacity .25s ease;backdrop-filter:blur(6px)}
+.btn-back.sticky.faded{opacity:0;pointer-events:none}
+/* v0.13 — l'ecran de carriere a DEUX boutons en haut (Menu + Classement) :
+   les deux doivent suivre le defilement ensemble, pas un seul. */
+.career-topbar.sticky{position:sticky;top:6px;z-index:60;
+  transition:opacity .25s ease;backdrop-filter:blur(6px)}
+.career-topbar.sticky.faded{opacity:0;pointer-events:none}
