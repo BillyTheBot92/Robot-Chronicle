@@ -513,7 +513,9 @@
 
     // ---- portée COMBAT ----
     if (ctx === 'fight') {
-      if (c.totalWins >= 1) this.grant('first_blood');
+      // Ne jamais déverrouiller « Premier Sang » pendant une défaite,
+      // même si la sauvegarde contient déjà une victoire antérieure.
+      if (info.victory && c.totalWins >= 1) this.grant('first_blood');
       if (c.totalKO >= 1) this.grant('just_begun');
       if (info.victory && info.cleanWin && !info.boss) this.grant('no_appeal');
       if (info.victory && info.startState < 30) this.grant('on_knees');

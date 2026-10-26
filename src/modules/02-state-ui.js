@@ -10,7 +10,7 @@
 
   state: {
     firstLaunch: true,
-    version: '0.16.1',
+    version: '0.16.2',
     tokens: 0,
     hallOfFame: [],
     badges: {},

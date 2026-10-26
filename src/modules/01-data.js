@@ -2,7 +2,7 @@
 (function (root) {
   const parts = root.__RC_MODULES || (root.__RC_MODULES = []);
   parts.push({
-  VERSION: '0.16.1',
+  VERSION: '0.16.2',
   START_CORES: 15000,
 
   // ============================================================
