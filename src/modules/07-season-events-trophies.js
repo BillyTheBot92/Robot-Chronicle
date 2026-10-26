@@ -434,8 +434,7 @@
     b.classList.remove('faded');   // visible à l'arrivée sur l'écran
   },
 
-  // v0.13 — variante pour un groupe de boutons (ex. la barre du haut de
-  // l'écran de carrière, qui porte Menu ET Classement ensemble).
+  // v0.13 — variante pour les groupes de boutons collants.
   bindStickyGroup(screenId, groupId) {
     this.bindStickyBack(screenId, groupId);
   },
@@ -566,7 +565,7 @@
       if ((sc.atouts || 0) === 0) this.grant('bare_hands');
       if ((sc.lowState === undefined ? 100 : sc.lowState) >= 80) this.grant('impeccable');
       if ((sc.repairs || 0) === 0) this.grant('unbreakable');
-      if (!sc.standingsSeen) this.grant('phantom');
+      if ((c.seasonKO || 0) === 0 && (c.seasonKOTaken || 0) === 0) this.grant('phantom');
       // v0.16.0 — F4 : « Sur la Paille » se déclenche désormais au moment
       // du passage SOUS zéro (voir payOrDebt), et non plus au bilan de
       // saison. Sa portée est passée de saison à carrière.
@@ -858,7 +857,6 @@
     h += '<div class="stat-box"><div class="stat-value val-cyan">' + c.gen + '</div><div class="stat-label">SPEC</div></div></div>';
 
     h += '<div class="post-stats">';
-    h += '<div class="post-row"><span class="post-row-label">Classement</span><span class="post-row-val" style="color:var(--yellow)">' + rank + 'ᵉ / ' + this.LEAGUE_SIZE + ' · ' + (c.seasonWins*3) + ' pts</span></div>';
     h += '<div class="post-row"><span class="post-row-label">État du robot</span><span class="post-row-val" style="color:' + this.stateColor(c.state) + '">' + c.state + '% · ' + this.stateLabel(c.state) + '</span></div>';
     h += '<div class="post-row"><span class="post-row-label">Cores</span><span class="post-row-val" style="color:var(--yellow)">' + c.cores.toLocaleString('fr') + ' ⚡</span></div>';
     h += '<div class="post-row"><span class="post-row-label">Followers</span><span class="post-row-val" style="color:var(--cyan)">' + this.fmtFollowers(c.followers) + ' · ' + this.folTier(c.followers).cur.name + '</span></div>';
@@ -908,20 +906,20 @@
       // continue en attendant qu'il rejoigne.
       h += '<div class="promo-banner promo-up" style="border-color:rgba(247,224,24,.3)"><div class="promo-icon">🏆</div>';
       h += '<div class="promo-text" style="color:var(--yellow)">Champion de la Légendaire</div>';
-      h += '<div class="promo-sub">' + rank + 'ᵉ place. ' + (c.rival ? c.rival.name : 'Votre rival') + ' n\'est pas encore là.</div></div>';
+      h += '<div class="promo-sub">' + (c.rival ? c.rival.name : 'Votre rival') + ' n\'est pas encore dans cette ligue.</div></div>';
       h += '<button class="btn-primary btn-yellow" onclick="RC.nextSeason(\'titre_seul\')">Continuer</button>';
     } else if (this.isScriptedSeason() && rank <= 3) {
       // Le joueur a décroché le podium par lui-même : pas de scénario,
       // la promotion est méritée et le baptême suit quand même.
       h += '<div class="promo-banner promo-up"><div class="promo-icon">🚀</div>';
       h += '<div class="promo-text">Promotion !</div>';
-      h += '<div class="promo-sub">' + rank + 'ᵉ place · Bienvenue en Régionale</div></div>';
+      h += '<div class="promo-sub">Bienvenue en Régionale</div></div>';
       h += '<button class="btn-primary btn-gradient" onclick="RC.directAmateurPromo()">Continuer</button>';
     } else if (this.isScriptedSeason()) {
       // Le scénario de disqualification prend le relais
       h += '<div class="promo-banner promo-stay"><div class="promo-icon">😤</div>';
-      h += '<div class="promo-text">4ᵉ place</div>';
-      h += '<div class="promo-sub">À une place de la promotion.</div></div>';
+      h += '<div class="promo-text">Promotion suspendue</div>';
+      h += '<div class="promo-sub">Une décision disciplinaire doit encore être rendue.</div></div>';
       h += '<button class="btn-primary btn-cyan" onclick="RC.showDisqualification()">Continuer</button>';
     } else if (result === 'promo') {
       h += '<div class="promo-banner promo-up"><div class="promo-icon">🚀</div><div class="promo-text">Promotion !</div>';
@@ -991,10 +989,6 @@
       c.seasonsInLeague = 0;
     } else {
       if (result === 'releg') {
-        // v0.16.1 — GDD §6 : une seule relégation possible depuis la
-        // Légendaire par carrière. On la marque ici pour que zoneOf() ne
-        // propose plus jamais de zone rouge en Légendaire ensuite.
-        if (li === 5) c.legendRelegated = true;
         c.leagueIdx = Math.max(0, li - 1); c.league = this.LEAGUES[c.leagueIdx];
       }
       c.seasonsInLeague = (c.seasonsInLeague || 0) + 1;
@@ -1599,7 +1593,7 @@
         const sp = this.SPONSORS.find(s => s.id === t.sponsor);
         h += '<div class="fin-time-row"><div class="fin-time-dot" style="background:' + col + '"></div>';
         h += '<div class="fin-time-mid"><div class="fin-time-league" style="color:' + col + '">S' + t.season + ' · ' + t.league + '</div>';
-        h += '<div class="fin-time-detail">' + t.w + 'V-' + t.l + 'D · ' + t.ko + ' KO · ' + t.rank + 'ᵉ · ' + (sp ? sp.icon : '') + '</div></div>';
+        h += '<div class="fin-time-detail">' + t.w + 'V-' + t.l + 'D · ' + t.ko + ' KO · ' + (sp ? sp.icon : '') + '</div></div>';
         h += '<div class="fin-time-gen">' + t.gen + '</div></div>';
       });
       h += '</div></div>';

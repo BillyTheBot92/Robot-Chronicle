@@ -121,45 +121,14 @@
 
     let next = r.leagueIdx;
 
-    // v0.13 — §14.1 : zone de maintien. Il est déjà en Légendaire et
-    // l'ex aequo scripté n'a pas encore eu lieu (isFinalSeason le
-    // vérifie) : il reste, jamais relégué, quel que soit son rang
-    // simulé cette saison. Le vent favorable qui l'y a mené est dans
-    // simulateRivalMatchday(), pas ici — cette fonction ne fait que
-    // constater un rang, jamais le forcer visiblement.
-    if (r.leagueIdx === 5 && !this.isFinalSeason()) {
-      next = 5;
-      // v0.16.0 — F6 : filet de sécurité, HORS ligue du joueur uniquement.
-      // Quand le rival est sur le plateau, son rang vient du classement
-      // réellement affiché : le corriger ici ne changerait rien à l'écran
-      // et créerait une divergence entre sa fiche et le tableau. Dans ce
-      // cas, c'est la cible de saison (simulateRivalMatchday) qui doit
-      // faire le travail, et elle seule.
-      if (!st && rank >= this.RELEG_FROM) {
-        rank = this.PROMO_SLOTS + 1 + Math.floor(Math.random() * (this.RELEG_FROM - this.PROMO_SLOTS - 1));
-        r.lastRank = rank;
-      }
-    } else {
-      if (rank <= this.PROMO_SLOTS && next < 5) next++;
-      else if (rank >= this.RELEG_FROM && next > 0) next--;
-    }
+    // Le rang réellement simulé décide partout : podium = promotion,
+    // trois dernières places = relégation (sauf Amateur).
+    if (rank <= this.PROMO_SLOTS && next < 5) next++;
+    else if (rank >= this.RELEG_FROM && next > 0) next--;
 
     // Verrou : il ne bouge jamais de plus d'une division par saison,
     // dans tous les cas. C'est ce qui interdit toute apparition soudaine.
     next = Math.max(r.leagueIdx - 1, Math.min(r.leagueIdx + 1, next));
-    next = Math.max(0, Math.min(5, next));
-
-    // v0.15.0 — E2 : verrou de couplage. Les biais de saison rapprochent
-    // les deux trajectoires, mais un tirage favorable peut encore creuser
-    // l'écart. Ici on garantit l'invariant : jamais plus d'une division
-    // entre le joueur et son rival.
-    //
-    // Ce verrou ne peut que RETENIR le rival, jamais le faire descendre
-    // ni le pousser : il ne contredit donc aucun résultat déjà affiché au
-    // joueur, qui ne voit de toute façon que sa propre ligue au classement.
-    const plNow = c.leagueIdx || 0;
-    if (next > plNow + 1) next = plNow + 1;
-    if (next < plNow - 1) next = plNow - 1;
     next = Math.max(0, Math.min(5, next));
 
     const promoted = next > r.leagueIdx, relegated = next < r.leagueIdx;
@@ -277,18 +246,15 @@
     // Sa saison est réellement simulée journée par journée.
     if (r.leagueIdx !== c.leagueIdx) {
       const played = (r.seasonWins || 0) + (r.seasonLosses || 0);
-      const rk = this.rivalRankInOwnLeague(0);
       h += '<div class="inter-section" style="margin-bottom:12px">';
       h += '<div class="inter-section-head"><span class="inter-section-title">Chez lui</span>';
       h += '<span class="inter-section-note">' + this.LEAGUES[r.leagueIdx] + '</span></div>';
       if (played) {
         h += '<div class="stats-row">';
-        h += '<div class="stat-box"><div class="stat-value" style="color:var(--orange)">' + rk + '<sup>e</sup></div><div class="stat-label">sur ' + this.LEAGUE_SIZE + '</div></div>';
         h += '<div class="stat-box"><div class="stat-value" style="color:var(--green)">' + (r.seasonWins||0) + '</div><div class="stat-label">Victoires</div></div>';
         h += '<div class="stat-box"><div class="stat-value" style="color:var(--pink)">' + (r.seasonLosses||0) + '</div><div class="stat-label">Défaites</div></div>';
         h += '<div class="stat-box"><div class="stat-value">' + played + '</div><div class="stat-label">Journée /' + this.SEASON_FIGHTS + '</div></div>';
         h += '</div>';
-        h += '<div class="inter-section-note" style="display:block;text-align:center;margin-top:8px">' + this.rivalLeagueNote() + '</div>';
       } else {
         h += '<div class="inter-section-note" style="display:block;text-align:center;padding:8px 0">Sa saison n\'a pas encore commencé.</div>';
       }

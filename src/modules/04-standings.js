@@ -42,39 +42,6 @@
   // Fixé à la création du plateau : les combats simulés y convergent.
   // v0.15.0 — E2/E3 : COUPLAGE À UNE LIGUE.
   //
-  // L'écart entre le joueur et le rival ne doit jamais dépasser une
-  // division, dans un sens comme dans l'autre. Sans cette contrainte, le
-  // joueur peut atteindre la Légendaire des saisons avant lui et y tourner
-  // en rond : constaté en partie réelle, huit saisons de Légendaire à
-  // attendre, sacré champion cinq fois, sans aucune sortie possible.
-  //
-  // Le couplage agit EN AMONT, sur la cible de victoires de la saison,
-  // jamais sur son résultat — le scénario doit rester invisible (R3).
-  // Trois interdits :
-  //   1. Ne jamais bloquer une promotion déjà acquise à l'écran.
-  //   2. Le joueur ne redescend jamais parce que le rival monte.
-  //   3. Si le rival stagne en dessous, c'est LUI qu'on pousse.
-  leagueGap() {
-    const c = this.state.career;
-    if (!c || !c.rival) return 0;
-    return (c.leagueIdx || 0) - (c.rival.leagueIdx || 0);
-  },
-
-  // Le joueur est-il en avance d'une division sur son rival ?
-  // Dans ce cas sa saison se joue au maintien, le temps qu'il le rejoigne.
-  playerMustWait() {
-    const c = this.state.career;
-    if (!c || !c.rival) return false;
-    if ((c.leagueIdx || 0) >= 5 && c.rival.leagueIdx >= 5) return false;
-    return this.leagueGap() >= 1;
-  },
-
-  // Garde-fou de durée : au-delà de cette saison, on cesse de retenir le
-  // joueur et la poussée du rival passe au maximum, pour clore la carrière
-  // autour de la douzième saison. Six saisons restent possibles si le
-  // joueur domine chaque ligue du premier coup.
-  CAREER_SOFT_CAP: 8,
-
   playerTargetWins() {
     const c = this.state.career;
     if (c._targetWins == null) {
@@ -85,17 +52,6 @@
         c._targetWins = this.winsForRank(this.scriptedRank());
       } else if ((c.leagueIdx || 0) === 5 && this.isFinalSeason()) {
         c._targetWins = 13 + Math.floor(Math.random() * 4);        // 13 à 16
-      } else if (this.playerMustWait() && (c.season || 1) <= this.CAREER_SOFT_CAP) {
-        // Il a une division d'avance : sa saison se joue dans le ventre du
-        // classement. Assez haut pour ne jamais frôler la relégation,
-        // assez bas pour ne pas monter encore.
-        c._targetWins = this.winsForRank(this.PROMO_SLOTS + 2 + Math.floor(Math.random() * 3));
-      } else if ((c.season || 1) > this.CAREER_SOFT_CAP && (c.leagueIdx || 0) < 5) {
-        // Garde-fou de durée : passé la onzième saison, on cesse de
-        // laisser la carrière s'étirer. Le joueur vise le podium, le rival
-        // reçoit sa poussée maximale — les deux convergent vers la
-        // Légendaire au lieu de se manquer saison après saison.
-        c._targetWins = this.winsForRank(1 + Math.floor(Math.random() * this.PROMO_SLOTS));
       } else {
         c._targetWins = null;                                       // libre
       }
@@ -126,45 +82,11 @@
     return null;
   },
 
-  // v0.13 — GDD §6.3 : la saison scriptée ex aequo n'a lieu QUE si le
-  // rival est LUI AUSSI en Légendaire. Avant, cette fonction ne
-  // vérifiait que la ligue du joueur — les deux forçages qui suivent
-  // garantissaient artificiellement que le rival y soit toujours.
-  //
-  // v0.13 (ajusté) — dès l'instant où les deux sont en Légendaire,
-  // l'ex aequo ne doit pas obligatoirement tomber la saison même :
-  // ce serait trop prévisible ("dès qu'on y est tous les deux, c'est
-  // forcément CETTE saison"). Un délai de 0 à 2 saisons partagées,
-  // normales, est tiré UNE SEULE FOIS au moment où ils se retrouvent
-  // ensemble pour la première fois.
-  ensureTogetherThreshold() {
-    const c = this.state.career;
-    const bothThere = (c.leagueIdx || 0) === 5 && !!c.rival && c.rival.leagueIdx === 5;
-    if (!bothThere) {
-      c.togetherStreak = 0; c.togetherThreshold = null; c.togetherLastSeason = null;
-      return;
-    }
-    if (c.togetherThreshold == null) {
-      // Tiré une seule fois, au moment où ils se retrouvent ensemble.
-      c.togetherThreshold = this.pick([0, 0, 1, 1, 2]);
-      c.togetherStreak = 0;
-      c.togetherLastSeason = c.season;
-    } else if (c.togetherLastSeason !== c.season) {
-      // Repéré via c.season, jamais recompté deux fois dans la même
-      // saison même si cette fonction est appelée plusieurs fois —
-      // et si l'ex aequo s'était déclenché, la carrière serait déjà
-      // terminée et cette fonction ne serait plus jamais rappelée.
-      c.togetherStreak = (c.togetherStreak || 0) + 1;
-      c.togetherLastSeason = c.season;
-    }
-  },
-
   isFinalSeason() {
     const c = this.state.career;
-    this.ensureTogetherThreshold();
     const bothThere = (c.leagueIdx || 0) === 5 && !!c.rival && c.rival.leagueIdx === 5;
-    if (!bothThere) return false;
-    return (c.togetherStreak || 0) >= (c.togetherThreshold || 0);
+    // La saison commune en Légendaire déclenche directement la finale.
+    return bothThere;
   },
 
   // ------------------------------------------------------------
@@ -374,24 +296,6 @@
       const floor = target - 1;
       bots.forEach(b => { if (b.targetW == null) b.targetW = Math.max(0, floor - Math.floor(Math.random()*4)); });
 
-    } else if (this.rivalWaitingInLegend() && rivalBot) {
-      // v0.16.0 — F6 : le rival attend le joueur en Légendaire. Sa saison
-      // doit le placer RÉELLEMENT en milieu de tableau. Auparavant sa
-      // cible était libre et advanceRival() le protégeait après coup : il
-      // pouvait finir 15e sur 15 et rester quand même, ce qui rendait le
-      // forçage visible.
-      bots.forEach(b => {
-        const edge = (b.spec - base) / 10;
-        b.targetW = Math.max(2, Math.min(N - 2, Math.round(N * (0.5 + edge * 0.06) + (Math.random()*4 - 2))));
-      });
-      const sorted = bots.slice().sort((a2, b2) => b2.targetW - a2.targetW);
-      // On le pose entre la 5e et la 9e cible du plateau : hors podium,
-      // loin de la zone rouge.
-      const lo = Math.min(sorted.length - 1, this.PROMO_SLOTS + 1);
-      const hi = Math.min(sorted.length - 1, this.RELEG_FROM - 3);
-      const pick = sorted[lo + Math.floor(Math.random() * Math.max(1, hi - lo + 1))];
-      rivalBot.targetW = pick ? pick.targetW : Math.round(N * 0.5);
-
     } else {
       // Saison libre : chacun selon son niveau
       bots.forEach(b => {
@@ -579,53 +483,25 @@
       // téléportation, juste une saison un peu meilleure que ce que ses
       // stats brutes auraient donné seules.
       const pl = c.leagueIdx || 0;
-      // v0.15.0 — E2 : COUPLAGE. L'ancien aimant (+0,6 à partir de la
-      // Mondiale) ne valait qu'une victoire de plus sur vingt : mesuré en
-      // partie réelle, le rival a mis 17 saisons pour cinq promotions,
-      // contre 11 au joueur. La cause n'était pas le coefficient mais
-      // leagueBaseSpec(), indexé sur le SPEC DU JOUEUR : plus le joueur
-      // monte, plus la barre monte devant le rival, et son edge reste
-      // collé à zéro quoi qu'il fasse.
-      //
-      // On ne corrige donc plus le multiplicateur, on ajoute un terme
-      // additif qui ne dépend pas de son niveau : quand il est en retard
-      // d'une division, il vise franchement le podium de sa ligue.
+      // Un léger biais narratif peut accélérer le rival s'il est derrière.
+      // Sa montée reste déterminée par son rang réellement simulé; le
+      // joueur n'est jamais retenu pour l'attendre.
       const gap = pl - r.leagueIdx;
       if (gap >= 1 && r.leagueIdx < 5) {
-        edge += 3.6 + (gap - 1) * 1.5;
-        // Garde-fou de durée : passé la onzième saison, il ne traîne plus.
-        if ((c.season || 1) > this.CAREER_SOFT_CAP) edge += 3.0;
-      } else if (gap <= -1) {
-        // Symétrique : c'est lui qui a l'avance, il joue le maintien le
-        // temps que le joueur revienne. Le GDD §14.1 admet déjà ce
-        // principe d'attente quand il atteint la Légendaire le premier ;
-        // on l'applique à toutes les divisions.
-        edge = Math.min(edge, 0.15) - 0.5;
-      }
-      // v0.13 (ajusté) — Zone de maintien : le risque n'est pas qu'il
-      // finisse 1er (rien au-dessus de la Légendaire, aucune incohérence
-      // à ça) mais qu'il finisse en zone de RELÉGATION SANS être relégué
-      // — ça, ça se verrait. On le maintient donc à l'écart du bas de
-      // tableau, sans plafonner le haut : sa saison peut toujours varier
-      // librement du milieu jusqu'au sommet.
-      // v0.16.0 — F6 : le garde-fou d'attente ne fonctionnait pas. Constaté
-      // en jeu : le rival termine 15e sur 15 avec −307 de différence, en
-      // pleine zone de relégation affichée en rouge, et reste malgré tout
-      // en Légendaire la saison suivante — parce qu'advanceRival() force
-      // `next = 5`. Il subissait le pire des deux : mal classé ET protégé,
-      // ce qui rendait le forçage VISIBLE, exactement ce que R3 interdit.
-      //
-      // Sa saison d'attente est désormais calibrée pour le placer
-      // réellement en milieu de tableau : ni podium, ni relégation. On
-      // agit sur la cible, pas sur le résultat.
-      if (r.leagueIdx === 5 && !this.isFinalSeason()) {
-        edge = 0.35 + Math.random() * 0.45;
+        edge += Math.min(2.4, 1.2 + (gap - 1) * 0.6);
       }
       // v0.14.0 — A1 : le coefficient était 0.06, ce qui écrasait tout.
       const t = Math.max(3, Math.min(this.SEASON_FIGHTS - 3,
         Math.round(this.SEASON_FIGHTS * (0.5 + edge * 0.11) + (Math.random()*4 - 2))));
-      r.seq = this.buildSequence(t, this.SEASON_FIGHTS);
-      r.targetW = t;
+      // Quand le joueur a une division d'avance, le rival reçoit une
+      // saison scénarisée suffisamment forte pour viser le podium. Son
+      // classement dans sa ligue reste calculé normalement à partir de ce
+      // bilan et des bilans simulés de ses adversaires.
+      const target = gap >= 1 && r.leagueIdx < 5
+        ? Math.max(t, Math.min(this.SEASON_FIGHTS - 3, this.winsForRank(this.PROMO_SLOTS) + 2))
+        : t;
+      r.seq = this.buildSequence(target, this.SEASON_FIGHTS);
+      r.targetW = target;
     }
     const i = r.seasonWins + r.seasonLosses;
     if (r.seq[i]) { r.seasonWins++; r.wins++; if (Math.random() < 0.12) r.ko++; }
@@ -672,21 +548,9 @@
     if (!played) return 8;
     const ratio = played / this.SEASON_FIGHTS;
     const mine = r.seasonWins || 0;
-    // v0.14.0 — A3 : le paramètre gap était déclaré mais JAMAIS lu. Le
-    // commentaire au-dessus décrivait un penchant selon l'écart de ligue
-    // avec le joueur ; ce penchant n'existait pas dans le code, et le
-    // rival distancé ne rattrapait donc jamais son retard.
-    //
-    // v0.15.0 — E2 : l'écart pèse désormais franchement. gap > 0 : il est
-    // derrière le joueur, il pousse pour revenir, ses adversaires lui
-    // cèdent du terrain. gap < 0 : il est devant et se contente d'attendre.
-    // Sans cela, ses victoires supplémentaires ne se traduisaient pas en
-    // places gagnées et il pouvait gagner plus sans jamais monter.
-    let ease = Math.max(-2, Math.min(2, gap || 0));
-    if (ease > 0) {
-      ease = ease * 4.0;
-      if ((this.state.career.season || 1) > this.CAREER_SOFT_CAP) ease += 2;
-    }
+    // Le rival peut recevoir un léger appui scénaristique s'il est derrière.
+    // Être devant le joueur ne le pénalise jamais.
+    const ease = Math.max(0, Math.min(2, gap || 0)) * 4;
     let better = 0;
     r.leagueSeq.forEach(t => { if (Math.round((t - ease) * ratio) > mine) better++; });
     return better + 1;
@@ -844,31 +708,21 @@
     const st = (c.standings || []).find(b => b.isRival);
     if (!st) return;
 
-    // Le duel direct fait nécessairement un perdant : quoi qu'on donne au
-    // rival comme cible, il finit à une victoire d'écart du joueur. Sa
-    // séquence est donc corrigée à la DERNIÈRE journée, une fois le
-    // calendrier épuisé — le seul instant où l'on connaît le bilan final
-    // des deux. Avant cela, l'écart d'une victoire reste visible et
-    // crédible : c'est une saison serrée, pas une égalité annoncée.
     const last = (c.matchday || 0) >= this.SEASON_FIGHTS;
     if (!last) return;
 
     const played = st.w + st.l;
+    const oldWins = st.w;
+    const oldLosses = st.l;
     st.w = Math.max(0, Math.min(played, c.seasonWins));
     st.l = played - st.w;
     st.rdiff = c.seasonRDiff || 0;
     if (c.rival) {
       c.rival.seasonWins = st.w;
       c.rival.seasonLosses = st.l;
+      c.rival.wins += st.w - oldWins;
+      c.rival.losses += st.l - oldLosses;
     }
-  },
-
-  // v0.16.0 — F6 : le rival est-il en train d'attendre le joueur en
-  // Légendaire, avant que l'ex aequo scripté ne se déclenche ?
-  rivalWaitingInLegend() {
-    const c = this.state.career;
-    if (!c || !c.rival) return false;
-    return c.rival.leagueIdx === 5 && (c.leagueIdx || 0) === 5 && !this.isFinalSeason();
   },
 
   zoneOf(rank) {
@@ -882,16 +736,10 @@
     return 'stay';
   },
 
-  // v0.16.1 — GDD §6 : la ligue a-t-elle une zone de relégation ?
-  // Pas en Amateur (plancher), ni en Légendaire une fois la relégation
-  // unique de la carrière consommée. Sert à zoneOf() ET à la légende du
-  // classement, pour que l'écran ne montre jamais une zone rouge qui ne
-  // s'appliquerait pas.
+  // Seule l'Amateur est un plancher. Les trois dernières places descendent
+  // dans toutes les autres ligues, y compris la Légendaire.
   hasRelegZone(li) {
-    if (li === 0) return false;
-    const c = this.state.career;
-    if (li === 5 && c && c.legendRelegated) return false;
-    return true;
+    return li !== 0;
   },
 
   // Termine la saison : on déroule les journées restantes du calendrier
@@ -926,124 +774,10 @@
     return (c.fightIndex || 0) > 0;
   },
 
-  showStandingsPreview() {
-    const c = this.state.career;
-    this.ensureStandings();
-    const rows = c.standings.map(b => ({
-      name:b.name, chassisId:b.chassisId, iaId:b.iaId, spec:b.spec, isRival:b.isRival, isPlayer:false
-    }));
-    rows.push({ name:c.name, chassisId:c.chassis.id, iaId:c.ia.id, spec:c.gen, isRival:false, isPlayer:true });
-    rows.sort((a, b) => b.spec - a.spec);
-
-    let h = '<div class="btn-back sticky" id="stand-back" onclick="RC.showCareer()">← Carrière</div>';
-    h += '<div style="text-align:center;padding:2px 0 12px">';
-    h += '<div class="page-title">Classement</div>';
-    h += '<div class="page-sub">' + c.league + ' · Saison ' + c.season + '</div></div>';
-
-    h += '<div class="next-hint" style="margin-bottom:12px"><span class="next-hint-icon">🏁</span>';
-    h += '<span class="next-hint-text">La saison commence.<br>Le classement s\'établira dès la première journée.</span></div>';
-
-    h += '<div class="stand-table preview">';
-    h += '<div class="stand-head"><span class="st-rank">·</span><span class="st-name">Robot</span>';
-    h += '<span class="st-pts">Niveau</span></div>';
-    rows.forEach(r => {
-      const ch = this.CHASSIS.find(x => x.id === r.chassisId);
-      const ia = this.IA_TYPES.find(x => x.id === r.iaId);
-      let cls = 'stand-row z-stay';
-      if (r.isPlayer) cls += ' is-player';
-      if (r.isRival) cls += ' is-rival';
-      h += '<div class="' + cls + '">';
-      h += '<span class="st-rank">·</span>';
-      h += '<span class="st-name"><b>' + r.name + '</b>';
-      h += '<span class="st-meta">' + (ch ? ch.icon + ' ' + ch.name : '') + ' · ' + (ia ? ia.name : '') + '</span></span>';
-      h += '<span class="st-pts" style="color:var(--tier-' + this.specTier(r.spec).key + ')">' + r.spec + '</span>';
-      h += '</div>';
-    });
-    h += '</div>';
-
-    h += '<div class="empty-note" style="text-align:left;margin-top:10px">Les robots sont présentés par niveau. Rien n\'est encore joué : c\'est le terrain qui décidera du classement.</div>';
-
-    document.getElementById('standings-content').innerHTML = h;
-    this.goTo('standings');
-    this.bindStickyBack('standings','stand-back');
-  },
-
   showStandings() {
-    if (this.state.career) this.seasonCounters().standingsSeen = true;
-    const c = this.state.career;
-    if (!c) { this.goTo('home'); return; }
-    const li = c.leagueIdx || 0;
-
-    // v0.9.0 — avant le premier match, tout le monde est à zéro point :
-    // afficher un rang n'aurait aucun sens (le joueur se voyait 12e).
-    if (!this.seasonStarted()) {
-      this.showStandingsPreview();
-      return;
-    }
-    const rows = this.sortedStandings();
-
-    let h = '<div class="btn-back sticky" id="stand-back" onclick="RC.showCareer()">← Carrière</div>';
-    h += '<div style="text-align:center;padding:2px 0 12px">';
-    h += '<div class="page-title">Classement</div>';
-    h += '<div class="page-sub">' + c.league + ' · Saison ' + c.season + ' · Journée ' + c.fightIndex + '/' + this.SEASON_FIGHTS + '</div></div>';
-
-    // Légende des zones
-    // v0.15.0 — E1 : « 1-4 · Tournoi final » était un vestige du tournoi
-    // supprimé, et la condition `li < 5` masquait la zone de relégation en
-    // Légendaire. Les trois zones sont désormais affichées partout, bornes
-    // calculées depuis les constantes.
-    h += '<div class="zone-legend">';
-    h += '<span class="zone-chip z-promo">1-' + this.PROMO_SLOTS + ' · ' + (li === 5 ? 'Titre' : 'Promotion') + '</span>';
-    // Sans zone de relégation, le maintien court jusqu'au dernier rang.
-    const stayEnd = this.hasRelegZone(li) ? this.RELEG_FROM - 1 : this.LEAGUE_SIZE;
-    h += '<span class="zone-chip z-stay">' + (this.PROMO_SLOTS + 1) + '-' + stayEnd + ' · Maintien</span>';
-    if (this.hasRelegZone(li)) h += '<span class="zone-chip z-releg">' + this.RELEG_FROM + '-' + this.LEAGUE_SIZE + ' · Relégation</span>';
-    h += '</div>';
-
-    h += '<div class="stand-table">';
-    // v0.15.0 — E5 : la colonne J affichait le nombre de journées, identique
-    // pour tout le monde, donc sans information. Elle cède la place à la
-    // différence de structure (GDD §6.1), qui est le vrai départage.
-    h += '<div class="stand-head"><span class="st-rank">#</span><span class="st-name">Robot</span>';
-    h += '<span class="st-num">Diff</span><span class="st-num">V</span><span class="st-num">D</span><span class="st-pts">Pts</span></div>';
-
-    rows.forEach(r => {
-      const zone = this.zoneOf(r.rank);
-      let cls = 'stand-row z-' + zone;
-      // v0.14.0 — D4 : un trait net à la frontière des zones. Le filet
-      // latéral seul ne permettait pas de voir où s'arrêtait la
-      // promotion et où commençait la relégation.
-      const nextZone = r.rank < rows.length ? this.zoneOf(r.rank + 1) : zone;
-      if (nextZone !== zone) cls += ' zone-edge';
-      if (r.isPlayer) cls += ' is-player';
-      if (r.isRival) cls += ' is-rival';
-      const chassis = this.CHASSIS.find(x => x.id === r.chassisId);
-      const ia = this.IA_TYPES.find(x => x.id === r.iaId);
-      h += '<div class="' + cls + '">';
-      h += '<span class="st-rank">' + r.rank + '</span>';
-      h += '<span class="st-name"><b>' + r.name + '</b>';
-      h += '<span class="st-meta">' + (chassis ? chassis.icon + ' ' + chassis.name : '') + ' · ' + (ia ? ia.name : '') + ' · SPEC ' + r.spec + '</span></span>';
-      h += '<span class="st-num" style="color:' + (r.diff > 0 ? 'var(--green)' : (r.diff < 0 ? 'var(--pink)' : 'var(--text-dim)')) + '">' + (r.diff > 0 ? '+' : '') + r.diff + '</span>';
-      h += '<span class="st-num" style="color:var(--green)">' + r.w + '</span>';
-      h += '<span class="st-num" style="color:var(--pink)">' + r.l + '</span>';
-      h += '<span class="st-pts">' + r.pts + '</span>';
-      h += '</div>';
-    });
-    h += '</div>';
-
-    const me = rows.find(r => r.isPlayer);
-    const zone = this.zoneOf(me.rank);
-    const msg = zone === 'promo'
-      ? (li === 5 ? 'Vous êtes en position de remporter le titre.' : 'Vous êtes en position de monter en ' + this.LEAGUES[li+1] + '.')
-      : zone === 'releg'
-        ? 'Vous êtes en position de descendre en ' + this.LEAGUES[li-1] + '.'
-        : 'Vous êtes en position de vous maintenir en ' + c.league + '.';
-    h += '<div class="next-hint" style="margin-top:12px"><span class="next-hint-icon">📊</span>';
-    h += '<span class="next-hint-text">' + me.rank + 'ᵉ sur ' + this.LEAGUE_SIZE + ' · ' + me.pts + ' points<br>' + msg + '</span></div>';
-
-    document.getElementById('standings-content').innerHTML = h;
-    this.goTo('standings');
-    this.bindStickyBack('standings','stand-back');
+    // Le classement est désormais un calcul interne de la carrière.
+    // L'écran public a été retiré pour ne pas exposer les rangs simulés.
+    this.showCareer();
   },
 
   // ============================================================

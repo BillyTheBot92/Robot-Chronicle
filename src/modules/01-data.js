@@ -354,16 +354,16 @@
       cards:[
         {icon:'📖',name:'Combats narratifs',desc:'Trois rounds, trois choix par round. Le texte s\'affiche comme un terminal — touchez l\'écran pour l\'accélérer.'},
         {icon:'💥',name:'L\'atout spécial',desc:'Le troisième choix. Trois par saison seulement. Il peut mettre KO comme se retourner contre vous.'},
-        {icon:'🎲',name:'Combats simulés',desc:'Résultats calculés à partir de votre note SPEC. Ils comptent autant au classement.'}
+        {icon:'🎲',name:'Combats simulés',desc:'Résultats calculés à partir de votre note SPEC. Ils comptent dans votre bilan de saison.'}
       ]
     },
     {
-      icon:'📊', title:'Classement et progression',
-      sub:'Quinze robots par ligue.\nTrois points par victoire, pas de nul.',
+      icon:'📊', title:'Progression en ligue',
+      sub:'Chaque saison compte. Vos résultats font évoluer votre carrière.',
       cards:[
-        {icon:'🥇',name:'Places {PROMO}',desc:'Promotion. Vous montez d\'une ligue.'},
-        {icon:'➡️',name:'Places {STAY}',desc:'Maintien. Vous rejouez la même ligue.'},
-        {icon:'📉',name:'Places {RELEG}',desc:'Relégation. Vous descendez — sauf en Amateur.'},
+        {icon:'🥇',name:'Belle saison',desc:'Vous pouvez accéder à la ligue supérieure.'},
+        {icon:'➡️',name:'Saison équilibrée',desc:'Vous poursuivez votre carrière dans la même ligue.'},
+        {icon:'📉',name:'Saison difficile',desc:'Vous pouvez redescendre d’une ligue, sauf depuis l’Amateur.'},
         {icon:'🎨',name:'La note SPEC',desc:'La valeur de votre machine. Sa couleur va du Bronze au Diamant et suit vos progrès.'}
       ]
     },
@@ -839,7 +839,7 @@
 
     // --- CACHÉS (5) ---
     { id:'phantom', cat:'Cachés', icon:'👁️', name:'Fantôme', hidden:true,
-      cond:"Traverser une saison sans jamais consulter le classement.", scope:'season' },
+      cond:"Terminer une saison sans infliger ni subir de KO.", scope:'season' },
     { id:'old_demons', cat:'Cachés', icon:'🕰️', name:'Vieux Démons', hidden:true,
       cond:"Retrouver en Légendaire un robot déjà croisé en Amateur, même carrière.", scope:'career' },
     { id:'triple_dose', cat:'Cachés', icon:'⚡', name:'Triple Dose', hidden:true,
@@ -1830,13 +1830,13 @@
   RIVAL_SEASON_NEWS: {
     dominant: [
       "a dominé sa ligue de bout en bout.",
-      "a battu le robot le mieux classé de sa ligue devant un stade plein.",
+      "a battu un adversaire redouté devant un stade plein.",
       "s'est fait remarquer par une série de KO expéditifs.",
-      "n'a jamais quitté la tête du classement de la saison.",
-      "a terminé la saison avec une avance que personne n'a menacée."
+      "a signé une série de victoires qui a marqué la saison.",
+      "a terminé la saison avec un bilan que personne n'a pu égaler."
     ],
     promo: [
-      "a été donné perdant toute la saison, et a fini dans le haut du tableau.",
+      "a été donné perdant toute la saison, puis a trouvé son rythme.",
       "a encaissé une lourde défaite en milieu de saison, puis n'a plus rien lâché.",
       "a arraché sa montée sur les trois dernières journées.",
       "a fini fort, exactement quand il fallait."
@@ -1844,8 +1844,8 @@
     solid: [
       "a fait une saison propre, sans éclat et sans accroc.",
       "a rendu une copie régulière, à défaut d'être spectaculaire.",
-      "a tenu son rang toute la saison, sans jamais inquiéter le haut du tableau.",
-      "a terminé là où on l'attendait, ni au-dessus ni en dessous."
+      "a tenu son rythme toute la saison, sans éclat ni accroc.",
+      "a terminé avec le bilan que son équipe espérait."
     ],
     unstable: [
       "a alterné le très bon et le très mauvais toute la saison.",
@@ -1854,7 +1854,7 @@
       "a été impossible à situer d'une journée à l'autre."
     ],
     bad: [
-      "a passé la saison à courir après le classement, sans jamais le rattraper.",
+      "a passé la saison à chercher son rythme, sans le trouver.",
       "a enchaîné les défaites sans trouver de solution.",
       "a terminé la saison avec une machine à bout de souffle.",
       "n'a jamais réussi à lancer sa saison."

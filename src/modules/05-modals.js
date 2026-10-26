@@ -121,7 +121,7 @@
     h += '<div class="fed-head">Décision n° ' + (1200 + Math.floor(Math.random()*799)) + ' — Saison ' + c.season + '</div>';
     h += '<div class="fed-title">Corruption d\'arbitrage établie</div>';
     h += '<p>À l\'issue d\'une enquête ouverte le mois dernier, la commission confirme que le créateur de <b style="color:var(--pink)">' + cheater + '</b> a versé des sommes à deux officiels de la ligue en échange de décisions favorables sur les dernières journées.</p>';
-    h += '<p>Les résultats concernés sont annulés. L\'écurie est rétrogradée en dernière position du classement et suspendue pour la saison à venir.</p>';
+    h += '<p>Les résultats concernés sont annulés. L\'écurie fautive est suspendue pour la saison à venir.</p>';
     // v0.14.0 — C2 : le tampon flottait seul, centré, sans nom accolé.
     // Placé entre deux paragraphes, il se lisait comme s'il concernait
     // le joueur alors qu'il sanctionne le tricheur. On lui accole donc
@@ -129,12 +129,12 @@
     // promotion du joueur.
     h += '<div class="fed-verdict"><span class="fed-stamp">Rétrogradé</span>';
     h += '<span class="fed-verdict-who">' + cheater + '</span></div>';
-    h += '<p>En conséquence, <b style="color:var(--cyan)">' + c.name + '</b>, classé quatrième, accède à la <b>troisième place</b> et se voit attribuer la promotion en ligue Régionale.</p>';
+    h += '<p>En conséquence, <b style="color:var(--cyan)">' + c.name + '</b> bénéficie de la décision de la commission et se voit attribuer la promotion en ligue Régionale.</p>';
     h += '</div>';
 
     h += '<div class="promo-banner promo-up"><div class="promo-icon">🚀</div>';
     h += '<div class="promo-text">Promotion !</div>';
-    h += '<div class="promo-sub">3ᵉ place · Bienvenue en Régionale</div></div>';
+    h += '<div class="promo-sub">Bienvenue en Régionale</div></div>';
 
     h += '<button class="btn-primary btn-gradient" onclick="RC.afterDisqualification()">Continuer</button>';
 
