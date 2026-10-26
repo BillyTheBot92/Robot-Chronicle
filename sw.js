@@ -4,7 +4,7 @@
    navigateur continue de servir l'ancienne version du jeu.
    ================================================================ */
 
-const CACHE_NAME = 'robot-chronicle-v0.16.3-refonte';
+const CACHE_NAME = 'robot-chronicle-v0.16.4-refonte';
 
 // Fichiers mis en cache dès l'installation
 const CORE_ASSETS = [
@@ -13,6 +13,13 @@ const CORE_ASSETS = [
   './robot-chronicle.html',
   './src/robot-chronicle.css',
   './src/robot-chronicle.js',
+  './src/modules/01-data.js',
+  './src/modules/02-state-ui.js',
+  './src/modules/03-rival-combat.js',
+  './src/modules/04-standings.js',
+  './src/modules/05-modals.js',
+  './src/modules/06-tournament.js',
+  './src/modules/07-season-events-trophies.js',
   './manifest.json',
   './splash.jpg',
   './icons/icon-192.png',
